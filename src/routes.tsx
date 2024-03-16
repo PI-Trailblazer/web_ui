@@ -3,7 +3,7 @@ import { lazy } from 'react';
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const Test2Page = lazy(() => import("./pages/test2"));
-const TestPage = lazy(() => import("./pages/test"));
+const ComponentsPage = lazy(() => import("./pages/ComponentsPage"));
     
 const routes = [
     {
@@ -22,8 +22,8 @@ const routes = [
                 exact: true
             },
             {
-                path: "/contact",
-                element: <TestPage />,
+                path: "/component",
+                element: <ComponentsPage />,
                 exact: true
             }
         ]
