@@ -1,16 +1,23 @@
 import './index.css'
-import { NextUIProvider } from '@nextui-org/react'
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { routes } from "./routes";
+import { ThemeProvider } from "@/components/theme-provider"
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const App = () => {
   const router = createBrowserRouter(routes);
+  const queryClient = new QueryClient()
 
   return (
-    <NextUIProvider>
-      <RouterProvider router={router} />
-    </NextUIProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools />
+          <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ThemeProvider>
   )
 }
 
