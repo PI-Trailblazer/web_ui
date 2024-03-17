@@ -26,8 +26,13 @@ import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Loader2 } from "lucide-react"
 
-const regiterShema = z.object({
+const regiterSchema = z.object({
     email: z.string().email(),
+    phone: z.string()
+    .optional()
+    .refine(phone => phone ? /^\+?[1-9]\d{1,14}$/.test(phone) : true, {
+        message: 'Invalid phone number',
+    }),
     password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
     verifyPassword: z.string().min(6, { message: 'Password must be at least 6 characters' })
 }).refine(data => data.password === data.verifyPassword, {
@@ -42,38 +47,44 @@ export default function RegisterPage() {
     
     const navigate = useNavigate();
 
-    const registerMutation = useMutation({
-        mutationFn: (token: string) => {
-            console.log(token);
-            console.log('POST /api/register (PlaceHolder)');
-            return axios.post('/api/register', {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }).then((res) => res.data);
-        },
-        onError: (error) => {
-            console.log(error);
-        },
-        onSuccess: (data) => {
-            console.log(data);
-        }
-    })
 
-    const form = useForm<z.infer<typeof regiterShema>>({
-        resolver: zodResolver(regiterShema),
+    const form = useForm<z.infer<typeof regiterSchema>>({
+        resolver: zodResolver(regiterSchema),
         defaultValues: {
             email: '',
             password: '',
+            phone: '',
             verifyPassword: ''
         }
     })
     
-    function onSubmit(data: z.infer<typeof regiterShema>) {
-        handleRegister(data.email, data.password)
+    function onSubmit(data: z.infer<typeof regiterSchema>) {
+        handleRegister(data.email, data.password, data.phone)
     }
 
-    const handleRegister = async (email: string, password: string) => {
+    const register = async ({ token, phone }: { token: string; phone: string }) => {
+        const response = await axios.post('/api/register', 
+            { roles: ['NORMAL', 'PROVIDER'], phone_number: phone === '' ? null : phone},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+        return response.data;
+    };
+
+    const registerMutation = useMutation({
+        mutationFn: register,
+        onSuccess: () => {
+            console.log('Success');
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    });
+    
+    const handleRegister = async (email: string, password: string, phone: string | undefined) => {
         setIsLoading(true)
         let token = ''
         try {
@@ -94,9 +105,15 @@ export default function RegisterPage() {
             setIsLoading(false)
             return
         }
+        
+        let data = {
+            token: token,
+            phone: phone
+        }
+        
+        registerMutation.mutate(data);
 
-        registerMutation.mutate(token);
-
+        localStorage.setItem('token', token);
         // delete user
         const user = auth.currentUser;
         if (user !== null) {
@@ -125,6 +142,19 @@ export default function RegisterPage() {
                                 <FormLabel>Email</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Email" {...field} />
+                                </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                            <FormItem className='mb-6'>
+                                <FormLabel>Phone Number</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="1234567890" {...field} />
                                 </FormControl>
                             <FormMessage />
                             </FormItem>

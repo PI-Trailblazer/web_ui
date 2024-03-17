@@ -6,9 +6,10 @@ import { UseQueryWrapper } from '@/services/Client';
 export default function LandingPage() {
 	const { isLoading, error, data, refetch } = UseQueryWrapper({
 		queryKey: ['react-query-stats'],
-		enabled: false
+		enabled: false,
 	}, 'https://api.github.com/repos/tannerlinsley/react-query')
 
+	
     return (
 		<div className='flex flex-col items-center h-screen'>
 			<h1>Landing Page</h1>
