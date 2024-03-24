@@ -17,6 +17,13 @@ module.exports = {
       },
     },
     extend: {
+      height: {
+        "screen-1/6" : "16.666666vh",
+        "screen-2/6" : "33.333333vh",
+        "screen-3/6" : "50vh",
+        "screen-4/6" : "66.666666vh",
+        "screen-5/6" : "83.333333vh",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -81,5 +88,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require('@tailwindcss/line-clamp'),
+    ],
 }
