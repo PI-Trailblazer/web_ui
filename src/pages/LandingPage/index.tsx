@@ -108,7 +108,7 @@ export default function LandingPage() {
 							<div className="p-1 h-full w-full flex items-center justify-end">
 							<Card className='h-full border-transparent'>
 								<CardContent className="flex items-center h-full justify-center p-6">
-									<div className='z-10 flex w-5/6 justify-center mt-80'>
+									<div className='z-10 flex w-5/6 justify-center'>
 										<OfferCard
 											title="Offer 1"
 											description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies."
@@ -154,7 +154,7 @@ export default function LandingPage() {
 				ref={scrollToRef}
 				>
 				<p className="text-2xl font-semibold">
-					<span className={isSticky ? 'bg-transparent' : 'bg-accent rounded-xl px-2 py-1'}>
+					<span className={isSticky ? 'bg-transparent' : 'text-white'}>
 						More to explore
 					</span>
 				</p>

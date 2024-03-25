@@ -1,5 +1,5 @@
-import { CleanLayout } from "./layouts/Layout";
-import { lazy } from 'react';
+import { CleanLayout} from "./layouts/Layout";
+import { lazy, Suspense } from 'react';
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const ComponentsPage = lazy(() => import("./pages/ComponentsPage"));
@@ -13,22 +13,34 @@ const routes = [
         children: [
             {
                 path: "/",
-                element: <LandingPage />,
+                element: 
+                <Suspense fallback={<div>Loading...</div>}>
+                    <LandingPage />
+                </Suspense>,
                 exact: true
             },
             {
                 path: "/component",
-                element: <ComponentsPage />,
+                element:
+                <Suspense fallback={<div>Loading...</div>}>
+                    <ComponentsPage />
+                </Suspense>,
                 exact: true
             },
             {
                 path: "/register",
-                element: <RegisterPage />,
+                element:
+                <Suspense fallback={<div>Loading...</div>}>
+                    <RegisterPage />
+                </Suspense>,
                 exact: true
             },
             {
                 path: "/login",
-                element: <LoginPage />,
+                element:
+                <Suspense fallback={<div>Loading...</div>}>
+                    <LoginPage />
+                </Suspense>,
                 exact: true
             }
         ]
