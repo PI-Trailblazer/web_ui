@@ -9,13 +9,14 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import Autoplay from "embla-carousel-autoplay"
 import { useEffect, useRef, useState } from 'react';
-import OfferCard from '@/components/OfferCard';
+import OfferCard from '@/components/OfferCard/OfferCard';
+import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton';
 import { SubCardProps } from '@/lib/types';
-
 
 export default function LandingPage() {
 
 	const scrollToRef = useRef<HTMLDivElement | null>(null);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 	
 	const [isSticky, setIsSticky] = useState(false);
 
@@ -34,6 +35,15 @@ export default function LandingPage() {
 		window.removeEventListener('scroll', handleScroll);
 	  };
 	}, []);
+
+	// Simular carregamento de dados com um efeito e um timeout
+	useEffect(() => {
+	const timer = setTimeout(() => {
+	  setIsLoading(false);
+	}, 20000); // Simula o tempo de carregamento dos dados
+  
+	return () => clearTimeout(timer);
+  	}, []);
 	
 	const scrollToElement = () => {
 		if (scrollToRef.current) {
@@ -103,23 +113,22 @@ export default function LandingPage() {
 								style={{ backgroundImage: `url('https://random.imagecdn.app/v1/image?width=1650&height=1000&category=hotels')` }}>
 							{/* Você também pode adicionar uma cor de overlay aqui se precisar */}
 							</div>
-							
 							{/* O conteúdo do seu Card */}
 							<div className="p-1 h-full w-full flex items-center justify-end">
-							<Card className='h-full border-transparent'>
-								<CardContent className="flex items-center h-full justify-center p-6">
-									<div className='z-10 flex w-5/6 justify-center'>
-										<OfferCard
-											title="Offer 1"
-											description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies."
-											imageSrc="https://via.placeholder.com/250"
-											rating={4}
-											tags={["Tag1", "Tag2", "Tag3"]}
-											price="$300"
-										/>
-									</div>
-								</CardContent>
-							</Card>
+								<Card className='h-full border-transparent'>
+									<CardContent className="flex items-center h-full justify-center p-6">
+										<div className='z-10 flex w-5/6 justify-center'>
+											<OfferCard
+												title="Offer 1"
+												description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies."
+												imageSrc="https://via.placeholder.com/250"
+												rating={4}
+												tags={["Tag1", "Tag2", "Tag3"]}
+												price="$300"
+											/>
+										</div>
+									</CardContent>
+								</Card>
 							</div>
 						</CarouselItem>
 						))}
@@ -160,17 +169,21 @@ export default function LandingPage() {
 				</p>
 			</div>
 			<div className="w-2/3 mt-20 flex items-center flex-col gap-4">
-				{offerCardsData.map((offer, index) => (
-				<OfferCard
-					key={index}
-					title={offer.title}
-					price={offer.price}
-					description={offer.description}
-					imageSrc={offer.imageSrc}
-					rating={offer.rating}
-					tags={offer.tags}
-				/>
-				))}
+			{isLoading ? (
+				Array(3).fill(0).map((_, index) => <OfferCardSkeleton key={index} />)
+			) : (
+				offerCardsData.map((offer, index) => (
+					<OfferCard
+						key={index}
+						title={offer.title}
+						price={offer.price}
+						description={offer.description}
+						imageSrc={offer.imageSrc}
+						rating={offer.rating}
+						tags={offer.tags}
+					/>
+				))
+			)}
 			</div>
 		</div>
 	)
