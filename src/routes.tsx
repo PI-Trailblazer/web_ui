@@ -5,6 +5,7 @@ const LandingPage = lazy(() => import("./pages/LandingPage"));
 const ComponentsPage = lazy(() => import("./pages/ComponentsPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
+const OfferListPage = lazy(() => import("./pages/OfferListPage"));
 
 const routes = [
     {
@@ -42,7 +43,16 @@ const routes = [
                     <LoginPage />
                 </Suspense>,
                 exact: true
+            },
+            {
+                path: "/offer-list",
+                element:
+                <Suspense fallback={<div>Loading...</div>}>
+                    <OfferListPage />
+                </Suspense>,
+                exact: true
             }
+
         ]
     }
 ];

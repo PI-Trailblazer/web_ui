@@ -16,7 +16,7 @@ import { SubCardProps } from '@/lib/types';
 export default function LandingPage() {
 
 	const scrollToRef = useRef<HTMLDivElement | null>(null);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [isCardLoading, setisCardLoading] = useState<boolean>(true);
 	
 	const [isSticky, setIsSticky] = useState(false);
 
@@ -39,8 +39,8 @@ export default function LandingPage() {
 	// Simular carregamento de dados com um efeito e um timeout
 	useEffect(() => {
 	const timer = setTimeout(() => {
-	  setIsLoading(false);
-	}, 20000); // Simula o tempo de carregamento dos dados
+	  setisCardLoading(false);
+	}, 10000); // Simula o tempo de carregamento dos dados
   
 	return () => clearTimeout(timer);
   	}, []);
@@ -71,7 +71,7 @@ export default function LandingPage() {
 		  imageSrc: "https://via.placeholder.com/250",
 		  rating: 4,
 		  tags: ["Tag1", "Tag2", "Tag3"],
-		  price: "$300",
+		  price: 300,
 		},
 		{
 		  title: "Offer 2",
@@ -79,7 +79,7 @@ export default function LandingPage() {
 		  imageSrc: "https://via.placeholder.com/250",
 		  rating: 5,
 		  tags: ["Tag4", "Tag5", "Tag6"],
-		  price: "$300",
+		  price: 300,
 		},
 		{
 		  title: "Offer 3",
@@ -87,7 +87,7 @@ export default function LandingPage() {
 		  imageSrc: "https://via.placeholder.com/250",
 		  rating: 3,
 		  tags: ["Tag7", "Tag8", "Tag9"],
-		  price: "$300",
+		  price: 300
 		},
 	  ];
 
@@ -117,14 +117,14 @@ export default function LandingPage() {
 							<div className="p-1 h-full w-full flex items-center justify-end">
 								<Card className='h-full border-transparent'>
 									<CardContent className="flex items-center h-full justify-center p-6">
-										<div className='z-10 flex w-5/6 justify-center'>
+										<div className='z-10 flex w-7/12 justify-center'>
 											<OfferCard
 												title="Offer 1"
 												description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies."
 												imageSrc="https://via.placeholder.com/250"
 												rating={4}
 												tags={["Tag1", "Tag2", "Tag3"]}
-												price="$300"
+												price= {300}
 											/>
 										</div>
 									</CardContent>
@@ -168,20 +168,20 @@ export default function LandingPage() {
 					</span>
 				</p>
 			</div>
-			<div className="w-2/3 mt-20 flex items-center flex-col gap-4">
-			{isLoading ? (
+			<div className="w-1/2 mt-20 flex items-center flex-col gap-4">
+			{isCardLoading ? (
 				Array(3).fill(0).map((_, index) => <OfferCardSkeleton key={index} />)
 			) : (
 				offerCardsData.map((offer, index) => (
-					<OfferCard
-						key={index}
-						title={offer.title}
-						price={offer.price}
-						description={offer.description}
-						imageSrc={offer.imageSrc}
-						rating={offer.rating}
-						tags={offer.tags}
-					/>
+						<OfferCard
+							key={index}
+							title={offer.title}
+							price={offer.price}
+							description={offer.description}
+							imageSrc={offer.imageSrc}
+							rating={offer.rating}
+							tags={offer.tags}
+						/>
 				))
 			)}
 			</div>
