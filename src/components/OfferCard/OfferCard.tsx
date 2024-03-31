@@ -8,7 +8,7 @@ const OfferCard: React.FC<SubCardProps> = ({ title, rating, description, tags, p
 
 
   return (
-    <Card className="shadow-xl rounded-lg xl:w-2/3 lg:5/6 overflow-hidden md:flex md:flex-row">
+    <Card className="shadow-xl rounded-lg overflow-hidden md:flex md:flex-row">
       <CardContent className="flex flex-col justify-between p-4 md:w-2/3">
         <div className="flex justify-between items-center">
           <CardTitle className="text-2xl font-bold">{title}</CardTitle>
@@ -35,7 +35,7 @@ const OfferCard: React.FC<SubCardProps> = ({ title, rating, description, tags, p
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-lg font-semibold">{`+/- ${price}`}</span>
+            <span className="text-lg font-semibold">{`+/- $${price}`}</span>
             <Button>See More</Button> {/* Use o componente Button adequado */}
           </div>
         </CardFooter>

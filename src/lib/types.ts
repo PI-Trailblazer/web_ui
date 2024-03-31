@@ -11,6 +11,6 @@ export interface SubCardProps {
     rating: number;
     description: string;
     tags: string[];
-    price: string;
+    price: number;
     imageSrc: string;
   }
