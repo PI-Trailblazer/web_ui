@@ -26,6 +26,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Loader2 } from "lucide-react"
+import primary from "@/assets/Background/primary.svg"
+import secondary from "@/assets/Background/secondary.svg"
+import accent from "@/assets/Background/accent.svg"
+
 
 const loginSchema = z.object({
     email: z.string().email(),
@@ -101,11 +105,11 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className='flex flex-col min-h-screen justify-center items-center'>
-            <div className='pb-6'>
-                <h1 className='font-bold text-2xl'>Login your account</h1>
+        <div className='flex flex-col min-h-screen justify-center items-center relative'>
+            <div className='pb-6 z-20'>
+                <h1 className='font-bold dark:bg-zinc-900 dark:border rounded-xl p-2 text-2xl'>Login your account</h1>
             </div>
-            <div className='border rounded-xl w-[350px] shadow-lg dark:bg-zinc-900 bg-muted p-8'>
+            <div className='border rounded-xl w-[350px] shadow-lg z-20 dark:bg-zinc-900 bg-muted p-8'>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         <FormField
@@ -149,6 +153,12 @@ export default function RegisterPage() {
                     </form>
                 </Form>
             </div>
+            <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0 w-full" style={{ backgroundImage: `url(${primary})`, backgroundRepeat: 'repeat-x', backgroundPosition: 'top 100px left 0' }}></div>
+                <div className="absolute inset-0 w-full" style={{ backgroundImage: `url(${secondary})`, backgroundRepeat: 'repeat-x', backgroundPosition: 'top 100px left 0' }}></div>
+                <div className="absolute inset-0 w-full" style={{ backgroundImage: `url(${accent})`, backgroundRepeat: 'repeat-x', backgroundPosition: 'top 100px left 0' }}></div>
+            </div>
+
         </div>
     )    
 }
