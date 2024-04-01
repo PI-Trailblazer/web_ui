@@ -96,7 +96,7 @@ export default function LandingPage() {
 		<div className='flex flex-col items-center h-screen'>
 			<div className="relative w-full h-full"> {/* Carousel container com posição relativa */}
                 <Carousel className="w-full" plugins={[Autoplay({
-					delay: 5000, // Ajuste o delay aqui
+					delay: 5000, 
 					stopOnInteraction: false,
 					stopOnMouseEnter: true,
 					}),

@@ -14,3 +14,25 @@ export interface SubCardProps {
     price: number;
     imageSrc: string;
   }
+
+export interface OfferDetailsProps {
+    name: string;
+    description: string;
+    street: string;
+    city: string;
+    postal_code: string;
+    price: string;
+    max_review_score: number;
+    nr_reviews: number;
+    discount: number;
+    tags: string[];
+    max_quantity: number;
+    modules: any[];
+}
+
+export interface Review {
+    id: number;
+    user: string;            //userId: number; mudar depois quando tiver a chamada da API
+    score: number;
+    comment: string;
+}
