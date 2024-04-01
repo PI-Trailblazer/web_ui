@@ -48,6 +48,9 @@ const NavBar: React.FC = () => {
           <div className='p-3 hidden sm:block'>
             <ModeToggle />
           </div>
+          <Link to="/offer-list" className='pr-5'>
+            <NavBarButton label='Offers'/>
+          </Link>
           <Link to="/login" className='pr-5'>
             <NavBarButton label='Login'/>
           </Link>
