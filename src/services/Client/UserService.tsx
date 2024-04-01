@@ -8,8 +8,8 @@ const UserService = {
         return await client.post('/register', data);
     },
 
-    async login(data: any) {
-        return await client.post('/login', data);
+    async login() {
+        return await client.post('/login');
     },
 };
 

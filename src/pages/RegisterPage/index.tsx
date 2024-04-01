@@ -20,14 +20,28 @@ import { UserService } from '@/services/Client/UserService';
 
 export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
+    const [userType, setUserType] = useState('Tourist');
 
     const navigate = useNavigate();
 
-    const register = async ({ token, data }: { token: string; data: FormValues }) => {
+    const register = async ({ data }: { data: FormValues }) => {
         //se o phone for undefined, ele vai ser null
-        const response = await UserService.register({
-            ...data,
+        let inRoles = ['USER'];
+        if (userType === 'Provider') {
+            inRoles.push('PROVIDER');
+        }
+
+        let payload = {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            roles: inRoles,
             phone: data.phone === undefined ? null : data.phone,
+            tags: [],
+        };
+
+        const response = await UserService.register({
+            ...payload,
         });
 
         return response.data;
@@ -37,8 +51,16 @@ export default function RegisterPage() {
         mutationFn: register,
         onSuccess: data => {
             console.log('Success');
-            console.log(data);
+            let loginData = {
+                f_name: data.f_name,
+                l_name: data.l_name,
+                image: data.image,
+                roles: data.roles,
+                tags: data.tags,
+            };
+            useUserStore.getState().login(loginData);
             setIsLoading(false);
+            navigate('/');
         },
         onError: error => {
             console.log(error);
@@ -68,6 +90,8 @@ export default function RegisterPage() {
             return;
         }
 
+        useUserStore.setState({ token });
+
         registerMutation.mutate({ token, data });
     };
 
@@ -80,11 +104,15 @@ export default function RegisterPage() {
             </div>
             <Tabs
                 className="border rounded-xl relative z-10 shadow-lg dark:bg-zinc-900 bg-muted p-8"
-                defaultValue="Tourist"
+                defaultValue={userType}
             >
                 <TabsList className="grid grid-cols-2 w-[350px]">
-                    <TabsTrigger value="Tourist">Tourist</TabsTrigger>
-                    <TabsTrigger value="Provider">Provider</TabsTrigger>
+                    <TabsTrigger value="Tourist" onClick={() => setUserType('Tourist')}>
+                        Tourist
+                    </TabsTrigger>
+                    <TabsTrigger value="Provider" onClick={() => setUserType('Provider')}>
+                        Provider
+                    </TabsTrigger>
                 </TabsList>
                 <TabsContent value="Tourist">
                     <RegistrationForm

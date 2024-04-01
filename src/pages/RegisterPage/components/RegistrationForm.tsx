@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 // Forms
-import { FormValues, regiterSchema } from './schema'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { FormValues, regiterSchema } from './schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
 // UI
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import {
     Form,
     FormControl,
@@ -14,15 +14,15 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Loader2 } from 'lucide-react'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Loader2 } from 'lucide-react';
 
 interface RegistrationFormProps {
-    userType: 'Tourist' | 'Provider'
-    handleRegister: (data: FormValues) => void
-    isLoading: boolean
+    userType: 'Tourist' | 'Provider';
+    handleRegister: (data: FormValues) => void;
+    isLoading: boolean;
 }
 
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({
@@ -30,20 +30,20 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     handleRegister,
     isLoading,
 }) => {
-    const [showPassword, setShowPassword] = useState(false)
-    const [showVerifyPassword, setShowVerifyPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
+    const [showVerifyPassword, setShowVerifyPassword] = useState(false);
 
     const form = useForm<FormValues>({
         resolver: zodResolver(regiterSchema),
         defaultValues: {
             firstName: '',
-            secondName: '',
+            lastName: '',
             email: '',
             password: '',
             phone: '',
             verifyPassword: '',
         },
-    })
+    });
 
     return (
         <Form {...form}>
@@ -63,12 +63,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 />
                 <FormField
                     control={form.control}
-                    name="secondName"
+                    name="lastName"
                     render={({ field }) => (
                         <FormItem className="mb-6">
-                            <FormLabel>Second Name</FormLabel>
+                            <FormLabel>Last Name</FormLabel>
                             <FormControl>
-                                <Input placeholder="Second Name" {...field} />
+                                <Input placeholder="Last Name" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -190,5 +190,5 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 </Button>
             </form>
         </Form>
-    )
-}
+    );
+};

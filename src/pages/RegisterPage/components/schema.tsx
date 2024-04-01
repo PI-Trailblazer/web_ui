@@ -1,9 +1,9 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 const regiterSchema = z
     .object({
         firstName: z.string().min(1, { message: 'First Name is required' }),
-        secondName: z.string().min(1, { message: 'Second Name is required' }),
+        lastName: z.string().min(1, { message: 'Second Name is required' }),
         email: z.string().email(),
         phone: z
             .string()
@@ -18,9 +18,9 @@ const regiterSchema = z
     .refine(data => data.password === data.verifyPassword, {
         message: 'Passwords do not match',
         path: ['verifyPassword'],
-    })
+    });
 
-type FormValues = z.infer<typeof regiterSchema>
+type FormValues = z.infer<typeof regiterSchema>;
 
-export { regiterSchema }
-export type { FormValues }
+export { regiterSchema };
+export type { FormValues };

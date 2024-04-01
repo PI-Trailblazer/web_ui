@@ -2,26 +2,37 @@ import { create } from 'zustand';
 
 interface UserState {
     token: string;
-    fname: string;
-    lname: string;
+    f_name: string;
+    l_name: string;
+    image: string;
+    roles: string[];
+    tags: string[];
+}
+interface loginState {
+    f_name: string;
+    l_name: string;
     image: string;
     roles: string[];
     tags: string[];
 }
 
-export const useUserStore = create<UserState>((set, get) => ({
-    fname: '',
-    lname: '',
+type UserActions = {
+    login: (data: loginState) => void;
+    logout: () => void;
+};
+
+export const useUserStore = create<UserState & UserActions>((set, get) => ({
+    f_name: '',
+    l_name: '',
     image: '',
     token: '',
     roles: [],
     tags: [],
 
-    login: ({ token, fname, lname, image, roles, tags }: UserState) =>
+    login: ({ f_name, l_name, image, roles, tags }: loginState) =>
         set(() => ({
-            token,
-            fname,
-            lname,
+            f_name,
+            l_name,
             image,
             roles,
             tags,
@@ -30,8 +41,8 @@ export const useUserStore = create<UserState>((set, get) => ({
     logout: () =>
         set(() => ({
             token: '',
-            fname: '',
-            lname: '',
+            f_name: '',
+            l_name: '',
             image: '',
             roles: [],
             tags: [],
