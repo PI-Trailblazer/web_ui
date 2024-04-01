@@ -93,25 +93,18 @@ export default function LandingPage() {
     ]
 
     return (
-        <div className="flex flex-col items-center h-screen -mt-16">
-            <div className="relative w-full h-full">
-                {' '}
-                {/* Carousel container com posição relativa */}
-                <Carousel
-                    className="w-full"
-                    plugins={[
-                        Autoplay({
-                            delay: 5000, // Ajuste o delay aqui
-                            stopOnInteraction: false,
-                            stopOnMouseEnter: true,
-                        }),
-                    ]}
-                    opts={{
-                        loop: true,
-                    }}
-                >
-                    {' '}
-                    {/* Ajuste a altura aqui */}
+		<div className='flex flex-col items-center h-screen'>
+			<div className="relative w-full h-full"> {/* Carousel container com posição relativa */}
+                <Carousel className="w-full" plugins={[Autoplay({
+					delay: 5000, 
+					stopOnInteraction: false,
+					stopOnMouseEnter: true,
+					}),
+				]}
+				opts={{
+					loop:true,
+				}}
+				> {/* Ajuste a altura aqui */}
                     <CarouselContent className="h-screen">
                         {Array.from({ length: 5 }).map((_, index) => (
                             <CarouselItem key={index} className="relative h-full">

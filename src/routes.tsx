@@ -3,11 +3,6 @@ import { lazy, Suspense, ReactNode } from 'react';
 import { useUserStore } from './stores/useUserStore';
 import { Navigate } from 'react-router-dom';
 
-const LandingPage = lazy(() => import('./pages/LandingPage'));
-const ComponentsPage = lazy(() => import('./pages/ComponentsPage'));
-const RegisterPage = lazy(() => import('./pages/RegisterPage'));
-const LoginPage = lazy(() => import('./pages/LoginPage'));
-const OfferListPage = lazy(() => import('./pages/OfferListPage'));
 
 function ProtectedRoute({
     children,
@@ -23,6 +18,12 @@ function ProtectedRoute({
     if (!!token === loggedIn) return children;
     else return <Navigate to={redirect} />;
 }
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const ComponentsPage = lazy(() => import("./pages/ComponentsPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const OfferListPage = lazy(() => import("./pages/OfferListPage"));
+const OfferDetailsPage = lazy(() => import("./pages/OfferDetailsPage"));
 
 const routes = [
     {
@@ -66,16 +67,25 @@ const routes = [
                 exact: true,
             },
             {
-                path: '/offer-list',
-                element: (
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <OfferListPage />
-                    </Suspense>
-                ),
-                exact: true,
+                path: "/offer-list",
+                element:
+                <Suspense fallback={<div>Loading...</div>}>
+                    <OfferListPage />
+                </Suspense>,
+                exact: true
             },
-        ],
-    },
+            {
+                path: "/offer-details",
+                element:
+                <Suspense fallback={<div>Loading...</div>}>
+                    <OfferDetailsPage />
+                </Suspense>,
+                exact: true
+            }
+
+
+        ]
+    }
 ];
 
 export { routes };
