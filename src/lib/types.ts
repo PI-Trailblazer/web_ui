@@ -21,9 +21,9 @@ export interface OfferDetailsProps {
     street: string;
     city: string;
     postal_code: string;
-    price: string;
+    price: number;
     max_review_score: number;
-    nr_reviews: number;
+    n_reviews: number;
     discount: number;
     tags: string[];
     max_quantity: number;

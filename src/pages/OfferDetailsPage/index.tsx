@@ -36,7 +36,7 @@ export default function OfferDetailsPage() {
         postal_code: "Código Postal",
         price: "299",
         max_review_score: 432,
-        nr_reviews: 5,
+        n_reviews: 5,
         discount: 0, // Supondo que seja uma porcentagem
         tags: ["Tag1", "Tag2", "Tag3"],
         max_quantity: 10,
@@ -52,7 +52,7 @@ export default function OfferDetailsPage() {
       
 
     //funcao para saber a média do score (esta para 100 quero que fique para 5)
-    const averageScore = ((offer.max_review_score / offer.nr_reviews)*5)/100;
+    const averageScore = ((offer.max_review_score / offer.n_reviews)*5)/100;
 
 
     const reviews: Review[] = [
@@ -151,7 +151,7 @@ export default function OfferDetailsPage() {
                     </div>
                     <div className="border p-4 rounded-lg shadow-xl">
                         {/* Reviews */}
-                        <h2 className="text-2xl font-semibold">Reviews <span>({offer.nr_reviews})</span></h2>
+                        <h2 className="text-2xl font-semibold">Reviews <span>({offer.n_reviews})</span></h2>
                         {reviews.length > 0 ? (
                             <div className="mt-4 space-y-4">
                                 {reviews.map((review) => (

@@ -1,6 +1,6 @@
 import OfferCard from '@/components/OfferCard/OfferCard';
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton';
-import { SubCardProps } from "@/lib/types";
+import { OfferDetailsProps, SubCardProps } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -8,11 +8,13 @@ import { CheckedState } from '@radix-ui/react-checkbox';
 import { Slider } from '@/components/ui/slider';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Button } from '@/components/ui/button';
+import { OfferService } from '@/services/Client/OfferService';
+import { useQuery } from '@tanstack/react-query';
+
 
 export default function OfferListPage() {
-    const [isCardLoading, setisCardLoading] = useState<boolean>(true);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
-    const [visibleOffers, setVisibleOffers] = useState<SubCardProps[]>([]);
+    const [visibleOffers, setVisibleOffers] = useState<OfferDetailsProps[]>([]);
     const [priceRange, setPriceRange] = useState<number[]>([0, 500]);
     const [maxPrice, setMaxPrice] = useState<number>(500);
     const [selectedRating, setSelectedRating] = useState<number>(0);
@@ -25,7 +27,7 @@ export default function OfferListPage() {
         "4": false,
         "5": false,
       });
-    
+
       const [isSticky, setIsSticky] = useState(false);
 
       const stickyOffsetTop = 100;
@@ -43,82 +45,37 @@ export default function OfferListPage() {
         };
       }, []);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setisCardLoading(false);
-        }, 2000);
 
-        return () => clearTimeout(timer);
-    } , []);
-
-    
     const categories: string[] = ["Tag1", "Tag2", "Tag3", "Tag4"]
     
-    const offerCardsData: SubCardProps[] = [
-        {
-            title: "Offer 1",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.",
-            imageSrc: "https://via.placeholder.com/250",
-            rating: 4,
-            tags: ["Tag1", "Tag2", "Tag3"],
-            price: 300,
-		},
-		{
-            title: "Offer 2",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.",
-            imageSrc: "https://via.placeholder.com/250",
-            rating: 5,
-            tags: ["Tag4", "Tag5", "Tag6"],
-            price: 300,
-		},
-		{
-            title: "Offer 3",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.",
-            imageSrc: "https://via.placeholder.com/250",
-            rating: 3,
-            tags: ["Tag7", "Tag8", "Tag9"],
-            price: 200,
-		},
-        {
-            title: "Offer 4",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.",
-            imageSrc: "https://via.placeholder.com/250",
-            rating: 3,
-            tags: ["Tag7", "Tag8", "Tag9"],
-            price: 40,
-        },
-        {
-            title: "Offer 5",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.",
-            imageSrc: "https://via.placeholder.com/250",
-            rating: 3,
-            tags: ["Tag1", "Tag2", "Tag3"],
-            price: 200,
-        },
-        {
-            title: "Offer 6",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.",
-            imageSrc: "https://via.placeholder.com/250",
-            rating: 3,
-            tags: ["Tag7", "Tag2", "Tag9"],
-            price: 30,
-        },
-        {
-            title: "Offer 7",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.",
-            imageSrc: "https://via.placeholder.com/250",
-            rating: 3,
-            tags: ["Tag7", "Tag4", "Tag9"],
-            price: 100,
-        },
-    ];
+    const getOffers = async () => {
+        return (await OfferService.getOffers({})).data;
+    }
+  
+
+    const { data: offers, isLoading, isError, isSuccess} = useQuery<OfferDetailsProps[]>({
+        queryKey: ['offers'],
+        queryFn: getOffers,
+    });
 
     useEffect(() => {
-        console.log(offerCardsData);
-        const maxOfferPrice = Math.max(...offerCardsData.map(offer => offer.price));
-        setMaxPrice(maxOfferPrice);
-        setPriceRange([0, maxOfferPrice]);
-    }, []);
+        if (isSuccess) {
+            console.log('Success');
+            setVisibleOffers(offers);
+
+        }
+        if (isError) {
+            console.log('Error');
+        } 
+    }, [offers, isSuccess, isError])
+
+    useEffect(() => {
+        if (offers) {
+            const maxOfferPrice = Math.max(...offers.map((offer: { price: any; }) => offer.price));
+            setMaxPrice(maxOfferPrice);
+            setPriceRange([0, maxOfferPrice]);
+        }
+    }, [offers, isSuccess]);
 
     const clearFilters = () => {
         setSelectedTags([]);
@@ -153,7 +110,7 @@ export default function OfferListPage() {
 
     const handlePriceChange = (value: number[]) => {
         // Atualiza o estado de forma condicional e assíncrona
-        setPriceRange(prevRange => {
+        setPriceRange((prevRange: number[]) => {
             if (prevRange[0] !== value[0] || prevRange[1] !== value[1]) {
                 return value;
             }
@@ -163,12 +120,12 @@ export default function OfferListPage() {
 
     const handleCategoryChange = (category: string) => (checkedState: CheckedState) => {
         if (typeof checkedState === 'boolean') {
-            setSelectedTags((prevSelectedTags) => {
+            setSelectedTags((prevSelectedTags: any[]) => {
                 const newSelectedTags = checkedState
                     ? [...prevSelectedTags, category]
                     : prevSelectedTags.filter(tag => tag !== category);
                 // Atualize o estado dos checkboxes
-                setCheckedTags(prev => ({
+                setCheckedTags((prev: any) => ({
                     ...prev,
                     [category]: checkedState,
                 }));
@@ -179,18 +136,23 @@ export default function OfferListPage() {
     
     
     useEffect(() => {
-        const filteredOffers = offerCardsData.filter(offer =>
-            (selectedTags.length === 0 || offer.tags.some(tag => selectedTags.includes(tag))) &&
-            offer.price >= priceRange[0] && offer.price <= priceRange[1] &&
-            offer.rating >= selectedRating // Verifica se a classificação da oferta é maior ou igual à selecionada
-        );
+        if (offers) {
+            const filteredOffers = offers.filter((offer: { tags: string[]; price: number; max_review_score: number; n_reviews: number; }) => {
+                // Calcula o rating para a oferta atual
+                const rating = offer.n_reviews ? Math.floor(((offer.max_review_score / offer.n_reviews) * 5) / 100) : 0;
     
-        setVisibleOffers(filteredOffers);
-    }, [selectedTags, priceRange, selectedRating]); // Remova offerCardsData da lista de dependências
+                return (selectedTags.length === 0 || offer.tags.some(tag => selectedTags.includes(tag))) &&
+                    offer.price >= priceRange[0] && offer.price <= priceRange[1] &&
+                    rating >= selectedRating;
+            });
+        
+            setVisibleOffers(filteredOffers);
+        }
+    }, [selectedTags, priceRange, selectedRating, offers, isSuccess]); 
     
     
     return (
-        <div className="pt-44 p-10 flex">
+        <div className="pt-44 -mt-16 p-10 flex">
                 <div className="p-4 w-4/12">
                     <div className={`p-6 border shadow-lg rounded-lg z-10 ${isSticky ? 'sticky top-20' : ''}`} >
                         <h1 className="text-2xl text-center font-bold mb-4">Filters</h1>
@@ -214,7 +176,7 @@ export default function OfferListPage() {
                         <div className='space-y-2 flex pb-6 flex-col px-24'>
                             <h3 className='text-xl pb-1 font-medium'>Price</h3>
                             <div className='space-y-2 px-4'>
-                                <div className='flex justify-between text-white'>
+                                <div className='flex justify-between'>
                                     <Label className='text-md'>{`$${priceRange[0]}`}</Label>
                                     <Label className='text-md'>{`$${priceRange[1]}`}</Label>
                                 </div>
@@ -259,16 +221,20 @@ export default function OfferListPage() {
                 </div>
                 <div className={`w-8/12 flex flex-col items-center p-4`}>
                     <div className='space-y-4 w-10/12'>
-                        { isCardLoading ? (
-                            Array.from({ length: 6 }).map((_, index) => (
-                                <OfferCardSkeleton key={index} />
+                        {isLoading ? (
+                            Array.from({ length: 6 }).map((_, index) => <OfferCardSkeleton key={index} />)
+                        ) : isSuccess && visibleOffers ? (
+                            visibleOffers.map((offer : Partial<OfferDetailsProps>, index: any) => (
+                                <OfferCard key={index} 
+                                    name={offer.name}
+                                    description={offer.description}
+                                    price={offer.price}
+                                    tags={offer.tags}
+                                    max_review_score={offer.max_review_score}
+                                    n_reviews={offer.n_reviews}
+                                />
                             ))
-                        ) : (
-                            visibleOffers.map((offer, index) => (
-                                <OfferCard key={index} {...offer} />
-                            ))
-                        )
-                        }
+                        ) : null}
                     </div>
                 </div>
         </div>

@@ -93,7 +93,7 @@ export default function LandingPage() {
     ]
 
     return (
-		<div className='flex flex-col items-center h-screen'>
+		<div className='flex flex-col items-center h-screen -mt-16'>
 			<div className="relative w-full h-full"> {/* Carousel container com posição relativa */}
                 <Carousel className="w-full" plugins={[Autoplay({
 					delay: 5000, 
@@ -112,7 +112,7 @@ export default function LandingPage() {
                                 <div
                                     className="absolute inset-0 blur-sm bg-cover bg-center z-0"
                                     style={{
-                                        backgroundImage: `url('https://random.imagecdn.app/v1/image?width=1650&height=1000&category=hotels')`,
+                                        backgroundImage: `url('https://random.imagecdn.app/v1/image?width=1650&height=1000&category=buildings')`,
                                     }}
                                 >
                                     {/* Você também pode adicionar uma cor de overlay aqui se precisar */}
