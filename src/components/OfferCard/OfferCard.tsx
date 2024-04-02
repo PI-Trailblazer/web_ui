@@ -1,17 +1,24 @@
 import React from 'react';
 import { Card, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { SubCardProps } from '@/lib/types';
+import { OfferDetailsProps } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-const OfferCard: React.FC<SubCardProps> = ({ title, rating, description, tags, price, imageSrc }) => {
+const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, max_review_score, n_reviews, price, tags}: Partial<OfferDetailsProps>) => {
 
+  
+  let rating = 0;
+  if (max_review_score !== undefined && n_reviews !== undefined && n_reviews !== 0 && max_review_score !== 0) {
+    rating = Math.floor(((max_review_score / n_reviews) * 5) / 100);
+    console.log(rating);
+  }
+  const imageSrc = 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings';
 
   return (
     <Card className="shadow-xl rounded-lg overflow-hidden md:flex md:flex-row">
       <CardContent className="flex flex-col justify-between p-4 md:w-2/3">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+          <CardTitle className="text-2xl font-bold">{name}</CardTitle>
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <svg
@@ -28,11 +35,11 @@ const OfferCard: React.FC<SubCardProps> = ({ title, rating, description, tags, p
         <CardDescription className="text-sm my-4 overflow-hidden line-clamp-3">{description}</CardDescription>
         <CardFooter className="flex md:flex-row justify-between items-center pt-4">
           <div className="flex flex-wrap gap-2">
-            {tags.map((tag, index) => (
-              <Badge key={index} className="px-2 py-1 text-sm">
-                {tag}
-              </Badge>
-            ))}
+          {tags && tags.map((tag, index) => (
+            <Badge key={index} className="px-2 py-1 text-sm">
+              {tag}
+            </Badge>
+          ))}
           </div>
           <div className="flex items-center gap-4">
             <span className="text-lg font-semibold">{`+/- $${price}`}</span>
@@ -41,7 +48,7 @@ const OfferCard: React.FC<SubCardProps> = ({ title, rating, description, tags, p
         </CardFooter>
       </CardContent>
       <div className="md:w-1/3">
-        <img src={imageSrc} alt={title} className="object-cover w-full h-48 md:h-full" />
+        <img src={imageSrc} alt={name} className="object-cover w-full h-48 md:h-full" />
       </div>
     </Card>
   );
