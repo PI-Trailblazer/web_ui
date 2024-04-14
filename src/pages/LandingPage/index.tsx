@@ -11,7 +11,8 @@ import Autoplay from 'embla-carousel-autoplay'
 import { useEffect, useRef, useState } from 'react'
 import OfferCard from '@/components/OfferCard/OfferCard'
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton'
-import { SubCardProps } from '@/lib/types'
+import { OfferDetailsProps } from '@/lib/types'
+import EstadioBenfica from '@/assets/estadioDaLuz.jpg'
 
 export default function LandingPage() {
     const scrollToRef = useRef<HTMLDivElement | null>(null)
@@ -39,7 +40,7 @@ export default function LandingPage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setisCardLoading(false)
-        }, 10000) // Simula o tempo de carregamento dos dados
+        }, 3000) // Simula o tempo de carregamento dos dados
 
         return () => clearTimeout(timer)
     }, [])
@@ -62,35 +63,54 @@ export default function LandingPage() {
         }
     }
 
-    const offerCardsData: SubCardProps[] = [
+    const offerCardsData: OfferDetailsProps[] = [
         {
-            title: 'Offer 1',
-            description:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.',
-            imageSrc: 'https://via.placeholder.com/250',
-            rating: 4,
-            tags: ['Tag1', 'Tag2', 'Tag3'],
-            price: 300,
+            id: 50,
+            name: 'Fim de Semana Benfiquista - Retiro Histórico',
+            description: 'Viva a emoção de ser um Benfiquista com um retiro de fim de semana em Lisboa. Explore o Estádio da Luz, jante onde lendas do clube se reuniram, e fique em um hotel temático dedicado aos maiores momentos do Benfica.',
+            street: "Rua dos Campeões Europeus",
+            city: "Lisboa",
+            postal_code: "1500-524",
+            price: 500,
+            max_review_score: 800,
+            n_reviews: 8,
+            discount: 5,
+            tags: ["História", "Futebol", "Benfica", "Lendas"],
+            max_quantity: 10,
+            modules: [1, 2],
         },
         {
-            title: 'Offer 2',
-            description:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.',
-            imageSrc: 'https://via.placeholder.com/250',
-            rating: 5,
-            tags: ['Tag4', 'Tag5', 'Tag6'],
+            id: 51,
+            name: "Workshop de Futebol com Heróis do Benfica",
+            description: "Aprimore suas habilidades futebolísticas em um workshop exclusivo liderado por heróis históricos do Benfica. Perfeito para jovens e adultos, este dia inclui treinamento em campo, sessões teóricas sobre a filosofia do futebol do Benfica, e uma refeição compartilhada com os treinadores. Cada participante receberá um kit de treino oficial do Benfica.",
+            street: "Avenida dos Treinadores",
+            city: "Seixal",
+            postal_code: "2840-166",
             price: 300,
+            max_review_score: 1200,
+            n_reviews: 12,
+            discount: 0,
+            tags: ["Futebol", "Workshop", "Treino", "Benfica"],
+            max_quantity: 20,
+            modules: [1, 3],
         },
         {
-            title: 'Offer 3',
-            description:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies.',
-            imageSrc: 'https://via.placeholder.com/250',
-            rating: 3,
-            tags: ['Tag7', 'Tag8', 'Tag9'],
-            price: 300,
+            id: 52,
+            name: "Gala Benfiquista - Noite de Gala com Estrelas",
+            description: "Participe de uma noite de gala exclusiva, celebrando as conquistas e a história do Benfica. Desfrute de um jantar de luxo no centro de Lisboa, com a presença de jogadores atuais e lendas do clube. A noite inclui leilão de memorabilia autêntica do Benfica, com todos os rendimentos revertidos para a fundação do clube.",
+            street: "Praça dos Heróis",
+            city: "Lisboa",
+            postal_code: "1100-365",
+            price: 1000,
+            max_review_score: 500,
+            n_reviews: 5,
+            discount: 5,
+            tags: ["Gala", "Luxo", "Benfica", "Jogadores"],
+            max_quantity: 50,
+            modules: [2, 4],
         },
     ]
+    
 
     return (
 		<div className='flex flex-col items-center h-screen -mt-16'>
@@ -112,7 +132,7 @@ export default function LandingPage() {
                                 <div
                                     className="absolute inset-0 blur-sm bg-cover bg-center z-0"
                                     style={{
-                                        backgroundImage: `url('https://random.imagecdn.app/v1/image?width=1650&height=1000&category=buildings')`,
+                                        backgroundImage: `url(${EstadioBenfica})`,
                                     }}
                                 >
                                     {/* Você também pode adicionar uma cor de overlay aqui se precisar */}
@@ -122,13 +142,7 @@ export default function LandingPage() {
                                     <Card className="h-full border-transparent">
                                         <CardContent className="flex items-center h-full justify-center p-6">
                                             <div className="z-10 flex w-7/12 justify-center">
-                                                <OfferCard
-                                                    title="Offer 1"
-                                                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec eros ultricies tincidunt. Aenean nec nunc nec nisl ultrices ultricies."
-                                                    imageSrc="https://via.placeholder.com/250"
-                                                    rating={4}
-                                                    tags={['Tag1', 'Tag2', 'Tag3']}
-                                                    price={300}
+                                                <OfferCard {...offerCardsData[index % offerCardsData.length]}
                                                 />
                                             </div>
                                         </CardContent>
@@ -182,14 +196,7 @@ export default function LandingPage() {
                           .fill(0)
                           .map((_, index) => <OfferCardSkeleton key={index} />)
                     : offerCardsData.map((offer, index) => (
-                          <OfferCard
-                              key={index}
-                              title={offer.title}
-                              price={offer.price}
-                              description={offer.description}
-                              imageSrc={offer.imageSrc}
-                              rating={offer.rating}
-                              tags={offer.tags}
+                          <OfferCard key={index}{...offer}
                           />
                       ))}
             </div>

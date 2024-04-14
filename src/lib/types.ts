@@ -28,11 +28,25 @@ export interface OfferDetailsProps {
     tags: string[];
     max_quantity: number;
     modules: any[];
+    id: number;
 }
 
 export interface Review {
     id: number;
-    user: string;            //userId: number; mudar depois quando tiver a chamada da API
+    offerId: number;
+    userid: string;            
     score: number;
     comment: string;
+}
+
+export interface UserResponse {
+    l_name: string;
+    uid: string;
+    roles: string[];
+    tags: string[];
+    email: string;
+    f_name: string;
+    phone_number: string;
+    verified: boolean;
+    image: string;
 }

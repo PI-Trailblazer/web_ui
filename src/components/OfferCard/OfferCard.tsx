@@ -3,14 +3,17 @@ import { Card, CardTitle, CardDescription, CardContent, CardFooter } from '@/com
 import { OfferDetailsProps } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { encodeId } from '@/lib/utils';
 
-const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, max_review_score, n_reviews, price, tags}: Partial<OfferDetailsProps>) => {
+
+
+const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, max_review_score, n_reviews, price, tags, id}: Partial<OfferDetailsProps>) => {
 
   
   let rating = 0;
   if (max_review_score !== undefined && n_reviews !== undefined && n_reviews !== 0 && max_review_score !== 0) {
     rating = Math.floor(((max_review_score / n_reviews) * 5) / 100);
-    console.log(rating);
   }
   const imageSrc = 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings';
 
@@ -43,12 +46,15 @@ const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, ma
           </div>
           <div className="flex items-center gap-4">
             <span className="text-lg font-semibold">{`+/- $${price}`}</span>
-            <Button>See More</Button> {/* Use o componente Button adequado */}
+            {/* TODO */}
+            <Link to={id !== undefined ? `/offer/${encodeId(id)}` : '#'}>
+              <Button>See More</Button> 
+            </Link>
           </div>
         </CardFooter>
       </CardContent>
       <div className="md:w-1/3">
-        <img src={imageSrc} alt={name} className="object-cover w-full h-48 md:h-full" />
+        <img src={imageSrc} alt={name} className="object-cover aspect-square w-full h-48 md:h-full" />
       </div>
     </Card>
   );

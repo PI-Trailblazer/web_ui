@@ -19,29 +19,44 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { Card, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent} from '@/components/ui/card';
 import SimilarOffersCard from "./components/SimilarOffersCard";
+import CommentsSection from "./components/CommentSection/CommentsSection";
+import { OfferService } from '@/services/Client/OfferService';
+import { useParams } from 'react-router-dom';
+import { decodeId } from "@/lib/utils";
+import { useQuery } from '@tanstack/react-query';
+
 
 
 export default function OfferDetailsPage() {
     const [mainCarouselApi, setMainCarouselApi] = useState<CarouselApi | null>(null);
     const [thumbnailCarouselApi, setThumbnailCarouselApi] = useState<CarouselApi | null>(null); // Para controle do carrossel de thumbnails
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
+    const { id: encodedId } = useParams();
+    const id = parseInt(decodeId(encodedId));
+
+    console.log(id);
     
-    const offer: OfferDetailsProps = {
-        name: "Nome da Oferta",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        street: "Rua da Oferta",
-        city: "Cidade",
-        postal_code: "Código Postal",
-        price: "299",
-        max_review_score: 432,
-        n_reviews: 5,
-        discount: 0, // Supondo que seja uma porcentagem
-        tags: ["Tag1", "Tag2", "Tag3"],
-        max_quantity: 10,
-        modules: [] // Supondo que sejam dados adicionais relacionados à oferta
-    };
+    const getOffer = async (id: number) => {
+        return (await OfferService.getOffer(id)).data;
+    }
+
+      const { data: offer, isLoading, isError, isSuccess } = useQuery<OfferDetailsProps>({
+          queryKey: ['offer', id],
+          queryFn: () => getOffer(id),
+      })
+
+      useEffect(() => {
+            if(isSuccess) {
+                console.log(offer);
+            if (isError) {
+                console.log('Error');
+            } 
+
+        }
+    }, [offer, isSuccess, isError])
+
 
     const similarOffers = [
         // Supondo que você tenha um array de objetos similares ao `offer`
@@ -52,15 +67,7 @@ export default function OfferDetailsPage() {
       
 
     //funcao para saber a média do score (esta para 100 quero que fique para 5)
-    const averageScore = ((offer.max_review_score / offer.n_reviews)*5)/100;
-
-
-    const reviews: Review[] = [
-        { id: 1, user: 'John Doe', score: 5, comment: 'Great offer!' },
-        { id: 2, user: 'Jane Doe', score: 4, comment: 'Really enjoyed this.' },
-        { id: 3, user: 'Alice', score: 3, comment: 'Good offer.' },
-        { id: 4, user: 'Bob', score: 2, comment: 'Could be better.' },
-    ];
+    const averageScore = offer ? ((offer.max_review_score / offer.n_reviews) * 5) / 100 : 0;
 
     const generateQuantityOptions = (maxQuantity: number) => {
         return Array.from({ length: maxQuantity }, (_, i) => i + 1);
@@ -79,6 +86,9 @@ export default function OfferDetailsPage() {
           thumbnailCarouselApi.scrollTo(selectedIndex);
         }
       }, [selectedIndex, thumbnailCarouselApi, mainCarouselApi]);
+
+    if (isLoading) return <div>Loading...</div>;
+    if (isError || !offer) return <div>Error or no data available.</div>;
 
     return (
         <div className="container pt-24">
@@ -151,27 +161,7 @@ export default function OfferDetailsPage() {
                     </div>
                     <div className="border p-4 rounded-lg shadow-xl">
                         {/* Reviews */}
-                        <h2 className="text-2xl font-semibold">Reviews <span>({offer.n_reviews})</span></h2>
-                        {reviews.length > 0 ? (
-                            <div className="mt-4 space-y-4">
-                                {reviews.map((review) => (
-                                    <div key={review.id} className="border rounded-lg p-4">                                        <div className="flex justify-between items-center">
-                                            <div className="font-semibold text-primary">{review.user}</div>
-                                            <div className="text-sm font-semibold text-secondary">Rating: 
-                                                <span>
-                                                    {Array.from({ length: review.score }).map((_, index) => (
-                                                        <span key={index} className="text-yellow-400">★</span>
-                                                    ))}                                                    
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <p className="mt-2">{review.comment}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="mt-4">No reviews yet.</p>
-                        )}
+                        <CommentsSection offerId={offer.id} />
                     </div>
                 </div>
                 {/* Parte Direita - Preço, Opções de Quantidade e Botão de Compra */}
@@ -204,7 +194,7 @@ export default function OfferDetailsPage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="rounded-lg shadow-lg flex flex-col space-y-4">
+                        <div className="flex flex-col space-y-4">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-2xl font-semibold">Price</h2>
                                 <span className="text-2xl font-semibold text-primary">{`$${offer.price}`}</span>
