@@ -71,6 +71,7 @@ export default function RegisterPage() {
             };
             useUserStore.getState().login(loginData);
             setIsLoading(false);
+            navigate('/');    
         },
         onError: error => {
             console.log(error);

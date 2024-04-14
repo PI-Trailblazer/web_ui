@@ -18,12 +18,23 @@ function ProtectedRoute({
     if (!!token === loggedIn) return children;
     else return <Navigate to={redirect} />;
 }
+
+function ProviderRoute({ children }: { children: ReactNode }) {
+    const { token, roles } = useUserStore((state: { token: any; roles: any; }) => ({ token: state.token, roles: state.roles }));
+    const isProvider = roles.includes('PROVIDER');
+    if (token && isProvider) return children;
+    else if (token && !isProvider) return <div>You do not have permission to view this page.</div>;
+    else return <Navigate to='/login' />;
+}
+
+
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const ComponentsPage = lazy(() => import("./pages/ComponentsPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const OfferListPage = lazy(() => import("./pages/OfferListPage"));
 const OfferDetailsPage = lazy(() => import("./pages/OfferDetailsPage"));
+const YourOfferPage = lazy(() => import("./pages/YourOffersPage"));
 
 const routes = [
     {
@@ -68,10 +79,11 @@ const routes = [
             },
             {
                 path: "/offer-list",
-                element:
-                <Suspense fallback={<div>Loading...</div>}>
-                    <OfferListPage />
-                </Suspense>,
+                element:(
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <OfferListPage />
+                    </Suspense>
+                ),
                 exact: true
             },
             {
@@ -81,9 +93,18 @@ const routes = [
                     <OfferDetailsPage />
                 </Suspense>,
                 exact: true
+            },
+            {
+                path: "/your-offers",
+                element: (
+                    <ProviderRoute>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <YourOfferPage />
+                        </Suspense>
+                    </ProviderRoute>
+                ),
+                exact: true
             }
-
-
         ]
     }
 ];
