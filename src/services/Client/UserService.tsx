@@ -11,6 +11,10 @@ const UserService = {
     async login() {
         return await client.post('/login');
     },
+
+    async getUserByUserId(userId: string) {
+        return await client.get(`/${userId}`);
+    }
 };
 
 export { UserService };

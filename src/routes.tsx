@@ -13,7 +13,7 @@ function ProtectedRoute({
     loggedIn?: boolean;
     redirect?: string;
 }) {
-    const { token } = useUserStore(state => state);
+    const { token } = useUserStore((state: any) => state);
     console.log('token', token);
     if (!!token === loggedIn) return children;
     else return <Navigate to={redirect} />;
@@ -75,7 +75,7 @@ const routes = [
                 exact: true
             },
             {
-                path: "/offer-details",
+                path: "/offer/:id",
                 element:
                 <Suspense fallback={<div>Loading...</div>}>
                     <OfferDetailsPage />
