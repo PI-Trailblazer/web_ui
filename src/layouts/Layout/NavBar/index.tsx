@@ -1,5 +1,5 @@
 // layouts/Navbar/index.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ModeToggle } from '@/components/mode-toggle';
 import logo1 from '@/assets/LogoLight.svg';
 import logo2 from '@/assets/LogoDark.svg';
@@ -9,15 +9,36 @@ import { useTheme } from '@/components/theme-provider';
 import { Input } from '@/components/ui/input'; // Certifique-se de que o caminho de importação está correto
 import { Search } from "lucide-react";
 import { Menu } from 'lucide-react'; // Icone de menu para visão mobile
+import { useUserStore } from '@/stores/useUserStore';
+import { useNavigate } from 'react-router-dom';
 
 const NavBar: React.FC = () => {
   const { theme } = useTheme();
   const [menuOpen, setMenuOpen] = React.useState(false); // Estado para controle do menu mobile
 
+  const navigate = useNavigate();
+
+  const { token, roles, logout } = useUserStore((state: { token: any; roles: any; logout: any; }) => ({
+    token: state.token,
+    roles: state.roles,
+    logout: state.logout
+  }));
+
+  useEffect(() => {
+    console.log('token', token);
+    console.log('roles', roles);
+  }, [token, roles])
+
+  
   // Função para alternar o menu mobile
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  }
 
   return (
     <nav className="navbar fixed top-0 left-0 right-0 z-50  bg-gradient-to-t from-transparent to-background">
@@ -51,12 +72,26 @@ const NavBar: React.FC = () => {
           <Link to="/offer-list" className='pr-5'>
             <NavBarButton label='Offers'/>
           </Link>
-          <Link to="/login" className='pr-5'>
-            <NavBarButton label='Login'/>
-          </Link>
-          <Link to="/register">
-            <NavBarButton label='Register'/>
-          </Link>
+          {roles.includes('PROVIDER') && (
+            <Link to="/your-offers" className='pr-5'>
+              <NavBarButton label='Your Offers'/>
+            </Link>
+          )}
+          {token ? (
+            // Renderize o botão Logout se o token existir
+            <button onClick={handleLogout} className='pr-5'>
+              <NavBarButton label='Logout'/>
+            </button>
+          ) : (
+            <>
+              <Link to="/login" className='pr-5'>
+                <NavBarButton label='Login'/>
+              </Link>
+              <Link to="/register">
+                <NavBarButton label='Register'/>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
