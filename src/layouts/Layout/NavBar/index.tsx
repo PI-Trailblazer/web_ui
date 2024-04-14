@@ -11,6 +11,19 @@ import { Search } from "lucide-react";
 import { Menu } from 'lucide-react'; // Icone de menu para visão mobile
 import { useUserStore } from '@/stores/useUserStore';
 import { useNavigate } from 'react-router-dom';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const NavBar: React.FC = () => {
   const { theme } = useTheme();
@@ -18,10 +31,12 @@ const NavBar: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const { token, roles, logout } = useUserStore((state: { token: any; roles: any; logout: any; }) => ({
+  const { token, roles, logout, fname, lname} = useUserStore(state => ({
     token: state.token,
     roles: state.roles,
-    logout: state.logout
+    logout: state.logout,
+    fname: state.f_name,
+    lname: state.l_name
   }));
 
   useEffect(() => {
@@ -72,16 +87,29 @@ const NavBar: React.FC = () => {
           <Link to="/offer-list" className='pr-5'>
             <NavBarButton label='Offers'/>
           </Link>
-          {roles.includes('PROVIDER') && (
-            <Link to="/your-offers" className='pr-5'>
-              <NavBarButton label='Your Offers'/>
-            </Link>
-          )}
           {token ? (
-            // Renderize o botão Logout se o token existir
-            <button onClick={handleLogout} className='pr-5'>
-              <NavBarButton label='Logout'/>
-            </button>
+            <>
+              <DropdownMenu>
+                <DropdownMenuTrigger className='flex'>
+                  <DropdownMenuLabel className='text-lg'>{fname} {lname}</DropdownMenuLabel>
+                    <Avatar className="mr-2">
+                      <AvatarImage src="https://randomuser.me/api/portraits/men/3.jpg" alt="Avatar" />
+                      <AvatarFallback>JD</AvatarFallback>
+                    </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent sideOffset={4} className='mt-2' align='end'>
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                  {roles.includes('PROVIDER') && (
+                    <Link to="/your-offers">
+                        <DropdownMenuItem>Your Offers</DropdownMenuItem>
+                    </Link>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           ) : (
             <>
               <Link to="/login" className='pr-5'>
