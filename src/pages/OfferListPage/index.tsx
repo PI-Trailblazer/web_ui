@@ -1,6 +1,6 @@
 import OfferCard from '@/components/OfferCard/OfferCard';
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton';
-import { OfferDetailsProps, SubCardProps } from "@/lib/types";
+import { OfferDetailsProps} from "@/lib/types";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -232,6 +232,7 @@ export default function OfferListPage() {
                                     tags={offer.tags}
                                     max_review_score={offer.max_review_score}
                                     n_reviews={offer.n_reviews}
+                                    id={offer.id}
                                 />
                             ))
                         ) : null}

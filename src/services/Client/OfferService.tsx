@@ -15,7 +15,21 @@ const OfferService = {
 
     async getReviews(offer_id: number) {
         return await client.get(`/review/${offer_id}`);
+    },
+
+    async addOffer(data: any) {
+        return await client.post('/', data);
+    },
+
+    async getOffersByUser() {
+        return await client.get('/user/');
+    },
+
+    async deleteOffer(id: number) {
+        return await client.delete(`/${id}`);
     }
+
+
 };
 
 export { OfferService };
