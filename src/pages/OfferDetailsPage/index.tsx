@@ -42,19 +42,18 @@ export default function OfferDetailsPage() {
         return (await OfferService.getOffer(id)).data;
     }
 
-      const { data: offer, isLoading, isError, isSuccess } = useQuery<OfferDetailsProps>({
-          queryKey: ['offer', id],
-          queryFn: () => getOffer(id),
-      })
+    const { data: offer, isLoading, isError, isSuccess } = useQuery<OfferDetailsProps>({
+        queryKey: ['offer', id],
+        queryFn: () => getOffer(id),
+    })
 
-      useEffect(() => {
-            if(isSuccess) {
-                console.log(offer);
-            if (isError) {
-                console.log('Error');
-            } 
-
-        }
+    useEffect(() => {
+        if(isSuccess) {
+            console.log(offer);
+        if (isError) {
+            console.log('Error');
+        } 
+    }
     }, [offer, isSuccess, isError])
 
 

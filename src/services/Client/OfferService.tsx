@@ -10,6 +10,7 @@ const OfferService = {
     },
 
     async getOffer(id: number) {
+        console.log(id);
         return await client.get(`/${id}`);
     },
 
@@ -18,12 +19,18 @@ const OfferService = {
     },
 
     async getImages(offer_id: number) {
-        return await client.get(`/images/${offer_id}`);
+        return await client.get(`/image/${offer_id}`);
     },
 
-    async getOffersByIdList(ids: number[]) {
-        return await client.get('/list-by-ids/', { params: { ids } });
+    async getOffersByID(params: any) {
+        console.log(params);
+        let url = '/list-by-ids/?';
+        for (let id of params.ids) {
+            url += `ids=${id}&`
+        }
+        return await client.get(url);
     }
+
 };
 
 export { OfferService };

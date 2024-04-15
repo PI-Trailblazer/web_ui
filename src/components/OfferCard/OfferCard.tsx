@@ -17,17 +17,14 @@ const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, ma
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ['images'],
+    queryKey: ['images', id],
     queryFn: () => fetchImages(id),
   });
-
+  
   let rating = 0;
   if (max_review_score !== undefined && n_reviews !== undefined && n_reviews !== 0 && max_review_score !== 0) {
     rating = Math.floor(((max_review_score / n_reviews) * 5) / 100);
   }
-  const imageSrc = data?.[0]?.url ?? 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings';
-  console.log(data);
-  
   return (
     <Card className="shadow-xl rounded-lg overflow-hidden md:flex md:flex-row">
       <CardContent className="flex flex-col justify-between p-4 md:w-2/3">
@@ -65,7 +62,15 @@ const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, ma
         </CardFooter>
       </CardContent>
       <div className="md:w-1/3">
-        <img src={imageSrc} alt={name} className="object-cover aspect-square w-full h-48 md:h-full" />
+        {isLoading ? (
+          <div className="w-full h-48 bg-gray-200 animate-pulse" />
+        ) : (
+          <img
+            src={data[0]?.image ?? 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings'}
+            alt={name}
+            className="object-cover aspect-square w-full h-48 md:h-full"
+          />
+        )}
       </div>
     </Card>
   );
