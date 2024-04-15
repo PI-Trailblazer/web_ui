@@ -39,8 +39,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedOffers, setSelectedOffers] = useState([false, false, false]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [tags, setTags] = useState(['']);
-
+    const [tags, setTags] = useState([]);
+    const [modalDone, setModalDone] = useState(false);
     const [formError, setFormError] = useState('');
     
     const handleCheckboxChange = (index) => {
@@ -56,7 +56,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
     const handleSubmit = () => {
         getTags();
-        handleRegister({tags: tags});
+        setIsModalOpen(false);
+        setModalDone(true);
     }
 
     const getTags = () => {
@@ -64,7 +65,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             if (selected) {
                 return offerCardsData[index].tags;
             }
-        }).filter(tag => tag !== undefined);
+        }).filter(tag => tag !== undefined).flat();
         // append the tags to the tags state
         let oldTags = tags;
         setTags([...oldTags, ...selectedTags]);
@@ -91,12 +92,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
     const handleButtonClick = (event) => {
         event.preventDefault(); // Prevent form submission
-        if (!form.formState.isValid) {
-            setFormError('Please fill in the fields');
-            return;
-        }
         setIsModalOpen(true); // Open the modal
     };
+
+    const handleFormSubmit = () => {
+        form.handleSubmit((data) => handleRegister(data, tags))();
+    }
 
     return (
     <>
@@ -240,10 +241,26 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         />
                     )}
                     <div className='flex flex-col justify-center items-center space-y-2'>
-                        <Button onClick={handleButtonClick}>
-                            Next Step
-                        </Button>
-                        {formError && <div className='text-destructive'>{formError}</div>}
+                        {/* if modal not done button to open else submit button */}
+                        {!modalDone && (
+                            <Button onClick={handleButtonClick}>
+                                {isLoading ? (
+                                    <Loader2 className="animate-spin h-5 w-5" />
+                                ) : (
+                                    'Submit'
+                                )}
+                            </Button>
+                        )}
+                        {modalDone && (
+                            <Button onClick={handleFormSubmit}>
+                                {isLoading ? (
+                                    <Loader2 className="animate-spin h-5 w-5" />
+                                ) : (
+                                    'Register'
+                                )}
+                            </Button>
+                        )}
+                        
                     </div>
             </form>
         </Form>
@@ -338,7 +355,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                     )}
                                     <div className='flex justify-center items-center'>
                                         {currentPage == 1 && <Button onClick={() => handlePageChange(2)}>Next</Button>}
-                                        {currentPage == 2 && <Button onClick={() => handleSubmit()}>Submit</Button>}
+                                        {currentPage == 2 && <Button onClick={() => handleSubmit()}>Close</Button>}
                                     </div>
                                 </div>
                             </div>

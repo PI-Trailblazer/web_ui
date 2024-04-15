@@ -26,9 +26,6 @@ export default function RegisterPage() {
 
     const register = async ({ data, tags }: { data: FormValues, tags: string[] }) => {
         //se o phone for undefined, ele vai ser null
-        console.log(data);
-        console.log(tags);
-        return;
         let inRoles = ['USER'];
         if (userType === 'Provider') {
             inRoles.push('PROVIDER');
@@ -39,10 +36,11 @@ export default function RegisterPage() {
             last_name: data.lastName,
             email: data.email,
             roles: inRoles,
-            phone: data.phone === undefined ? null : data.phone,
-            tags: [],
+            phone: data.phone ?? null,
+            tags: tags,
         };
 
+        console.log(payload);
         const response = await UserService.register({
             ...payload,
         });
@@ -95,7 +93,7 @@ export default function RegisterPage() {
 
         useUserStore.setState({ token });
 
-        registerMutation.mutate({ token, data, tags });
+        registerMutation.mutate({ data: data, tags:tags });
     };
 
     return (
