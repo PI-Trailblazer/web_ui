@@ -43,7 +43,7 @@ const OfferCard: React.FC<OfferCardProps> = ({
         ) : (
         <Button
           onClick={onDelete}
-          className="absolute rounded-full top-0 right-0 mt-4 mr-4"
+          className="absolute rounded-full top-0 right-0 mt-4 mr-4 px-2"
           title="Delete Offer"
           variant="destructive"
         >

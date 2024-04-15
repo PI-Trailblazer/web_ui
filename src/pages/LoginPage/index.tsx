@@ -68,6 +68,7 @@ export default function RegisterPage() {
                 image: data.image,
                 roles: data.roles,
                 tags: data.tags,
+                uid: data.uid,
             };
             useUserStore.getState().login(loginData);
             setIsLoading(false);
