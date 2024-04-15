@@ -3,6 +3,8 @@ import { Review } from "@/lib/types";
 import { useQuery } from '@tanstack/react-query';
 
 import Comment from './Comment';
+import { Input } from '@/components/Input';
+import { Avatar } from '@/components/ui/avatar';
 
 const CommentsSection = ({ offerId } : { offerId: number }) => {
 
@@ -13,7 +15,6 @@ const CommentsSection = ({ offerId } : { offerId: number }) => {
     const { data: reviews, isLoading, isError, isSuccess } = useQuery<Review[]>({
         queryKey: ['reviews', offerId],
         queryFn: () => fetchReviews(offerId),
-        // Você pode adicionar outras opções aqui, como `staleTime`, `cacheTime`, etc.
     });
 
     useEffect(() => {
@@ -31,7 +32,7 @@ const CommentsSection = ({ offerId } : { offerId: number }) => {
             {reviews.length > 0 && isSuccess ? (
                 <div className="mt-4 space-y-4">
                     {reviews.map((review: Review) => (
-                        <Comment key={review.id} review={review} userId={review.userid} />
+                        <Comment key={review.id} review={review} offerId={offerId} userId={review.userid} />
                     ))}
                 </div>
             ) : (

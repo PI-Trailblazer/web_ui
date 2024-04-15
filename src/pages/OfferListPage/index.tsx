@@ -1,6 +1,6 @@
 import OfferCard from '@/components/OfferCard/OfferCard';
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton';
-import { OfferDetailsProps, SubCardProps } from "@/lib/types";
+import { OfferDetailsProps} from "@/lib/types";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -46,7 +46,7 @@ export default function OfferListPage() {
       }, []);
 
 
-    const categories: string[] = ["Tag1", "Tag2", "Tag3", "Tag4"]
+    const categories: string[] = ["Accommodation", "Sports", "Adventure", "Food", "Wellness", "Transportation", "Culture", "Drinks", "Café", "Games"]
     
     const getOffers = async () => {
         return (await OfferService.getOffers({})).data;
@@ -157,19 +157,19 @@ export default function OfferListPage() {
                         <h1 className="text-2xl text-center font-bold mb-4">Filters</h1>
                         <div className="space-y-2 flex flex-col p-6 pl-24">
                             <h3 className='text-xl pb-1 font-medium'>Categories</h3>
-                            <div className='flex space-y-4 pl-4 flex-col'>
+                            <div className='grid grid-cols-2 gap-4 pl-4'>
                             {categories.map((category, i) => (
                                 <div key={i} className='space-x-2 flex items-center'>
-                                    <Checkbox
+                                <Checkbox
                                     id={`checkbox-${category}`} // Adiciona um ID único para o checkbox
                                     defaultChecked={selectedTags.includes(category)}
                                     onCheckedChange={handleCategoryChange(category)} // Passa apenas a categoria aqui
                                     value={category}
                                     checked={checkedTags[category] || false}
-                                    />
-                                    <Label htmlFor={`checkbox-${category}`} className='text-md cursor-pointer'>{category}</Label>
+                                />
+                                <Label htmlFor={`checkbox-${category}`} className='text-md cursor-pointer'>{category}</Label>
                                 </div>
-                                ))}
+                            ))}
                             </div>
                         </div>
                         <div className='space-y-2 flex pb-6 flex-col px-24'>
