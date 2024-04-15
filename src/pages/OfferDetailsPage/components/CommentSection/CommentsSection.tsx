@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import Comment from './Comment';
 import { Input } from '@/components/Input';
 import { Avatar } from '@/components/ui/avatar';
+import { OfferService } from '@/services/Client/OfferService';
 
 const CommentsSection = ({ offerId } : { offerId: number }) => {
 

@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from 'react'
 import OfferCard from '@/components/OfferCard/OfferCard'
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton'
 import { OfferDetailsProps } from '@/lib/types'
-import EstadioBenfica from '@/assets/estadioDaLuz.jpg'
+import background_image from '@/assets/City_of_Aveiro_twitter_b.jpg'
 import { RecommenderService } from '@/services/Client/RecommenderService'
 import { useQuery } from '@tanstack/react-query'
 import { OfferService } from '@/services/Client/OfferService'
@@ -106,7 +106,7 @@ export default function LandingPage() {
                                 <div
                                     className="absolute inset-0 blur-sm bg-cover bg-center z-0"
                                     style={{
-                                        backgroundImage: `url(${EstadioBenfica})`,
+                                        backgroundImage: `url(${background_image})`,
                                     }}
                                 >
                                     {/* Você também pode adicionar uma cor de overlay aqui se precisar */}
@@ -114,8 +114,8 @@ export default function LandingPage() {
                                 {/* O conteúdo do seu Card */}
                                 <div className="p-1 h-full w-full flex items-center justify-center">
                                     <Card className="h-full border-transparent">
-                                        <CardContent className="flex items-center h-full justify-center p-6">
-                                            <div className="z-10 flex w-full justify-center">
+                                        <CardContent className="flex items-center h-full justify-center p-6 m-6">
+                                            <div className="z-10 flex w-10/12 justify-center">
                                                 {isCardLoading ? (
                                                     <OfferCardSkeleton />
                                                 ) : (

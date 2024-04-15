@@ -20,6 +20,7 @@ const config = {
     API_USER_URL: `${BASE_URL}/api/user`,
     API_OFFER_URL: `${BASE_URL}/api/offer`,
     API_RECOMMENDER_URL: `${BASE_URL}/api/recommender`,
+    STATIC_OFFER_URL: `${BASE_URL}/static/offer`,
 };
 
 export default config;

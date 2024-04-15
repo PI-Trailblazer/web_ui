@@ -58,10 +58,10 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
                     {user.f_name} {user.l_name}
                     </div>
                     </div>
-                    <div className="text-sm pl-2 font-semibold text-secondary">
+                    <div className="text-xl pl-2 font-semibold text-secondary">
                         <span>
                             {Array.from({ length: Math.ceil(review.score/20) }).map((_, index) => (
-                                <span key={index} className="text-yellow-400">★</span>
+                                <span key={index} className="text-yellow-400 drop-shadow-[0px.0px_1.10px_rgba(0,0,0,1)]                                ">★</span>
                             ))}
                         </span>
                     </div>

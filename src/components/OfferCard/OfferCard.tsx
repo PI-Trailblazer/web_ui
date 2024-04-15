@@ -5,47 +5,41 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { encodeId } from '@/lib/utils';
-<<<<<<< HEAD
 import { useQuery } from '@tanstack/react-query';
 import { query } from 'firebase/firestore';
 import { OfferService } from '@/services/Client/OfferService';
-=======
 import { Trash2, Loader2 } from 'lucide-react';
->>>>>>> origin
 
 type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean};
-
-<<<<<<< HEAD
-const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, max_review_score, n_reviews, price,tags, id}: Partial<OfferDetailsProps>) => {
-
-  const fetchImages = async (id: number) => {
-    return (await OfferService.getImages(id)).data;
-  };
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['images', id],
-    queryFn: () => fetchImages(id),
-  });
   
-=======
-const OfferCard: React.FC<OfferCardProps> = ({
-  name,
-  description,
-  max_review_score,
-  n_reviews,
-  price,
-  tags,
-  id,
-  showDelete = false, // Adicionado nova prop para controlar a exibição do botão de exclusão
-  onDelete, // Adicionado novo prop para a função de exclusão
-  isPending
-}: Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean}) => {
->>>>>>> origin
-  let rating = 0;
-  if (max_review_score !== undefined && n_reviews !== undefined && n_reviews !== 0 && max_review_score !== 0) {
-    rating = Math.floor(((max_review_score / n_reviews) * 5) / 100);
-  }
-  return (
+  const OfferCard: React.FC<OfferCardProps> = ({
+    name,
+    description,
+    max_review_score,
+    n_reviews,
+    price,
+    tags,
+    id,
+    showDelete = false, // Adicionado nova prop para controlar a exibição do botão de exclusão
+    onDelete, // Adicionado novo prop para a função de exclusão
+    isPending
+  }: Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean}) => {
+
+    const fetchImages = async (id: number) => {
+      return (await OfferService.getImages(id)).data;
+    };
+  
+    const { data, isLoading } = useQuery({
+      queryKey: ['images', id],
+      queryFn: () => fetchImages(id),
+    });
+    
+    let rating = 0;
+    if (max_review_score !== undefined && n_reviews !== undefined && n_reviews !== 0 && max_review_score !== 0) {
+      rating = Math.floor(((max_review_score / n_reviews) * 5) / 100);
+    }
+  
+    return (
     <Card className="shadow-xl rounded-lg overflow-hidden relative md:flex md:flex-row">
       {showDelete && onDelete && (
         isPending ? (
@@ -76,7 +70,7 @@ const OfferCard: React.FC<OfferCardProps> = ({
             {[...Array(5)].map((_, i) => (
               <svg
                 key={i}
-                className={`h-5 w-5 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                className={`h-5 w-5 drop-shadow-[0px.0px_1.10px_rgba(0,0,0,1)] ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
