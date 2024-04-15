@@ -24,8 +24,11 @@ export default function RegisterPage() {
 
     const navigate = useNavigate();
 
-    const register = async ({ data }: { data: FormValues }) => {
+    const register = async ({ data, tags }: { data: FormValues, tags: string[] }) => {
         //se o phone for undefined, ele vai ser null
+        console.log(data);
+        console.log(tags);
+        return;
         let inRoles = ['USER'];
         if (userType === 'Provider') {
             inRoles.push('PROVIDER');
@@ -68,7 +71,7 @@ export default function RegisterPage() {
         },
     });
 
-    const handleRegister = async (data: FormValues) => {
+    const handleRegister = async (data: FormValues, tags: string[]) => {
         setIsLoading(true);
         let token = '';
         try {
@@ -92,7 +95,7 @@ export default function RegisterPage() {
 
         useUserStore.setState({ token });
 
-        registerMutation.mutate({ token, data });
+        registerMutation.mutate({ token, data, tags });
     };
 
     return (

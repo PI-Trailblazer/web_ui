@@ -88,7 +88,6 @@ const NavBar: React.FC = () => {
             <NavBarButton label='Offers'/>
           </Link>
           {token ? (
-            <>
               <DropdownMenu>
                 <DropdownMenuTrigger className='flex'>
                   <DropdownMenuLabel className='text-lg'>{fname} {lname}</DropdownMenuLabel>
@@ -109,7 +108,6 @@ const NavBar: React.FC = () => {
                   <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </>
           ) : (
             <>
               <Link to="/login" className='pr-5'>
