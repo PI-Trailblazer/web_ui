@@ -26,6 +26,7 @@ import { OfferService } from '@/services/Client/OfferService';
 import { useParams } from 'react-router-dom';
 import { decodeId } from "@/lib/utils";
 import { useQuery } from '@tanstack/react-query';
+import CommentInput from "./components/CommentSection/CommentInput";
 
 
 
@@ -162,6 +163,7 @@ export default function OfferDetailsPage() {
                     <div className="border p-4 rounded-lg shadow-xl">
                         {/* Reviews */}
                         <CommentsSection offerId={offer.id} />
+                        <CommentInput offerId={offer.id} />
                     </div>
                 </div>
                 {/* Parte Direita - Preço, Opções de Quantidade e Botão de Compra */}

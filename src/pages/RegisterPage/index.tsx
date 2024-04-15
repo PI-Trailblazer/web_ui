@@ -58,7 +58,9 @@ export default function RegisterPage() {
                 image: data.image,
                 roles: data.roles,
                 tags: data.tags,
+                uid: data.uid,
             };
+            console.log(loginData);
             useUserStore.getState().login(loginData);
             setIsLoading(false);
             navigate('/');
