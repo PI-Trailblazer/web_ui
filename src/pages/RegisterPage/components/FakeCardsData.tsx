@@ -2,7 +2,7 @@ import { OfferDetailsProps } from '@/lib/types'
 
 const offerCardsData: OfferDetailsProps[] = [
     {
-        id: 0,
+        id: 1,
         name: 'Hotel Farol',
         description: "Enjoy a luxurious stay at Hotel Farol, located in front of the sea. With spacious and modern rooms, private pool and direct access to the beach, Hotel Farol is the perfect place to relax and unwind. The hotel also offers an award-winning restaurant and a luxury spa.",
         street: "Lgo do Farol",
@@ -17,7 +17,7 @@ const offerCardsData: OfferDetailsProps[] = [
         modules: [1, 2],
     },
     {
-        id: 1,
+        id: 2,
         name: "Moliceiro Boat Tour",
         description: "Enjoy a boat ride through Aveiro's canals in a colorful and traditional Moliceiro boat. See unique views of the one of the most picturesque cities of Portugal.",
         street: "Rua dos Canais",
@@ -32,7 +32,7 @@ const offerCardsData: OfferDetailsProps[] = [
         modules: [1, 3],
     },
     {
-        id: 2,
+        id: 3,
         name: "Duna do meio",
         description: "Duna do meio is a restaurant located in the Praia da Barra, Aveiro. It offers a wide variety of fresh fish and seafood dishes, as well as traditional Portuguese cuisine. Enjoy a delicious meal with a stunning view of the sea.",
         street: "Rua Jose Estevao ",
@@ -47,7 +47,7 @@ const offerCardsData: OfferDetailsProps[] = [
         modules: [2, 4],
     },
     {
-        id: 3,
+        id: 4,
         name: "Yoga in praia da bikinha",
         description: "Enjoy a relaxing day at Praia da Bikinha, Aveiro. This yoga class is suitable for all levels and will help you to relax and unwind. The class is held on the beach, so you can enjoy the fresh sea air and the sound of the waves.",
         street: "Costa Nova ",
@@ -62,7 +62,7 @@ const offerCardsData: OfferDetailsProps[] = [
         modules: [2, 4],
     },
     {
-        id: 4,
+        id: 5,
         name: "Minigolfe da Costa Nova",
         description: "Have fun with your friends and family at Minigolfe da Costa Nova, Aveiro. This 18-hole mini golf course is suitable for all ages and skill levels. Enjoy a fun and relaxing day in the sun.",
         street: "Costa Nova",
@@ -77,7 +77,7 @@ const offerCardsData: OfferDetailsProps[] = [
         modules: [2, 4],
     },
     {
-        id: 5,
+        id: 6,
         name: "Farol da Barra",
         description: "Visit the Farol da Barra, the tallest lighthouse in Portugal. Climb to the top of the lighthouse for stunning views of the coast and the Atlantic Ocean. Learn about the history of the lighthouse and its importance to the region.",
         street: "Ilhavo",

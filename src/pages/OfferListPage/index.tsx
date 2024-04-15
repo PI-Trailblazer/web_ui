@@ -68,7 +68,6 @@ export default function OfferListPage() {
             console.log('Error');
         } 
     }, [offers, isSuccess, isError])
-
     useEffect(() => {
         if (offers) {
             const maxOfferPrice = Math.max(...offers.map((offer: { price: any; }) => offer.price));
@@ -225,15 +224,7 @@ export default function OfferListPage() {
                             Array.from({ length: 6 }).map((_, index) => <OfferCardSkeleton key={index} />)
                         ) : isSuccess && visibleOffers ? (
                             visibleOffers.map((offer : Partial<OfferDetailsProps>, index: any) => (
-                                <OfferCard key={index} 
-                                    name={offer.name}
-                                    description={offer.description}
-                                    price={offer.price}
-                                    tags={offer.tags}
-                                    max_review_score={offer.max_review_score}
-                                    n_reviews={offer.n_reviews}
-                                    id={offer.id}
-                                />
+                                <OfferCard key={index} {...offer}/>
                             ))
                         ) : null}
                     </div>

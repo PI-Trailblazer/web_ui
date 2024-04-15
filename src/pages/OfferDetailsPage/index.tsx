@@ -27,7 +27,7 @@ import { useParams } from 'react-router-dom';
 import { decodeId } from "@/lib/utils";
 import { useQuery } from '@tanstack/react-query';
 import CommentInput from "./components/CommentSection/CommentInput";
-
+import config from "@/config";
 
 
 export default function OfferDetailsPage() {
@@ -37,25 +37,31 @@ export default function OfferDetailsPage() {
     const { id: encodedId } = useParams();
     const id = parseInt(decodeId(encodedId));
 
-    console.log(id);
+    const handleGetImages = async () => {
+        return (await OfferService.getImages(id)).data;
+    }
+
+    const { data: imagesData, isLoading: imagesLoading, isError: imagesError } = useQuery({
+        queryKey: ['images'],
+        queryFn: handleGetImages,
+    });
     
     const getOffer = async (id: number) => {
         return (await OfferService.getOffer(id)).data;
     }
 
-      const { data: offer, isLoading, isError, isSuccess } = useQuery<OfferDetailsProps>({
-          queryKey: ['offer', id],
-          queryFn: () => getOffer(id),
-      })
+    const { data: offer, isLoading, isError, isSuccess } = useQuery<OfferDetailsProps>({
+        queryKey: ['offer', id],
+        queryFn: () => getOffer(id),
+    })
 
-      useEffect(() => {
-            if(isSuccess) {
-                console.log(offer);
-            if (isError) {
-                console.log('Error');
-            } 
-
-        }
+    useEffect(() => {
+        if(isSuccess) {
+            console.log(offer);
+        if (isError) {
+            console.log('Error');
+        } 
+    }
     }, [offer, isSuccess, isError])
 
 
@@ -90,12 +96,12 @@ export default function OfferDetailsPage() {
 
     if (isLoading) return <div>Loading...</div>;
     if (isError || !offer) return <div>Error or no data available.</div>;
-
+    console.log(imagesData[0].image);
     return (
         <div className="container pt-24">
             <div className="flex flex-col lg:flex-row">
                 {/* Parte Esquerda - Título, Tags, Carousel, Descrição e Reviews */}
-                <div className="lg:w-3/5 space-y-6">
+                <div className="lg:w-3/5 space-y-6 m-1">
                     <div className="flex justify-between items-center">
                         <div className="space-y-2">
                             <h1 className="text-4xl font-bold">{offer.name}</h1>
@@ -115,12 +121,10 @@ export default function OfferDetailsPage() {
                     <div className="relative">
                         <Carousel setApi={setMainCarouselApi} className="w-full">
                             <CarouselContent>
-                                {Array.from({ length: 5 }).map((_, index) => (
+                                {Array.from({ length: imagesData.length }).map((_, index) => (
                                     <CarouselItem key={index} className="w-full">
-                                        <Card className="h-full">
-                                            <CardContent className="flex aspect-video items-center justify-center">
-                                                <span className="text-4xl font-semibold">{index + 1}</span>
-                                            </CardContent>
+                                        <Card className="h-full overflow-hidden">
+                                            <img className="h-full" src={imagesData[index].image} alt="offer" />
                                         </Card>
                                     </CarouselItem>
                                 ))}
@@ -141,12 +145,10 @@ export default function OfferDetailsPage() {
                         }}
                         > {/* Ajuste a altura aqui */}
                             <CarouselContent>
-                                {Array.from({ length: 5 }).map((_, index) => (
+                                {Array.from({ length: imagesData.length }).map((_, index) => (
                                     <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/4 cursor-pointer" onClick={() => onThumbnailClick(index)}>
-                                        <Card>
-                                            <CardContent className="flex aspect-video items-center justify-center p-6">
-                                                <span className="text-3xl font-semibold">{index + 1}</span>
-                                            </CardContent>
+                                        <Card className="h-full overflow-hidden">
+                                            <img className="h-full" src={imagesData[index].image} alt="offer" />
                                         </Card>
                                     </CarouselItem>
                                 ))}
@@ -220,14 +222,14 @@ export default function OfferDetailsPage() {
                             </div>
                         </div>
                     </div>
-                    <div className="similar-offers p-4 border rounded-lg space-y-4">
+                    {/* <div className="similar-offers p-4 border rounded-lg space-y-4">
                         <h2 className="text-2xl font-semibold">Similar Offers</h2>
                         <div className="grid grid-cols-1 gap-4">
                             {similarOffers.map((similarOffer, index) => (
                             <SimilarOffersCard key={index} offer={similarOffer} />
                             ))}
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
