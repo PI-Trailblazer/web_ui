@@ -5,12 +5,22 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { encodeId } from '@/lib/utils';
+import { Trash2, Loader2 } from 'lucide-react';
 
+type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean};
 
-
-const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, max_review_score, n_reviews, price, tags, id}: Partial<OfferDetailsProps>) => {
-
-  
+const OfferCard: React.FC<OfferCardProps> = ({
+  name,
+  description,
+  max_review_score,
+  n_reviews,
+  price,
+  tags,
+  id,
+  showDelete = false, // Adicionado nova prop para controlar a exibição do botão de exclusão
+  onDelete, // Adicionado novo prop para a função de exclusão
+  isPending
+}: Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean}) => {
   let rating = 0;
   if (max_review_score !== undefined && n_reviews !== undefined && n_reviews !== 0 && max_review_score !== 0) {
     rating = Math.floor(((max_review_score / n_reviews) * 5) / 100);
@@ -18,7 +28,29 @@ const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, ma
   const imageSrc = 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings';
 
   return (
-    <Card className="shadow-xl rounded-lg overflow-hidden md:flex md:flex-row">
+    <Card className="shadow-xl rounded-lg overflow-hidden relative md:flex md:flex-row">
+      {showDelete && onDelete && (
+        isPending ? (
+          <Button
+          onClick={onDelete}
+          className="absolute rounded-full top-0 right-0 mt-4 mr-4"
+          title="Delete Offer"
+          variant="destructive"
+          loading={isPending}
+        >
+          <Loader2/>
+        </Button>
+        ) : (
+        <Button
+          onClick={onDelete}
+          className="absolute rounded-full top-0 right-0 mt-4 mr-4"
+          title="Delete Offer"
+          variant="destructive"
+        >
+          <Trash2/>
+        </Button>
+        )
+      )}
       <CardContent className="flex flex-col justify-between p-4 md:w-2/3">
         <div className="flex justify-between items-center">
           <CardTitle className="text-2xl font-bold">{name}</CardTitle>
