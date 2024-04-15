@@ -5,18 +5,29 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { encodeId } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { query } from 'firebase/firestore';
+import { OfferService } from '@/services/Client/OfferService';
 
 
+const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, max_review_score, n_reviews, price,tags, id}: Partial<OfferDetailsProps>) => {
 
-const OfferCard: React.FC<Partial<OfferDetailsProps>> = ({ name, description, max_review_score, n_reviews, price, tags, id}: Partial<OfferDetailsProps>) => {
+  const fetchImages = async (id: number) => {
+    return (await OfferService.getImages(id)).data;
+  };
 
-  
+  const { data, isLoading } = useQuery({
+    queryKey: ['images'],
+    queryFn: () => fetchImages(id),
+  });
+
   let rating = 0;
   if (max_review_score !== undefined && n_reviews !== undefined && n_reviews !== 0 && max_review_score !== 0) {
     rating = Math.floor(((max_review_score / n_reviews) * 5) / 100);
   }
-  const imageSrc = 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings';
-
+  const imageSrc = data?.[0]?.url ?? 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings';
+  console.log(data);
+  
   return (
     <Card className="shadow-xl rounded-lg overflow-hidden md:flex md:flex-row">
       <CardContent className="flex flex-col justify-between p-4 md:w-2/3">

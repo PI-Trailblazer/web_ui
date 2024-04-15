@@ -13,12 +13,35 @@ import OfferCard from '@/components/OfferCard/OfferCard'
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton'
 import { OfferDetailsProps } from '@/lib/types'
 import EstadioBenfica from '@/assets/estadioDaLuz.jpg'
-
+import { RecommenderService } from '@/services/Client/RecommenderService'
+import { useQuery } from '@tanstack/react-query'
+import { OfferService } from '@/services/Client/OfferService'
 export default function LandingPage() {
     const scrollToRef = useRef<HTMLDivElement | null>(null)
     const [isCardLoading, setisCardLoading] = useState<boolean>(true)
 
     const [isSticky, setIsSticky] = useState(false)
+
+    const fetchMostRelevant = async () => {
+        return (await RecommenderService.getMostRelevant({})).data
+    }
+
+    const fetchOffers = async () => {
+        console.log(mostRelevantData)
+        return (await OfferService.getOffers({ ids: mostRelevantData })).data
+    }
+
+    const { data: mostRelevantData, isLoading: isLoadingRelevantLoading } = useQuery({
+        queryKey: ['most_relevant'],
+        queryFn: fetchMostRelevant,
+    })
+
+    const { data: offerData, isLoading: isLoadingOfferData } = useQuery({
+        queryKey: ['offer', mostRelevantData],
+        queryFn: fetchOffers,
+    })
+
+    console.log(mostRelevantData)
 
     const handleScroll = () => {
         const offset = window.scrollY

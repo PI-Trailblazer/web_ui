@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Review } from "@/lib/types";
 import { useQuery } from '@tanstack/react-query';
-import { OfferService } from '@/services/Client/OfferService';
+
 import Comment from './Comment';
 
 const CommentsSection = ({ offerId } : { offerId: number }) => {
