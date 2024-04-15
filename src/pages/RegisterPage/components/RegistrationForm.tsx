@@ -63,7 +63,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     const getTags = () => {
         const selectedTags = selectedOffers.map((selected, index) => {
             if (selected) {
-                return offerCardsData[index].tags;
+                return offerCardsData[index + (3* (currentPage-1))].tags;
             }
         }).filter(tag => tag !== undefined).flat();
         // append the tags to the tags state
