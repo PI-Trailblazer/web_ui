@@ -8,6 +8,7 @@ import { NavBarButton } from '@/layouts/Layout/NavBar/components/NavBarButton';
 import { useTheme } from '@/components/theme-provider';
 import { Input } from '@/components/ui/input'; // Certifique-se de que o caminho de importação está correto
 import { Search } from "lucide-react";
+import { UserService } from '@/services/Client/UserService';
 import { Menu } from 'lucide-react'; // Icone de menu para visão mobile
 import { useUserStore } from '@/stores/useUserStore';
 import { useNavigate } from 'react-router-dom';
@@ -50,8 +51,13 @@ const NavBar: React.FC = () => {
   };
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
+    UserService.logout().then(() => {
+      logout();
+      navigate('/');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   return (

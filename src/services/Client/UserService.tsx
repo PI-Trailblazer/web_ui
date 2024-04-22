@@ -14,6 +14,10 @@ const UserService = {
 
     async getUserByUserId(userId: string) {
         return await client.get(`/${userId}`);
+    },
+    
+    async logout() {
+        return await client.post('/logout');
     }
 };
 
