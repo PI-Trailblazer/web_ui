@@ -62,15 +62,8 @@ export default function RegisterPage() {
         mutationFn: login,
         onSuccess: data => {
             console.log('Success');
-            let loginData = {
-                f_name: data.f_name,
-                l_name: data.l_name,
-                image: data.image,
-                roles: data.roles,
-                tags: data.tags,
-                uid: data.uid,
-            };
-            useUserStore.getState().login(loginData);
+            console.log(data);
+            useUserStore.getState().login(data.access_token);
             setIsLoading(false);
             navigate('/');    
         },

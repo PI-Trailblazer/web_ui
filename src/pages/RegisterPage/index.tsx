@@ -25,10 +25,9 @@ export default function RegisterPage() {
     const navigate = useNavigate();
 
     const register = async ({ data, tags }: { data: FormValues, tags: string[] }) => {
-        //se o phone for undefined, ele vai ser null
-        let inRoles = ['USER'];
+        let inRoles = ['user'];
         if (userType === 'Provider') {
-            inRoles.push('PROVIDER');
+            inRoles.push('provider');
         }
 
         let payload = {
@@ -37,7 +36,7 @@ export default function RegisterPage() {
             email: data.email,
             roles: inRoles,
             phone: data.phone ?? null,
-            tags: tags,
+            tags: [""],
         };
 
         console.log(payload);
@@ -52,16 +51,7 @@ export default function RegisterPage() {
         mutationFn: register,
         onSuccess: data => {
             console.log('Success');
-            let loginData = {
-                f_name: data.f_name,
-                l_name: data.l_name,
-                image: data.image,
-                roles: data.roles,
-                tags: data.tags,
-                uid: data.uid,
-            };
-            console.log(loginData);
-            useUserStore.getState().login(loginData);
+            useUserStore.getState().login(data.access_token);
             setIsLoading(false);
             navigate('/');
         },
