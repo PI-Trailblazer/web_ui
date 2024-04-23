@@ -1,55 +1,45 @@
 import { create } from 'zustand';
+import { parseJWT } from "@/utils";
 
 interface UserState {
     token: string;
-    f_name: string;
-    l_name: string;
+    name: string;
     image: string;
-    roles: string[];
     tags: string[];
-    uid: string;
-}
-interface loginState {
-    f_name: string;
-    l_name: string;
-    image: string;
-    roles: string[];
-    tags: string[];
-    uid: string;
+    scopes: string[];
+    sub: string;
 }
 
+
 type UserActions = {
-    login: (data: loginState) => void;
+    login: (token: string) => void;
     logout: () => void;
 };
 
 export const useUserStore = create<UserState & UserActions>((set, get) => ({
-    f_name: '',
-    l_name: '',
+    name: '',
     image: '',
     token: '',
-    roles: [],
     tags: [],
-    uid: '',
+    scopes: [],
+    sub: '',
 
-    login: ({ f_name, l_name, image, roles, tags, uid }: loginState) =>
+    login: (token : string) => {
+        const payload = token ? parseJWT(token) : {};
+
         set(() => ({
-            f_name,
-            l_name,
-            image,
-            roles,
-            tags,
-            uid,
-        })),
+            token: token,
+            ...payload,
+        }));
+    },
 
     logout: () =>
         set(() => ({
             token: '',
-            f_name: '',
-            l_name: '',
+            name: '',
             image: '',
-            roles: [],
             tags: [],
-            uid: '',
+            scopes: [],
+            sub: '',
         })),
 }));

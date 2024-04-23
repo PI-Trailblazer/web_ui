@@ -8,6 +8,7 @@ import { NavBarButton } from '@/layouts/Layout/NavBar/components/NavBarButton';
 import { useTheme } from '@/components/theme-provider';
 import { Input } from '@/components/ui/input'; // Certifique-se de que o caminho de importação está correto
 import { Search } from "lucide-react";
+import { UserService } from '@/services/Client/UserService';
 import { Menu } from 'lucide-react'; // Icone de menu para visão mobile
 import { useUserStore } from '@/stores/useUserStore';
 import { useNavigate } from 'react-router-dom';
@@ -31,18 +32,17 @@ const NavBar: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const { token, roles, logout, fname, lname} = useUserStore(state => ({
+  const { token, scopes, logout, name} = useUserStore(state => ({
     token: state.token,
-    roles: state.roles,
+    scopes: state.scopes,
     logout: state.logout,
-    fname: state.f_name,
-    lname: state.l_name
+    name: state.name
   }));
 
   useEffect(() => {
     console.log('token', token);
-    console.log('roles', roles);
-  }, [token, roles])
+    console.log('scopes', scopes);
+  }, [token, scopes])
 
   
   // Função para alternar o menu mobile
@@ -51,8 +51,13 @@ const NavBar: React.FC = () => {
   };
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
+    UserService.logout().then(() => {
+      logout();
+      navigate('/');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   return (
@@ -90,7 +95,7 @@ const NavBar: React.FC = () => {
           {token ? (
               <DropdownMenu>
                 <DropdownMenuTrigger className='flex'>
-                  <DropdownMenuLabel className='text-lg'>{fname} {lname}</DropdownMenuLabel>
+                  <DropdownMenuLabel className='text-lg'>{name}</DropdownMenuLabel>
                     <Avatar className="mr-2">
                       <AvatarImage src="https://randomuser.me/api/portraits/men/3.jpg" alt="Avatar" />
                       <AvatarFallback>JD</AvatarFallback>
@@ -99,7 +104,7 @@ const NavBar: React.FC = () => {
                 <DropdownMenuContent sideOffset={4} className='mt-2' align='end'>
                   <DropdownMenuItem>Profile</DropdownMenuItem>
                   <DropdownMenuItem>Settings</DropdownMenuItem>
-                  {roles.includes('PROVIDER') && (
+                  {scopes.includes('PROVIDER') && (
                     <Link to="/your-offers">
                         <DropdownMenuItem>Your Offers</DropdownMenuItem>
                     </Link>
