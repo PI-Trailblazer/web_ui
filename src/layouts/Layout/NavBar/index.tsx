@@ -104,7 +104,7 @@ const NavBar: React.FC = () => {
                 <DropdownMenuContent sideOffset={4} className='mt-2' align='end'>
                   <DropdownMenuItem>Profile</DropdownMenuItem>
                   <DropdownMenuItem>Settings</DropdownMenuItem>
-                  {scopes.includes('PROVIDER') && (
+                  {scopes.includes('provider') && (
                     <Link to="/your-offers">
                         <DropdownMenuItem>Your Offers</DropdownMenuItem>
                     </Link>

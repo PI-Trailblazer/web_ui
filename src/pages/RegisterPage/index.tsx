@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +23,10 @@ export default function RegisterPage() {
     const [userType, setUserType] = useState('Tourist');
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        console.log(`User type changed to: ${userType}`);
+    }, [userType]);
 
     const register = async ({ data, tags }: { data: FormValues, tags: string[] }) => {
         let inRoles = ['user'];
@@ -91,14 +95,14 @@ export default function RegisterPage() {
     return (
         <div className="flex flex-col min-h-screen items-center relative justify-center">
             <div className="pb-6 relative z-10">
-                <h1 className="font-bold dark:bg-zinc-900 dark:border rounded-xl p-2 text-2xl">
+                <h1 className="border font-bold bg-card rounded-xl shadow-lg px-3 py-2 text-2xl">
                     Register your account
                 </h1>
             </div>
             <Tabs
-                className="border rounded-xl relative z-10 shadow-lg dark:bg-zinc-900 bg-muted p-8"
+                className="border rounded-xl relative z-10 shadow-lg bg-card p-8"
                 defaultValue={userType}
-            >
+                >
                 <TabsList className="grid grid-cols-2 w-[350px]">
                     <TabsTrigger value="Tourist" onClick={() => setUserType('Tourist')}>
                         Tourist
