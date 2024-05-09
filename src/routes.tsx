@@ -20,8 +20,8 @@ function ProtectedRoute({
 }
 
 function ProviderRoute({ children }: { children: ReactNode }) {
-    const { token, roles } = useUserStore((state: { token: any; roles: any; }) => ({ token: state.token, roles: state.roles }));
-    const isProvider = roles.includes('PROVIDER');
+    const { token, scopes } = useUserStore((state: any) => ({ token: state.token, scopes: state.scopes }));
+    const isProvider = scopes.includes('provider');
     if (token && isProvider) return children;
     else if (token && !isProvider) return <div>You do not have permission to view this page.</div>;
     else return <Navigate to='/login' />;

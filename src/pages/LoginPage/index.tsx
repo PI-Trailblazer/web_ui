@@ -99,11 +99,11 @@ export default function RegisterPage() {
     return (
         <div className="flex flex-col min-h-screen justify-center items-center relative">
             <div className="pb-6 z-20">
-                <h1 className="font-bold dark:bg-zinc-900 dark:border rounded-xl p-2 text-2xl">
+                <h1 className="font-bold bg-card shadow-lg rounded-xl px-3 py-2 border text-2xl">
                     Login your account
                 </h1>
             </div>
-            <div className="border rounded-xl w-[350px] shadow-lg z-20 dark:bg-zinc-900 bg-muted p-8">
+            <div className="rounded-xl w-[350px] shadow-lg z-20 border bg-card p-8">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         <FormField
