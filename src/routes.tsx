@@ -2,6 +2,7 @@ import { CleanLayout } from './layouts/Layout';
 import { lazy, Suspense, ReactNode } from 'react';
 import { useUserStore } from './stores/useUserStore';
 import { Navigate } from 'react-router-dom';
+import { AccountLayout } from './layouts/AccountLayout';
 
 
 function ProtectedRoute({
@@ -35,6 +36,8 @@ const LoginPage = lazy(() => import("./pages/LoginPage"));
 const OfferListPage = lazy(() => import("./pages/OfferListPage"));
 const OfferDetailsPage = lazy(() => import("./pages/OfferDetailsPage"));
 const YourOfferPage = lazy(() => import("./pages/YourOffersPage"));
+const AccountSettingsPage = lazy(() => import("./pages/AccountSettingsPage"));
+const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 
 const routes = [
     {
@@ -94,18 +97,40 @@ const routes = [
                 </Suspense>,
                 exact: true
             },
-            {
-                path: "/your-offers",
-                element: (
-                    <ProviderRoute>
-                        <Suspense fallback={<div>Loading...</div>}>
-                            <YourOfferPage />
-                        </Suspense>
-                    </ProviderRoute>
-                ),
-                exact: true
-            }
         ]
+    },
+    {
+        path: '/account',
+        element: <AccountLayout />,
+        children: [
+            {
+                path: '',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <AccountSettingsPage />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: 'your-offers',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <YourOfferPage />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: 'dashboard',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <DashboardPage />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+        ],
     }
 ];
 
