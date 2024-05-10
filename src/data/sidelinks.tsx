@@ -1,25 +1,10 @@
 import {
-  IconApps,
-  IconBarrierBlock,
-  IconBoxSeam,
-  IconChartHistogram,
   IconChecklist,
-  IconComponents,
-  IconError404,
   IconExclamationCircle,
-  IconHexagonNumber1,
-  IconHexagonNumber2,
-  IconHexagonNumber3,
-  IconHexagonNumber4,
-  IconHexagonNumber5,
   IconLayoutDashboard,
   IconMessages,
   IconRouteAltLeft,
-  IconServerOff,
   IconSettings,
-  IconTruck,
-  IconUserShield,
-  IconUsers,
 } from '@tabler/icons-react'
 
 export interface NavLink {
@@ -55,19 +40,19 @@ export const sidelinks: SideLink[] = [
   {
     title: 'Comments',
     label: '10',
-    href: '/requests',
+    href: '',
     icon: <IconRouteAltLeft size={18} />,
     sub: [
       {
         title: 'My Comments',
         label: '9',
-        href: '',
+        href: '/404',
         icon: <IconExclamationCircle size={18} />,
       },
       {
         title: 'Comments on my offers',
         label: '',
-        href: '',
+        href: '/404',
         icon: <IconMessages  size={18} />,
       },
     ],
