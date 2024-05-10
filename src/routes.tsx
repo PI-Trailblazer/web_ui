@@ -38,6 +38,9 @@ const OfferDetailsPage = lazy(() => import("./pages/OfferDetailsPage"));
 const YourOfferPage = lazy(() => import("./pages/YourOffersPage"));
 const AccountSettingsPage = lazy(() => import("./pages/AccountSettingsPage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const NotFoundError = lazy(() => import("./pages/ErrorPages/NotFoundError"));
+const GeneralError = lazy(() => import("./pages/ErrorPages/GeneralError"));
+const MaintenanceError = lazy(() => import("./pages/ErrorPages/MaintenanceError"));
 
 const routes = [
     {
@@ -97,6 +100,37 @@ const routes = [
                 </Suspense>,
                 exact: true
             },
+            {
+                path: '/error',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <GeneralError />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: '/maintenance',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <MaintenanceError />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: '/404',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <NotFoundError />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: '*',
+                element: <Navigate to='/404' />,
+            }
         ]
     },
     {
