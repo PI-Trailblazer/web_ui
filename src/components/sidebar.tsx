@@ -15,7 +15,7 @@ export default function Sidebar2({
   className,
   isCollapsed,
   setIsCollapsed,
-}: SidebarProps) {
+}: Readonly<SidebarProps>) {
   const [navOpened, setNavOpened] = useState(false)
 
   /* Make body not scrollable when navBar is opened */
@@ -30,7 +30,7 @@ export default function Sidebar2({
   return (
     <aside
       className={cn(
-        `fixed left-0 right-0 top-0 z-40 w-full border-r-2 border-r-muted transition-[width] md:bottom-0 md:right-auto md:h-svh ${isCollapsed ? 'md:w-14' : 'md:w-64'}`,
+        `fixed left-0 right-0 top-0 z-0 w-full border-r-2 border-r-muted transition-[width] md:bottom-0 md:right-auto md:h-svh ${isCollapsed ? 'md:w-14' : 'md:w-64'}`,
         className
       )}
     >
@@ -38,7 +38,14 @@ export default function Sidebar2({
       <div
         onClick={() => setNavOpened(false)}
         className={`absolute inset-0 transition-[opacity] delay-100 duration-700 ${navOpened ? 'h-svh opacity-50' : 'h-0 opacity-0'} w-full bg-black md:hidden`}
-      />
+        role="button" // Add role="button"
+        tabIndex={0} // Make it focusable
+        onKeyDown={(event) => { // Use onKeyDown instead of onKeyPress
+          if (event.key === 'Enter' || event.key === ' ') {
+            setNavOpened(false)
+          }
+        }} 
+        />
 
       <Layout>
         {/* Header */}

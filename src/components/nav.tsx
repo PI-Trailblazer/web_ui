@@ -35,7 +35,7 @@ export default function Nav({
   isCollapsed,
   className,
   closeNav,
-}: NavProps) {
+}: Readonly<NavProps>) {
   const renderLink = ({ sub, ...rest }: SideLink) => {
     const key = `${rest.title}-${rest.href}`
     if (isCollapsed && sub)
@@ -87,7 +87,7 @@ function NavLink({
   href,
   closeNav,
   subLink = false,
-}: NavLinkProps) {
+}: Readonly<NavLinkProps>) {
   const { checkActiveNav } = useCheckActiveNav()
   return (
     <Link
@@ -114,7 +114,7 @@ function NavLink({
   )
 }
 
-function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
+function NavLinkDropdown({ title, icon, label, sub, closeNav }: Readonly<NavLinkProps>) {
   const { checkActiveNav } = useCheckActiveNav()
 
   /* Open collapsible by default
@@ -157,7 +157,7 @@ function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
   )
 }
 
-function NavLinkIcon({ title, icon, label, href }: NavLinkProps) {
+function NavLinkIcon({ title, icon, label, href }: Readonly<NavLinkProps>) {
   const { checkActiveNav } = useCheckActiveNav()
   return (
     <Tooltip delayDuration={0}>
@@ -186,7 +186,7 @@ function NavLinkIcon({ title, icon, label, href }: NavLinkProps) {
   )
 }
 
-function NavLinkIconDropdown({ title, icon, label, sub }: NavLinkProps) {
+function NavLinkIconDropdown({ title, icon, label, sub }: Readonly<NavLinkProps>) {
   const { checkActiveNav } = useCheckActiveNav()
 
   /* Open collapsible by default
