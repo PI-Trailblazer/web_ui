@@ -49,7 +49,7 @@ export default function Sidebar2({
 
       <Layout>
         {/* Header */}
-        <LayoutHeader className='sticky top-0 justify-between px-4 py-3 shadow md:px-4'>
+        <LayoutHeader className='sticky top-0 justify-between px-4 py-3 md:px-4'>
           <div className={`flex pt-10 items-center ${!isCollapsed ? 'gap-2' : ''}`}>
             <div
               className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'}`}
