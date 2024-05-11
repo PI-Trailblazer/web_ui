@@ -10,8 +10,34 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Layout, LayoutBody} from '@/components/custom/layout'
 import { RecentSales } from './components/recent-sales'
 import { Overview } from './components/overview'
+import { Nationalities } from './components/NationalitiesPieChart'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { SetStateAction, useState } from 'react'
+import AnalyticsCard from './components/AnalyticsCard'
+
 
 export default function DashboardPage() {
+  const [activeTab, setActiveTab] = useState('sales');
+  const [title, setTitle] = useState('Recent Sales');
+  const [description, setDescription] = useState('You made 265 sales this month.');
+
+  const handleSelectChange = (value: SetStateAction<string>) => {
+    setActiveTab(value);
+    if (value === 'sales') {
+      setTitle('Recent Sales');
+      setDescription('You made 265 sales this month.');
+    } else {
+      setTitle('Nationalities');
+      setDescription('Percentage of users by nationality.');
+    }
+  };
+
   return (
     <Layout>
       {/* ===== Main ===== */}
@@ -33,8 +59,6 @@ export default function DashboardPage() {
             <TabsList>
               <TabsTrigger value='overview'>Overview</TabsTrigger>
               <TabsTrigger value='analytics'>Analytics</TabsTrigger>
-              <TabsTrigger value='reports'>Reports</TabsTrigger>
-              <TabsTrigger value='notifications'>Notifications</TabsTrigger>
             </TabsList>
           </div>
           <TabsContent value='overview' className='space-y-4'>
@@ -144,7 +168,7 @@ export default function DashboardPage() {
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
               <Card className='col-span-1 lg:col-span-4'>
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle>Distribution of Offer Types</CardTitle>
                 </CardHeader>
                 <CardContent className='pl-2'>
                   <Overview />
@@ -152,15 +176,35 @@ export default function DashboardPage() {
               </Card>
               <Card className='col-span-1 lg:col-span-3'>
                 <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
-                  <CardDescription>
-                    You made 265 sales this month.
-                  </CardDescription>
+                  <div className='flex justify-between w-full'>
+                    <div>
+                    <CardTitle>{title}</CardTitle>
+                    <CardDescription>
+                      {description}
+                    </CardDescription>
+                    </div>
+                    <div>
+                    <Select defaultValue="sales" onValueChange={handleSelectChange}>
+                      <SelectTrigger aria-label="Select a category" className="w-32">
+                        <SelectValue placeholder="Category"></SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sales">Sales</SelectItem>
+                        <SelectItem value="nationalities">Nationalities</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <RecentSales />
+                  {activeTab === 'sales' ? <RecentSales /> : <Nationalities />}
                 </CardContent>
               </Card>
+            </div>
+          </TabsContent>
+          <TabsContent value='analytics' className='flex items-center justify-center h-full'>
+            <div className='w-full max-w-7xl'>
+              <AnalyticsCard />
             </div>
           </TabsContent>
         </Tabs>

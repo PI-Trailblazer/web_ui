@@ -169,14 +169,14 @@ function NavLinkIcon({ title, icon, label, href }: Readonly<NavLinkProps>) {
               variant: checkActiveNav(href) ? 'secondary' : 'ghost',
               size: 'icon',
             }),
-            'h-12 w-12'
+            'h-12 w-12' 
           )}
         >
           {icon}
           <span className='sr-only'>{title}</span>
         </Link>
       </TooltipTrigger>
-      <TooltipContent side='right' className='flex items-center gap-4'>
+      <TooltipContent side='right' className='flex zoom-in-50 items-center gap-4'>
         {title}
         {label && (
           <span className='ml-auto text-muted-foreground'>{label}</span>
