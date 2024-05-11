@@ -49,7 +49,7 @@ const OffersList: React.FC<OffersListProps> = () => {
     }
     
     return (
-        <div className="flex justify-center">
+        <div className="flex flex-1 justify-center items-center h-screen-2/6">
             {isLoading && (
                 <div className="flex flex-col py-10 gap-4">
                     <OfferCardSkeleton />
@@ -57,7 +57,7 @@ const OffersList: React.FC<OffersListProps> = () => {
                     <OfferCardSkeleton />
                 </div>
             )}
-            {!isLoading && offers && offers.length === 0 && <NoOffers />}
+            {!isLoading && (!offers || offers.length === 0) && <NoOffers />}
             {isSuccess && offers && offers.length > 0 && (
                 <div className="flex flex-col py-10 w-1/2 gap-4">
                     {offers.map((offer : Partial<OfferDetailsProps>, index: any) => (

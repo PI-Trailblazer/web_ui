@@ -2,6 +2,7 @@ import { CleanLayout } from './layouts/Layout';
 import { lazy, Suspense, ReactNode } from 'react';
 import { useUserStore } from './stores/useUserStore';
 import { Navigate } from 'react-router-dom';
+import { AccountLayout } from './layouts/AccountLayout';
 
 
 function ProtectedRoute({
@@ -35,6 +36,11 @@ const LoginPage = lazy(() => import("./pages/LoginPage"));
 const OfferListPage = lazy(() => import("./pages/OfferListPage"));
 const OfferDetailsPage = lazy(() => import("./pages/OfferDetailsPage"));
 const YourOfferPage = lazy(() => import("./pages/YourOffersPage"));
+const AccountSettingsPage = lazy(() => import("./pages/AccountSettingsPage"));
+const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const NotFoundError = lazy(() => import("./pages/ErrorPages/NotFoundError"));
+const GeneralError = lazy(() => import("./pages/ErrorPages/GeneralError"));
+const MaintenanceError = lazy(() => import("./pages/ErrorPages/MaintenanceError"));
 
 const routes = [
     {
@@ -95,17 +101,70 @@ const routes = [
                 exact: true
             },
             {
-                path: "/your-offers",
+                path: '/error',
                 element: (
-                    <ProviderRoute>
-                        <Suspense fallback={<div>Loading...</div>}>
-                            <YourOfferPage />
-                        </Suspense>
-                    </ProviderRoute>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <GeneralError />
+                    </Suspense>
                 ),
-                exact: true
+                exact: true,
+            },
+            {
+                path: '/maintenance',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <MaintenanceError />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: '/404',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <NotFoundError />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: '*',
+                element: <Navigate to='/404' />,
             }
         ]
+    },
+    {
+        path: '/account',
+        element: <AccountLayout />,
+        children: [
+            {
+                path: '',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <AccountSettingsPage />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: 'your-offers',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <YourOfferPage />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: 'dashboard',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <DashboardPage />
+                    </Suspense>
+                ),
+                exact: true,
+            },
+        ],
     }
 ];
 
