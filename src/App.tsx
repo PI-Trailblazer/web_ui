@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { refreshToken } from "@/services/Client/client";
+import { Toaster } from './components/ui/toaster';
 
 const App = () => {
   const router = createBrowserRouter(routes);
@@ -21,6 +22,7 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
           <RouterProvider router={router} />
+          <Toaster />
       </QueryClientProvider>
     </ThemeProvider>
   )
