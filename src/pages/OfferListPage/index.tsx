@@ -153,7 +153,7 @@ export default function OfferListPage() {
     return (
         <div className="pt-44 -mt-16 p-10 flex">
                 <div className="p-4 w-4/12">
-                    <div className={`p-6 border shadow-lg rounded-lg z-10 ${isSticky ? 'sticky top-20' : ''}`} >
+                    <div className={`p-6 border bg-card shadow-lg rounded-lg z-10 ${isSticky ? 'sticky top-20' : ''}`} >
                         <h1 className="text-2xl text-center font-bold mb-4">Filters</h1>
                         <div className="space-y-2 flex flex-col p-6 pl-24">
                             <h3 className='text-xl pb-1 font-medium'>Categories</h3>
