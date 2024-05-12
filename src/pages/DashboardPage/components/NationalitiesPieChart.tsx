@@ -8,7 +8,7 @@ const data = [
     { name: 'Australia', value: 200, color: '#7e22ce' } // Purple color
   ];
   
-const renderActiveShape = (props) => {
+const renderActiveShape = (props: { cx: any; cy: any; midAngle: any; innerRadius: any; outerRadius: any; startAngle: any; endAngle: any; fill: any; payload: any; percent: any; value: any; }) => {
     const RADIAN = Math.PI / 180;
     const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
     const sin = Math.sin(-RADIAN * midAngle);
@@ -60,7 +60,7 @@ interface NationalitiesPieChartProps {}
 export const Nationalities: React.FC<NationalitiesPieChartProps> = ({}) => {
     const [activeIndex, setActiveIndex] = useState(0);
 
-    const onPieEnter = (_, index) => {
+    const onPieEnter = (_: any, index: React.SetStateAction<number>) => {
       setActiveIndex(index);
     };
 
