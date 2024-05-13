@@ -119,9 +119,10 @@ export default function LandingPage() {
                                                 {isCardLoading ? (
                                                     <OfferCardSkeleton />
                                                 ) : (
-                                                    <OfferCard {...offerData[index % offerData.length]}/>
-                                                )
-                                                }
+                                                    offerData && offerData.length > 0
+                                                        ? <OfferCard {...offerData[index % offerData.length]}/>
+                                                        : <div></div>
+                                                )}
                                             </div>
                                         </CardContent>
                                     </Card>
@@ -169,17 +170,18 @@ export default function LandingPage() {
                 </p>
             </div>
             <div className="w-1/2 mt-20 flex items-center flex-col gap-4">
-                {isLoadingOfferData
+                {isLoadingOfferData 
                     ? Array(3)
                           .fill(0)
                           .map((_, index) => <OfferCardSkeleton key={index} />)
-                    : offerData.map((offer, index) => (
+                    : (offerData 
+                    ? offerData.map((offer, index) => (
                         <div className='w-full'>
-
-                          <OfferCard key={index}{...offer}
-                          />
-                          </div>
-                      ))}
+                          <OfferCard key={index} {...offer} />
+                        </div>
+                      ))
+                    : <div>No data available</div>
+                  )}
             </div>
         </div>
     )

@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2 } from 'lucide-react';
 import OfferCard from '@/components/OfferCard/OfferCard'
+import { Badge } from "@/components/ui/badge"
 
 import offerCardsData from './FakeCardsData';
 import { set } from 'zod';
@@ -279,7 +280,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                         <div className='flex space-x-4'>
                                             {/* Render the first page of offers */}
                                             {/* Replace 0, 1, 2 with the indices of the offers you want to display on the first page */}
-                                            <div className={`w-5/12 ${selectedOffers[0] ? 'border-4 rounded-xl' : ''}`}>
+                                            <div className={`w-5/12 relative ${selectedOffers[0] ? 'border-4 rounded-xl' : ''}`}>
+                                                {selectedOffers[0] && <Badge className="z-20 absolute -top-2 -left-1">Selected</Badge>}
                                                 <label>
                                                     <input 
                                                         type='checkbox' 
@@ -290,7 +292,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                     <OfferCard {...offerCardsData[0]}/>
                                                 </label>
                                             </div>
-                                            <div className={`w-5/12 ${selectedOffers[1] ? 'border-4 rounded-xl' : ''}`}>
+                                            <div className={`w-5/12 relative ${selectedOffers[1] ? 'border-4 rounded-xl' : ''}`}>
+                                            {selectedOffers[1] && <Badge className="z-20 absolute -top-2 -left-1">Selected</Badge>}
                                                 <label>
                                                     <input 
                                                         type='checkbox' 
@@ -301,7 +304,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                     <OfferCard {...offerCardsData[1]}/>
                                                 </label>
                                             </div>
-                                            <div className={`w-5/12 ${selectedOffers[2] ? 'border-4 rounded-xl' : ''}`}>
+                                            <div className={`w-5/12 relative ${selectedOffers[2] ? 'border-4 rounded-xl' : ''}`}>
+                                            {selectedOffers[2] && <Badge className="z-20 absolute -top-2 -left-1">Selected</Badge>}
                                                 <label>
                                                     <input 
                                                         type='checkbox' 
@@ -318,7 +322,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                         <div className='flex space-x-4'>
                                             {/* Render the second page of offers */}
                                             {/* Replace 3, 4, 5 with the indices of the offers you want to display on the second page */}
-                                            <div className={`w-5/12 ${selectedOffers[0] ? 'border-4 rounded-xl' : ''}`}>
+                                            <div className={`w-5/12 relative ${selectedOffers[0] ? 'border-4 rounded-xl' : ''}`}>
+                                            {selectedOffers[0] && <Badge className="z-20 absolute -top-2 -left-1">Selected</Badge>}
                                                 <label>
                                                     <input 
                                                         type='checkbox' 
@@ -329,7 +334,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                     <OfferCard {...offerCardsData[3]}/>
                                                 </label>
                                             </div>
-                                            <div className={`w-5/12 ${selectedOffers[1] ? 'border-4 rounded-xl' : ''}`}>
+                                            <div className={`w-5/12 relative ${selectedOffers[1] ? 'border-4 rounded-xl' : ''}`}>
+                                            {selectedOffers[1] && <Badge className="z-20 absolute -top-2 -left-1">Selected</Badge>}
                                                 <label>
                                                     <input 
                                                         type='checkbox' 
@@ -340,7 +346,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                     <OfferCard {...offerCardsData[4]}/>
                                                 </label>
                                             </div>
-                                            <div className={`w-5/12 ${selectedOffers[2] ? 'border-4 rounded-xl' : ''}`}>
+                                            <div className={`w-5/12 relative ${selectedOffers[2] ? 'border-4 rounded-xl' : ''}`}>
+                                            {selectedOffers[2] && <Badge className="z-20 absolute -top-2 -left-1">Selected</Badge>}
                                                 <label>
                                                     <input 
                                                         type='checkbox' 

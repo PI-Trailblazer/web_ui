@@ -29,7 +29,7 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
       return (await OfferService.getImages(id)).data;
     };
   
-    const { data, isLoading } = useQuery({
+    const { data: imageData, isLoading } = useQuery({
       queryKey: ['images', id],
       queryFn: () => fetchImages(id),
     });
@@ -102,7 +102,7 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
           <div className="w-full h-48 bg-gray-200 animate-pulse" />
         ) : (
           <img
-            src={data[0]?.image ?? 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings'}
+            src={imageData ? imageData[0].image : 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings'}
             alt={name}
             className="object-cover aspect-square w-full h-48 md:h-full"
           />
