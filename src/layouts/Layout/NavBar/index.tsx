@@ -72,25 +72,13 @@ const NavBar: React.FC = () => {
           <Menu />
         </button>
 
-        {/* Formulário de pesquisa */}
-        <div className="hidden sm:block sm:flex-1 lg:flex-initial">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="pl-10 pr-3 py-2 rounded-md shadow-md w-full sm:w-[5rem] md:w-[10rem] lg:w-[20rem] xl:w-[30rem]"
-            />
-          </div>
-        </div>
-
         {/* Links e botões */}
         <div className={`flex-grow-0 sm:flex sm:items-center ${menuOpen ? 'block' : 'hidden'} sm:block`}>
           <div className='p-3 hidden sm:block'>
             <ModeToggle />
           </div>
           <Link to="/offer-list" className='pr-5'>
-            <NavBarButton label='Offers'/>
+            <NavBarButton label='All Offers'/>
           </Link>
           {token ? (
               <DropdownMenu>
@@ -102,11 +90,19 @@ const NavBar: React.FC = () => {
                     </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent sideOffset={4} className='mt-2' align='end'>
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                  <Link to="/account/your-offers">
+                    <DropdownMenuItem>
+                        My Offers
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link to="/account/dashboard">
+                    <DropdownMenuItem>
+                      Dashboard
+                    </DropdownMenuItem> 
+                  </Link>
                   {scopes.includes('provider') && (
                     <Link to="/account">
-                        <DropdownMenuItem>Your Offers</DropdownMenuItem>
+                        <DropdownMenuItem>Account Management</DropdownMenuItem>
                     </Link>
                   )}
                   <DropdownMenuSeparator />
