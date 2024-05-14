@@ -105,7 +105,7 @@ const NavBar: React.FC = () => {
                   <DropdownMenuItem>Profile</DropdownMenuItem>
                   <DropdownMenuItem>Settings</DropdownMenuItem>
                   {scopes.includes('provider') && (
-                    <Link to="/your-offers">
+                    <Link to="/account">
                         <DropdownMenuItem>Your Offers</DropdownMenuItem>
                     </Link>
                   )}

@@ -19,7 +19,9 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
 
     const queryClient = useQueryClient();
     
-    const { uid } = useUserStore();
+    const { sub } = useUserStore();
+
+    console.log(sub);
 
     const deleteComment = async (reviewId: number) => {
         return (await OfferService.deleteReview(reviewId)).data;
@@ -71,12 +73,12 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
                         <EllipsisVertical size={24} />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                        {uid !== userId && (
+                        {sub !== userId && (
                             <DropdownMenuItem>
                                 <Flag className="mr-2" size={16} /> Report
                             </DropdownMenuItem>
                         )}
-                        {uid === userId && (
+                        {sub === userId && (
                             <>
                                 <DropdownMenuItem>
                                     <Pencil className="mr-2" size={16} /> Edit

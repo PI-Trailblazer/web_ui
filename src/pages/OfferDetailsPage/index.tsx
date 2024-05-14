@@ -1,7 +1,7 @@
 import { OfferDetailsProps, Review } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Pencil } from 'lucide-react';
+import { Pencil, XCircle, CheckCircle } from 'lucide-react';
 import {
 	Carousel,
 	CarouselContent,
@@ -20,15 +20,31 @@ import {
     SelectValue,
   } from "@/components/ui/select"
 import { Card, CardContent} from '@/components/ui/card';
-import SimilarOffersCard from "./components/SimilarOffersCard";
 import CommentsSection from "./components/CommentSection/CommentsSection";
 import { OfferService } from '@/services/Client/OfferService';
 import { useParams } from 'react-router-dom';
 import { decodeId } from "@/lib/utils";
 import { useQuery } from '@tanstack/react-query';
 import CommentInput from "./components/CommentSection/CommentInput";
-import config from "@/config";
+import { Input } from '@/components/ui/input';
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+
+const addImageSchema = z.object({
+    image: z.any()
+    // .refine(files => {return Array.from(files).every(file => file instanceof File)}, { message: "Expected a file" })
+});
 
 export default function OfferDetailsPage() {
     const [mainCarouselApi, setMainCarouselApi] = useState<CarouselApi | null>(null);
@@ -36,6 +52,44 @@ export default function OfferDetailsPage() {
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
     const { id: encodedId } = useParams();
     const id = parseInt(decodeId(encodedId));
+    const [editMode, setEditMode] = useState(false);
+
+    const queryClient = useQueryClient();
+
+
+    const form = useForm<z.infer<typeof addImageSchema>>({
+        resolver: zodResolver(addImageSchema),
+    });
+
+    const addImage = async (data: z.infer<typeof addImageSchema>) => {
+        const response = await OfferService.addImage(data, id);
+
+        return response.data;
+    }
+
+    const addImageMutation = useMutation({
+        mutationFn: addImage,
+        onSuccess: (data: any) => {
+            form.reset();
+            console.log('Image added successfully:', data);
+            queryClient.invalidateQueries(['images']);
+        },
+        onError: (error) => {
+            console.error('Error adding image:', error);
+        }
+    });
+
+    const handleAddImage = async (data: { image?: File }) => {
+        if (data.image) {
+            await addImageMutation.mutateAsync({ image: data.image });
+        } else {
+            console.error("No file provided");
+        }
+    }
+
+    const toggleEdit = () => {
+        setEditMode(!editMode);
+    };
 
     const handleGetImages = async () => {
         return (await OfferService.getImages(id)).data;
@@ -64,17 +118,12 @@ export default function OfferDetailsPage() {
     }
     }, [offer, isSuccess, isError])
 
-
-    const similarOffers = [
-        // Supondo que você tenha um array de objetos similares ao `offer`
-        { ...offer, name: "Offer 1"},
-        { ...offer, name: "Offer 2"},
-        { ...offer, name: "Offer 3"},
-      ];
-      
+    const [averageScore, setAverageScore] = useState<number>(0);
 
     //funcao para saber a média do score (esta para 100 quero que fique para 5)
-    const averageScore = offer ? ((offer.max_review_score / offer.n_reviews) * 5) / 100 : 0;
+    useEffect(() => {
+         setAverageScore(offer && offer.n_reviews !== 0 ? ((offer.max_review_score / offer.n_reviews) * 5) / 100 : 0);
+    }, [offer]);
 
     const generateQuantityOptions = (maxQuantity: number) => {
         return Array.from({ length: maxQuantity }, (_, i) => i + 1);
@@ -96,7 +145,7 @@ export default function OfferDetailsPage() {
 
     if (isLoading) return <div>Loading...</div>;
     if (isError || !offer) return <div>Error or no data available.</div>;
-    console.log(imagesData[0].image);
+    // console.log(imagesData[0].image);
     return (
         <div className="container pt-24">
             <div className="flex flex-col lg:flex-row">
@@ -112,22 +161,60 @@ export default function OfferDetailsPage() {
                             </div>
                         </div>
                         <div>
-                            <Button className="text-md">
-                                <span className="pr-1"><Pencil></Pencil></span>    
-                                Edit Page
-                            </Button>
+                            {!editMode ? (
+                                <Button className="text-md" onClick={toggleEdit}>
+                                    <span className="pr-1"><Pencil></Pencil></span>
+                                    Edit Page
+                                </Button>
+                            ) : (
+                                <Form {...form}>
+                                    <form onSubmit={form.handleSubmit(handleAddImage)} className="flex items-center space-x-3">
+                                        <FormField
+                                            control={form.control}
+                                            name="image"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input type="file" accept="image/*" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <Button variant={"link"} type="submit">
+                                            <CheckCircle className="text-green-500" size={20} />
+                                        </Button>
+                                        <Button variant={"link"} type="button" onClick={toggleEdit}>
+                                            <XCircle className="text-red-500" size={20} />
+                                        </Button>
+                                    </form>
+                                </Form>
+                            )}
                         </div>
                     </div>
                     <div className="relative">
                         <Carousel setApi={setMainCarouselApi} className="w-full">
                             <CarouselContent>
-                                {Array.from({ length: imagesData.length }).map((_, index) => (
-                                    <CarouselItem key={index} className="w-full">
-                                        <Card className="h-full overflow-hidden">
-                                            <img className="h-full" src={imagesData[index].image} alt="offer" />
-                                        </Card>
-                                    </CarouselItem>
-                                ))}
+                                { imagesData && (
+                                    Array.from({ length: 5 }).map((_, index) => (
+                                        <CarouselItem key={index} className="w-full">
+                                            <Card className="h-full">
+                                                <CardContent className="flex aspect-video items-center justify-center">
+                                                    <span className="text-4xl font-semibold">{index + 1}</span>
+                                                </CardContent>
+                                            </Card>
+                                        </CarouselItem>
+                                    ))
+                                )}
+                                { imagesData && imagesData.length > 0 && (
+                                    Array.from({ length: imagesData.length }).map((_, index) => (
+                                        <CarouselItem key={index} className="w-full">
+                                            <Card className="h-full overflow-hidden">
+                                                <img className="h-full" src={imagesData[index].image} alt="offer" />
+                                            </Card>
+                                        </CarouselItem>
+                                    ))
+                                )}
                             </CarouselContent>
                         </Carousel>
                     </div>
@@ -145,24 +232,37 @@ export default function OfferDetailsPage() {
                         }}
                         > {/* Ajuste a altura aqui */}
                             <CarouselContent>
-                                {Array.from({ length: imagesData.length }).map((_, index) => (
+                                { imagesData && imagesData.length > 0 && (
+                                    Array.from({ length: imagesData.length }).map((_, index) => (
+                                        <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/4 cursor-pointer" onClick={() => onThumbnailClick(index)}>
+                                            <Card className="h-full overflow-hidden">
+                                                <img className="h-full" src={imagesData[index].image} alt="offer" />
+                                            </Card>
+                                        </CarouselItem>
+                                    ))
+                                )}
+                                { imagesData && (
+                                 Array.from({ length: 5 }).map((_, index) => (
                                     <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/4 cursor-pointer" onClick={() => onThumbnailClick(index)}>
-                                        <Card className="h-full overflow-hidden">
-                                            <img className="h-full" src={imagesData[index].image} alt="offer" />
+                                        <Card className="h-full">
+                                            <CardContent className="flex aspect-video items-center justify-center p-6">
+                                                <span className="text-4xl font-semibold">{index + 1}</span>
+                                            </CardContent>
                                         </Card>
                                     </CarouselItem>
-                                ))}
+                                ))  
+                                )}
                             </CarouselContent>
                             <CarouselPrevious className="absolute left-3 z-10" /> {/* Posicionamento absoluto do botão anterior */}
                             <CarouselNext className="absolute right-3 z-10" /> {/* Posicionamento absoluto do botão seguinte */}
                         </Carousel>
                     </div>
-                    <div className="border p-4 rounded-lg shadow-xl">
+                    <div className="border p-4 bg-card rounded-lg shadow-xl">
                         {/* Description */}
                         <h2 className="text-2xl font-semibold">Description</h2>
                         <p className="mt-2 text-lg">{offer.description}</p>
                     </div>
-                    <div className="border p-4 rounded-lg shadow-xl">
+                    <div className="border p-4 bg-card rounded-lg shadow-xl">
                         {/* Reviews */}
                         <CommentsSection offerId={offer.id} />
                         <CommentInput offerId={offer.id} />
@@ -170,7 +270,7 @@ export default function OfferDetailsPage() {
                 </div>
                 {/* Parte Direita - Preço, Opções de Quantidade e Botão de Compra */}
                 <div className="lg:w-2/5 lg:pl-10 pt-2 space-y-6">
-                    <div className="space-y-3 border rounded-lg p-4">
+                    <div className="space-y-3 border bg-card rounded-lg p-4">
                         <div className="space-y-2">
                             {/* Offer Details */}
                             <h2 className="text-2xl font-semibold">Offer Details</h2>
@@ -189,7 +289,7 @@ export default function OfferDetailsPage() {
                                 </div>
                                 <div className="flex items-center">
                                     <p className="font-semibold">Average Rating:</p>
-                                    <p className="ml-2">{averageScore.toFixed(2)}/5</p>
+                                    <p className="ml-2">{averageScore}/5</p>
                                     <div className="flex ml-2">
                                         {Array.from({ length: 5 }, (_, i) => (
                                             <span key={i} className={`inline-block ${i < Math.round(averageScore) ? 'text-yellow-400' : 'text-gray-300'}`}>★</span>
@@ -210,7 +310,7 @@ export default function OfferDetailsPage() {
                                 </SelectTrigger>
                                 <SelectContent className="mt-1">
                                     {generateQuantityOptions(offer.max_quantity).map((quantity) => (
-                                    <SelectItem key={quantity} value={quantity.toString()} className="hover:bg-gray-100">
+                                    <SelectItem key={quantity} value={quantity.toString()}>
                                         {quantity}
                                     </SelectItem>
                                     ))}

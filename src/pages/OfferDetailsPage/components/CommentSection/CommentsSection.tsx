@@ -28,7 +28,7 @@ const CommentsSection = ({ offerId } : { offerId: number }) => {
     if (isError || !reviews) return <div>Error loading reviews or no reviews found.</div>;
 
     return (
-        <div className="border p-4 rounded-lg shadow-xl">
+        <div className="border p-4 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold">Reviews <span>({reviews.length})</span></h2>
             {reviews.length > 0 && isSuccess ? (
                 <div className="mt-4 space-y-4">

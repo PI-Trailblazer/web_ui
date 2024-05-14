@@ -49,7 +49,11 @@ const OfferService = {
             url += `ids=${id}&`
         }
         return await client.get(url);
-    }
+    },
+
+    async addImage(data: any, offer_id: number) {
+        return await client.post(`/image/?offer_id=` + offer_id, data);
+    },
 
 };
 

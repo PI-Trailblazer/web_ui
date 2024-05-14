@@ -78,7 +78,6 @@ export default function RegisterPage() {
         let token = '';
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            // Signed in
             const user = userCredential.user;
             token = await user.getIdToken();
         } catch (error) {

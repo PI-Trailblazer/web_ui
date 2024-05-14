@@ -100,12 +100,20 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
       <div className="md:w-1/3">
         {isLoading ? (
           <div className="w-full h-48 bg-gray-200 animate-pulse" />
-        ) : (
-          <img
-            src={imageData ? imageData[0].image : 'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings'}
-            alt={name}
-            className="object-cover aspect-square w-full h-48 md:h-full"
-          />
+        ) : ( 
+          imageData && imageData.length > 0 ? (
+            <img
+              src={imageData[0].url}
+              alt={name}
+              className="object-cover aspect-square w-full h-48 md:h-full"
+            />
+          ) : (
+            <img
+              src={'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings'}
+              alt={name}
+              className="object-cover aspect-square w-full h-48 md:h-full"
+            />
+          )
         )}
       </div>
     </Card>
