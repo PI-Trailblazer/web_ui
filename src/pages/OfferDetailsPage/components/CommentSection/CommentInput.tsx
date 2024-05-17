@@ -8,7 +8,7 @@ import {
     } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormValues, commentSchema } from './schema';
+import { CommentFormValues, commentSchema } from './schema';
 import { useForm } from 'react-hook-form';
 import { useUserStore } from '@/stores/useUserStore';
 
@@ -23,14 +23,14 @@ const CommentInput: React.FC<CommentInputProps> = ({ offerId }) => {
 
     const queryClient = useQueryClient();
 
-    const { register, handleSubmit, reset, watch } = useForm<FormValues>({
+    const { register, handleSubmit, reset, watch } = useForm<CommentFormValues>({
         resolver: zodResolver(commentSchema),
         defaultValues: {
             comment: '',
         },
     });
 
-    const addComment = async (data: FormValues) => {
+    const addComment = async (data: CommentFormValues) => {
         const apiData = {
             ...data,
             offerid: offerId,
@@ -78,7 +78,7 @@ const CommentInput: React.FC<CommentInputProps> = ({ offerId }) => {
                     />
                 </form>
                 {showLoginError && <div className="text-red-500">Login before post a comment</div>}
-                <div className={`absolute bottom-0 right-0 text-sm ${watch('comment') && watch('comment').length > 1320 ? 'text-red-500' : ''}`}>
+                <div className={`absolute bottom-0 right-0 pr-2 text-sm ${watch('comment') && watch('comment').length > 1320 ? 'text-red-500' : ''}`}>
                     {watch('comment') ? watch('comment').length : 0}/1320
                 </div>
             </div>

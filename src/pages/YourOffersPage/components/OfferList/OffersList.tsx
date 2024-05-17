@@ -5,12 +5,15 @@ import { OfferService } from '@/services/Client/OfferService';
 import OfferCard from '@/components/OfferCard/OfferCard';
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton';
 import { useEffect, useState } from 'react';
+import { useToast } from '@/components/ui/use-toast';
 
 
 interface OffersListProps {
 }
 
 const OffersList: React.FC<OffersListProps> = () => {
+
+    const { toast } = useToast();
 
     const queryClient = useQueryClient();
 
@@ -46,6 +49,11 @@ const OffersList: React.FC<OffersListProps> = () => {
     const handleDeleteOffer = async (id: number) => {
         console.log('Deletar oferta com id:', id);
         deleteMutation.mutate(id);
+        toast({
+            variant: 'destructive',
+            title: 'Offer deleted',
+            description: 'Your offer has been deleted successfully',
+        });
     }
     
     return (

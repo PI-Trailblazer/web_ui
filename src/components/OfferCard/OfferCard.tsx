@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { encodeId } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { OfferService } from '@/services/Client/OfferService';
-import { Trash2, Loader2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton'
 import DeleteOffer from './DeleteOffer';
 
