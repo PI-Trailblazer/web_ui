@@ -140,27 +140,33 @@ const routes = [
             {
                 path: '',
                 element: (
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <AccountSettingsPage />
-                    </Suspense>
+                    <ProviderRoute>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <AccountSettingsPage />
+                        </Suspense>
+                    </ProviderRoute>
                 ),
                 exact: true,
             },
             {
                 path: 'your-offers',
                 element: (
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <YourOfferPage />
-                    </Suspense>
+                    <ProtectedRoute>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <YourOfferPage />
+                        </Suspense>
+                    </ProtectedRoute>
                 ),
                 exact: true,
             },
             {
                 path: 'dashboard',
                 element: (
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <DashboardPage />
-                    </Suspense>
+                    <ProtectedRoute>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <DashboardPage />
+                        </Suspense>
+                    </ProtectedRoute>
                 ),
                 exact: true,
             },

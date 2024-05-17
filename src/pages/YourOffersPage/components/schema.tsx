@@ -3,7 +3,7 @@ import { z } from 'zod';
 const addOfferSchema = z
     .object({
         name: z.string().min(1, { message: "Offer's Name is required" }),
-        description: z.string().min(1, { message: 'Description is required' }),
+        description: z.string().min(1, { message: 'Description is required' }).min(64, { message: 'Description must be at least 64 characters long' }),
         street: z.string().min(1, { message: 'Street is required' }),
         city: z.string().min(1, { message: 'City is required' }),
         postal_code: z.string().min(1, { message: 'Postal Code is required' }),

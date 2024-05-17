@@ -14,6 +14,12 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "@/components/ui/tooltip"
 
 const Comment = ({ review, userId, offerId }: { review: Review, userId: string, offerId: number }) => {
 
@@ -61,11 +67,20 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
                     </div>
                     </div>
                     <div className="text-xl pl-2 font-semibold text-secondary">
-                        <span>
-                            {Array.from({ length: Math.ceil(review.score/20) }).map((_, index) => (
-                                <span key={index} className="text-yellow-400 drop-shadow-[0px.0px_1.10px_rgba(0,0,0,1)]                                ">★</span>
-                            ))}
-                        </span>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <span>
+                                        {Array.from({ length: Math.ceil(review.score/20) }).map((_, index) => (
+                                            <span key={index} className="text-yellow-400 drop-shadow-[0px.0px_1.10px_rgba(0,0,0,1)]                                ">★</span>
+                                        ))}
+                                    </span>
+                                </TooltipTrigger>
+                                <TooltipContent side='bottom'>
+                                    Score based on the review: {review.score}%
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     </div>
                 </div>
                 <DropdownMenu>

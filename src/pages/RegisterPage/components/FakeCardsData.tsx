@@ -78,7 +78,7 @@ const offerCardsData: OfferDetailsProps[] = [
     },
     {
         id: 6,
-        name: "Farol da Barra",
+        name: "Farol da Barra - Sunset Tour",
         description: "Visit the Farol da Barra, the tallest lighthouse in Portugal. Climb to the top of the lighthouse for stunning views of the coast and the Atlantic Ocean. Learn about the history of the lighthouse and its importance to the region.",
         street: "Ilhavo",
         city: "Aveiro",

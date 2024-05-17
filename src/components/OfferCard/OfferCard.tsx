@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { Card, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { OfferDetailsProps } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { encodeId } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import { query } from 'firebase/firestore';
 import { OfferService } from '@/services/Client/OfferService';
 import { Trash2, Loader2 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton'
+import DeleteOffer from './DeleteOffer';
 
-type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean};
+type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean; seeMoreDisabled?: boolean};
   
   const OfferCard: React.FC<OfferCardProps> = ({
     name,
@@ -22,8 +23,11 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
     id,
     showDelete = false, // Adicionado nova prop para controlar a exibição do botão de exclusão
     onDelete, // Adicionado novo prop para a função de exclusão
-    isPending
-  }: Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean}) => {
+    isPending,
+    seeMoreDisabled,
+  }: Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean; seeMoreDisabled?: boolean }) => {
+
+    const[isOpen, setIsOpen] = useState(false);
 
     const fetchImages = async (id: number) => {
       return (await OfferService.getImages(id)).data;
@@ -36,32 +40,25 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
     
     let rating = 0;
     if (max_review_score !== undefined && n_reviews !== undefined && n_reviews !== 0 && max_review_score !== 0) {
-      rating = Math.floor(((max_review_score / n_reviews) * 5) / 100);
+      rating = Math.round(((max_review_score / n_reviews) * 5) / 100);
     }
   
     return (
-    <Card className="shadow-xl rounded-lg overflow-hidden relative md:flex md:flex-row">
+      <Card className={`shadow-xl rounded-lg overflow-hidden relative md:flex md:flex-row ${seeMoreDisabled ? 'hover:opacity-60 hover:shadow-2xl cursor-pointer' : ''}`}>
       {showDelete && onDelete && (
-        isPending ? (
+        <div>
           <Button
-          onClick={onDelete}
-          className="absolute rounded-full top-0 right-0 mt-4 mr-4"
-          title="Delete Offer"
-          variant="destructive"
-          loading={isPending}
-        >
-          <Loader2/>
-        </Button>
-        ) : (
-        <Button
-          onClick={onDelete}
-          className="absolute rounded-full top-0 right-0 mt-4 mr-4 px-2"
-          title="Delete Offer"
-          variant="destructive"
-        >
-          <Trash2/>
-        </Button>
-        )
+            onClick={() => setIsOpen(true)}
+            className="absolute rounded-full top-0 right-0 mt-4 mr-4 px-2"
+            title="Delete Offer"
+            variant="destructive"
+          >
+            <Trash2/>
+          </Button>
+          {isOpen && (
+            <DeleteOffer isOpen={isOpen} setIsOpen={setIsOpen} onDelete={onDelete} isPending={isPending} />
+          )}
+        </div>
       )}
       <CardContent className="flex flex-col justify-between p-4 md:w-2/3">
         <div className="flex justify-between items-center">
@@ -82,7 +79,14 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
         <CardDescription className="text-sm my-4 overflow-hidden line-clamp-3">{description}</CardDescription>
         <CardFooter className="flex md:flex-row justify-between items-center pt-4">
           <div className="flex flex-wrap gap-2">
-          {tags && tags.map((tag, index) => (
+          {tags && tags.length === 0 && (
+            <div className="flex flex-wrap gap-2">
+              { Array.from({ length: 3 }).map((_, index) => (
+                <Skeleton key={index} className="h-6 bg-primary rounded-full w-16"/>
+              ))}
+            </div>
+          )}
+          {tags && tags.length > 0 && tags.map((tag, index) => (
             <Badge key={index} className="px-2 py-1 text-sm">
               {tag}
             </Badge>
@@ -91,7 +95,7 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
           <div className="flex items-center gap-4">
             <span className="text-lg font-semibold">{`+/- $${price}`}</span>
             {/* TODO */}
-            <Link to={id !== undefined ? `/offer/${encodeId(id)}` : '#'}>
+            <Link to={id !== undefined ? `/offer/${encodeId(id)}` : '#'} className={seeMoreDisabled ? 'pointer-events-none' : ''}>
               <Button>See More</Button> 
             </Link>
           </div>

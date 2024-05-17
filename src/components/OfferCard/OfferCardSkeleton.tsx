@@ -6,7 +6,7 @@ const OfferCardSkeleton: React.FC = () => {
 
 
   return (
-    <Card className="shadow-xl w-full animate-pulse rounded-lg md:flex md:flex-row">
+    <Card className="shadow-xl w-[1200px] animate-pulse rounded-lg md:flex md:flex-row">
       <CardContent className="flex flex-col justify-between p-4 md:w-2/3">
         <div className="flex justify-between items-center">
           <Skeleton className="h-6 mt-2 mb-4 w-1/3" /> {/* Simula o título */}
