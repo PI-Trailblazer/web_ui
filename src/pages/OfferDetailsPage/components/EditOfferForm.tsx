@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import {
     Form,
@@ -14,78 +14,80 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormValues, addOfferSchema } from './schema';
+import { FormValues, addOfferSchema } from '@/pages/YourOffersPage/components/schema'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { OfferService } from '@/services/Client/OfferService';
 import { useToast } from '@/components/ui/use-toast';
+import { OfferDetailsProps } from '@/lib/types';
 
 interface AddOfferDialogProps {
-    closeModal: () => void;
+    toggleEditDetails: () => void;
+    offer: OfferDetailsProps;
 }
 
-export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({ closeModal
+export const EditOfferForm: React.FC<AddOfferDialogProps> = ({ toggleEditDetails, offer 
 }) => {
     const queryClient = useQueryClient();
     const { toast } = useToast();
 
 
-    const form = useForm<FormValues>({
+    const editOfferForm = useForm<FormValues>({
         resolver: zodResolver(addOfferSchema),
         defaultValues: {
-            name: '',
-            description: '',
-            street: '',
-            city: '',
-            postal_code: '',
-            price: 0,
-            max_quantity: 0,
+            name: offer?.name,
+            description: offer?.description,
+            street: offer?.street,
+            city: offer?.city,
+            postal_code: offer?.postal_code,
+            price: offer?.price,
+            max_quantity: offer?.max_quantity,
         },
     });
 
-    const addOffer = async (data: FormValues) => {
+    const editOffer = async (data: FormValues) => {
         const apiData = {
             ...data,
-            userid: '123',
-            modules: [],
-            tags: [],
-            n_reviews: 0,
-            discount: 0,
-            max_review_score: 0,
+            userid: offer?.userid,
+            modules: offer?.modules,
+            tags: offer?.tags,
+            n_reviews: offer?.n_reviews,
+            discount: offer?.discount,
+            max_review_score: offer?.max_review_score,
         };
         console.log(apiData);
 
-        const response = await OfferService.addOffer(apiData);
+        const response = await OfferService.editOffer(offer.id, apiData);
 
         return response.data;
     }
 
 
-    const addOfferMutation = useMutation({
-        mutationFn: addOffer,
+    const editOfferMutation = useMutation({
+        mutationFn: editOffer,
         onSuccess: (data: any) => {
-            form.reset();
-            closeModal();
+            editOfferForm.reset();
+            toggleEditDetails();
             toast({
                 variant: 'success',
-                title: 'Offer added',
-                description: 'Your offer has been added successfully',
+                title: 'Offer edited',
+                description: 'Your offer has been edited successfully',
             });
-            queryClient.invalidateQueries('offersByUser'); // Não  sei se é necessário
+            queryClient.invalidateQueries(['offer', offer.id]);
         },
         onError: (error: any) => {
             console.log(error);
         },
     })
 
-    const handleAddOffer = async (data: FormValues) => {
-        addOfferMutation.mutate(data);
+    const handleEditOffer = async (data: FormValues) => {
+        editOfferMutation.mutate(data);
     }
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleAddOffer)} className="space-y-6">
+        <Form {...editOfferForm}>
+            <form onSubmit={editOfferForm.handleSubmit(handleEditOffer)} className="space-y-6">
                 <FormField
-                    control={form.control}
+                    control={editOfferForm.control}
                     name="name"
                     render={({ field }) => (
                         <FormItem className="mb-6">
@@ -98,7 +100,7 @@ export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({ closeModal
                     )}
                 />
                 <FormField
-                    control={form.control}
+                    control={editOfferForm.control}
                     name="description"
                     render={({ field }) => (
                         <FormItem className="mb-6">
@@ -111,7 +113,7 @@ export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({ closeModal
                     )}
                 />
                 <FormField
-                    control={form.control}
+                    control={editOfferForm.control}
                     name="street"
                     render={({ field }) => (
                         <FormItem className="mb-6">
@@ -125,7 +127,7 @@ export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({ closeModal
                 />
                 <div className="flex space-x-4">
                     <FormField
-                        control={form.control}
+                        control={editOfferForm.control}
                         name="city"
                         render={({ field }) => (
                             <FormItem className="mb-6">
@@ -138,7 +140,7 @@ export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({ closeModal
                         )}
                     />
                     <FormField
-                        control={form.control}
+                        control={editOfferForm.control}
                         name="postal_code"
                         render={({ field }) => (
                             <FormItem className="mb-6">
@@ -153,7 +155,7 @@ export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({ closeModal
                 </div>
                 <div className="flex space-x-4">
                 <FormField
-                    control={form.control}
+                    control={editOfferForm.control}
                     name="price"
                     render={({ field }) => (
                     <FormItem className="mb-6 flex-1">
@@ -166,7 +168,7 @@ export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({ closeModal
                     )}
                 />
                 <FormField
-                    control={form.control}
+                    control={editOfferForm.control}
                     name="max_quantity"
                     render={({ field }) => (
                     <FormItem className="mb-6 flex-1">
@@ -180,8 +182,8 @@ export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({ closeModal
                 />
                 </div>
                 <div className="flex justify-center space-x-10">
-                    <Button type="submit" disabled={addOfferMutation.isPending}>
-                        {addOfferMutation.isPending ? <Loader2 /> : 'Add Offer'}
+                    <Button type="submit" disabled={editOfferMutation.isPending}>
+                        {editOfferMutation.isPending ? <Loader2 /> : 'Add Offer'}
                     </Button>
                     <DialogClose asChild>
                         <Button type="button" variant="destructive">

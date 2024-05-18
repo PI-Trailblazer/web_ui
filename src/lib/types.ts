@@ -29,6 +29,7 @@ export interface OfferDetailsProps {
     max_quantity: number;
     modules: any[];
     id: number;
+    userid: string;
 }
 
 export interface Review {

@@ -1,24 +1,12 @@
 import { OfferDetailsProps} from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Pencil, XCircle, CheckCircle } from 'lucide-react';
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-	CarouselNext,
-	CarouselPrevious,
-  } from "@/components/ui/carousel"
+import { Pencil } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "@/components/ui/carousel"
 import { useState, useEffect } from 'react';
 import { type CarouselApi } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import { Card, CardContent} from '@/components/ui/card';
 import CommentsSection from "./components/CommentSection/CommentsSection";
 import { OfferService } from '@/services/Client/OfferService';
@@ -27,22 +15,17 @@ import { decodeId } from "@/lib/utils";
 import { useQuery } from '@tanstack/react-query';
 import CommentInput from "./components/CommentSection/CommentInput";
 import { Input } from '@/components/ui/input';
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from '@/components/ui/form';
+import {Form, FormControl, FormField, FormItem, FormMessage} from '@/components/ui/form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-  
-
+import { useUserStore } from "@/stores/useUserStore";
+import { EditOfferForm } from "./components/EditOfferForm";
+import { Dialog, DialogContent} from '@/components/ui/dialog';
 
 const addImageSchema = z.object({
-    image: z.any()
+    file: z.any(),
     // .refine(files => {return Array.from(files).every(file => file instanceof File)}, { message: "Expected a file" })
 });
 
@@ -52,53 +35,13 @@ export default function OfferDetailsPage() {
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
     const { id: encodedId } = useParams();
     const id = parseInt(decodeId(encodedId));
-    const [editMode, setEditMode] = useState(false);
-
+    const [editMode, setEditMode] = useState(false); 
+    const [editImages, setEditImages] = useState(false);
+    const [editDetails, setEditDetails] = useState(false);
+    const [averageScore, setAverageScore] = useState<number>(0);
     const queryClient = useQueryClient();
 
-
-    const form = useForm<z.infer<typeof addImageSchema>>({
-        resolver: zodResolver(addImageSchema),
-    });
-
-    const addImage = async (data: z.infer<typeof addImageSchema>) => {
-        const response = await OfferService.addImage(data, id);
-
-        return response.data;
-    }
-
-    const addImageMutation = useMutation({
-        mutationFn: addImage,
-        onSuccess: (data: any) => {
-            form.reset();
-            console.log('Image added successfully:', data);
-            queryClient.invalidateQueries(['images']);
-        },
-        onError: (error) => {
-            console.error('Error adding image:', error);
-        }
-    });
-
-    const handleAddImage = async (data: { image?: File }) => {
-        if (data.image) {
-            await addImageMutation.mutateAsync({ image: data.image });
-        } else {
-            console.error("No file provided");
-        }
-    }
-
-    const toggleEdit = () => {
-        setEditMode(!editMode);
-    };
-
-    const handleGetImages = async () => {
-        return (await OfferService.getImages(id)).data;
-    }
-
-    const { data: imagesData, isLoading: imagesLoading, isError: imagesError } = useQuery({
-        queryKey: ['images'],
-        queryFn: handleGetImages,
-    });
+    const { sub } = useUserStore();
     
     const getOffer = async (id: number) => {
         return (await OfferService.getOffer(id)).data;
@@ -109,25 +52,57 @@ export default function OfferDetailsPage() {
         queryFn: () => getOffer(id),
     })
 
-    useEffect(() => {
-        if(isSuccess) {
-            console.log(offer);
-        if (isError) {
-            console.log('Error');
-        } 
+    const form = useForm<z.infer<typeof addImageSchema>>({
+        resolver: zodResolver(addImageSchema),
+    });
+
+    const addImage = async (data: z.infer<typeof addImageSchema>) => {
+        console.log(data);
+
+        const response = await OfferService.addImage(data, id);
+        return response.data;
     }
-    }, [offer, isSuccess, isError])
 
-    const [averageScore, setAverageScore] = useState<number>(0);
+    const addImageMutation = useMutation({
+        mutationFn: addImage,
+        onSuccess: (data: any) => {
+            form.reset();
+            console.log('Image added successfully:', data);
+            queryClient.invalidateQueries({ queryKey: ['images'] });
+        },
+        onError: (error) => {
+            console.error('Error adding image:', error);
+        }
+    });
 
-    //funcao para saber a média do score (esta para 100 quero que fique para 5)
+    const handleAddImage = async (data: { file?: File }) => {
+        if (data.file) {
+            await addImageMutation.mutateAsync({ file: data.file });
+        } else {
+            console.error("No file provided");
+        }
+    }
+
+    const handleGetImages = async () => {
+        return (await OfferService.getImages(id)).data;
+    }
+
+    const { data: imagesData } = useQuery({
+        queryKey: ['images'],
+        queryFn: handleGetImages,
+    });
+    
     useEffect(() => {
          setAverageScore(offer && offer.n_reviews !== 0 ? ((offer.max_review_score / offer.n_reviews) * 5) / 100 : 0);
     }, [offer]);
 
+    // Função para gerar as opções de quantidade
+
     const generateQuantityOptions = (maxQuantity: number) => {
         return Array.from({ length: maxQuantity }, (_, i) => i + 1);
     };
+
+    // Efeito para mudar o slide do carrossel principal quando o selectedIndex muda
 
     const onThumbnailClick = (index: number) => {
         if (mainCarouselApi) {
@@ -136,16 +111,34 @@ export default function OfferDetailsPage() {
         setSelectedIndex(index);
       };
 
-    // Efeito para mudar o slide do carrossel principal quando o selectedIndex muda
+    
     useEffect(() => {
         if (thumbnailCarouselApi && mainCarouselApi) {
           thumbnailCarouselApi.scrollTo(selectedIndex);
         }
       }, [selectedIndex, thumbnailCarouselApi, mainCarouselApi]);
 
+    // Paginas de carregamento e erro
+
     if (isLoading) return <div>Loading...</div>;
     if (isError || !offer) return <div>Error or no data available.</div>;
-    // console.log(imagesData[0].image);
+
+    //Switches para controle de edição de imagens e detalhes
+
+    const toggleEditImages = () => {
+        setEditImages(!editImages);
+        setEditMode(!editMode);
+    }
+
+    const toggleEditDetails = () => {
+        setEditDetails(!editDetails);
+        setEditMode(!editMode);
+    }
+
+    const toggleEdit = () => {
+        setEditMode(!editMode);
+    };
+
     return (
         <div className="container pt-24">
             <div className="flex flex-col lg:flex-row">
@@ -160,37 +153,54 @@ export default function OfferDetailsPage() {
                                 ))}
                             </div>
                         </div>
-                        <div>
-                            {!editMode ? (
-                                <Button className="text-md" onClick={toggleEdit}>
-                                    <span className="pr-1"><Pencil></Pencil></span>
-                                    Edit Page
-                                </Button>
-                            ) : (
-                                <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(handleAddImage)} className="flex items-center space-x-3">
-                                        <FormField
-                                            control={form.control}
-                                            name="image"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Input type="file" accept="image/*" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <Button variant={"link"} type="submit">
-                                            <CheckCircle className="text-green-500" size={20} />
-                                        </Button>
-                                        <Button variant={"link"} type="button" onClick={toggleEdit}>
-                                            <XCircle className="text-red-500" size={20} />
-                                        </Button>
-                                    </form>
-                                </Form>
-                            )}
-                        </div>
+                        {sub === offer.userid && (
+                            <div>
+                                {!editMode && !editImages && !editDetails && (
+                                    <Button className="text-md" onClick={toggleEdit}>
+                                        <span className="pr-1"><Pencil></Pencil></span>
+                                        Edit Offer
+                                    </Button>
+                                )}
+                                {editMode && (
+                                    <div className="flex space-x-4">
+                                        <Button onClick={toggleEditDetails}>Edit Details</Button>
+                                        <Button onClick={toggleEditImages}>Edit Images</Button>
+                                        <Button variant={'outline'} onClick={() => setEditMode(false)}>Back</Button>
+                                    </div>
+                                )}
+                                {editImages && (
+                                    <Form {...form}>
+                                        <form onSubmit={form.handleSubmit(handleAddImage)} className="flex items-center space-x-3">
+                                            <FormField
+                                                control={form.control}
+                                                name="file"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <Input type="file" accept="image/*" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <Button type="submit">
+                                                Submit
+                                            </Button>
+                                            <Button variant={"outline"} type="button" onClick={toggleEditImages}>
+                                                Back
+                                            </Button>
+                                        </form>
+                                    </Form>
+                                )}
+                                {editDetails && (
+                                    <Dialog open={editDetails} onOpenChange={toggleEditDetails}>
+                                        <DialogContent>
+                                            <EditOfferForm toggleEditDetails={toggleEditDetails} offer={offer} />
+                                        </DialogContent>
+                                    </Dialog>
+                                )}
+                            </div>
+                        )}
                     </div>
                     <div className="relative">
                         <Carousel setApi={setMainCarouselApi} className="w-full">
