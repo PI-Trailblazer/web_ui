@@ -42,4 +42,5 @@ export const useUserStore = create<UserState & UserActions>((set, get) => ({
             scopes: [],
             sub: '',
         })),
+
 }));

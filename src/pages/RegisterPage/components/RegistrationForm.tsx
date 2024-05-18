@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 
 // Forms
 import { FormValues, regiterSchema } from './schema';
@@ -22,7 +22,6 @@ import OfferCard from '@/components/OfferCard/OfferCard'
 import { Badge } from "@/components/ui/badge"
 
 import offerCardsData from './FakeCardsData';
-import { set } from 'zod';
 
 interface RegistrationFormProps {
     userType: 'Tourist' | 'Provider';
@@ -43,8 +42,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     const [tags, setTags] = useState([]);
     const [modalDone, setModalDone] = useState(false);
     const [formError, setFormError] = useState('');
+    const [seeMoreDisabled, setSeeMoreDisabled] = useState(true);
     
-    const handleCheckboxChange = (index) => {
+    const handleCheckboxChange = (index: number) => {
         if (selectedOffers.filter(Boolean).length === 2 && !selectedOffers[index]) {
             return;
         }
@@ -72,7 +72,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         setTags([...oldTags, ...selectedTags]);
     }
 
-    const handlePageChange = (page) => {
+    const handlePageChange = (page: SetStateAction<number>) => {
         // get tags from the selected offers
         getTags();
         // reset selected offers
@@ -91,7 +91,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         },
     });
 
-    const handleButtonClick = (event) => {
+    const handleButtonClick = (event: { preventDefault: () => void; }) => {
         event.preventDefault(); // Prevent form submission
         setIsModalOpen(true); // Open the modal
     };
@@ -289,7 +289,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                         checked={selectedOffers[0]}
                                                         onChange={() => handleCheckboxChange(0)}
                                                     />
-                                                    <OfferCard {...offerCardsData[0]}/>
+                                                    <OfferCard {...offerCardsData[0]} seeMoreDisabled={seeMoreDisabled}/>
                                                 </label>
                                             </div>
                                             <div className={`w-5/12 relative ${selectedOffers[1] ? 'border-4 rounded-xl' : ''}`}>
@@ -301,7 +301,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                         checked={selectedOffers[1]}
                                                         onChange={() => handleCheckboxChange(1)}
                                                     />
-                                                    <OfferCard {...offerCardsData[1]}/>
+                                                    <OfferCard {...offerCardsData[1]} seeMoreDisabled={seeMoreDisabled}/>
                                                 </label>
                                             </div>
                                             <div className={`w-5/12 relative ${selectedOffers[2] ? 'border-4 rounded-xl' : ''}`}>
@@ -313,7 +313,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                         checked={selectedOffers[2]}
                                                         onChange={() => handleCheckboxChange(2)}
                                                     />
-                                                    <OfferCard {...offerCardsData[2]}/>
+                                                    <OfferCard {...offerCardsData[2]} seeMoreDisabled={seeMoreDisabled}/>
                                                 </label>
                                             </div>
                                         </div>
@@ -331,7 +331,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                         checked={selectedOffers[0]}
                                                         onChange={() => handleCheckboxChange(0)}
                                                     />
-                                                    <OfferCard {...offerCardsData[3]}/>
+                                                    <OfferCard {...offerCardsData[3]} seeMoreDisabled={seeMoreDisabled}/>
                                                 </label>
                                             </div>
                                             <div className={`w-5/12 relative ${selectedOffers[1] ? 'border-4 rounded-xl' : ''}`}>
@@ -343,7 +343,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                         checked={selectedOffers[1]}
                                                         onChange={() => handleCheckboxChange(1)}
                                                     />
-                                                    <OfferCard {...offerCardsData[4]}/>
+                                                    <OfferCard {...offerCardsData[4]} seeMoreDisabled={seeMoreDisabled}/>
                                                 </label>
                                             </div>
                                             <div className={`w-5/12 relative ${selectedOffers[2] ? 'border-4 rounded-xl' : ''}`}>
@@ -355,7 +355,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                                                         checked={selectedOffers[2]}
                                                         onChange={() => handleCheckboxChange(2)}
                                                     />
-                                                    <OfferCard {...offerCardsData[5]}/>
+                                                    <OfferCard {...offerCardsData[5]} seeMoreDisabled={seeMoreDisabled}/>
                                                 </label>
                                             </div>
                                         </div>

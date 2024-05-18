@@ -13,8 +13,6 @@ interface TimeData {
     [key: string]: string | number;
 }
 
-const allData: TimeData[] = [];
-
 const generateTimeData = (timeUnit: string): TimeData[] => {
     const randomValue = () => Math.floor(Math.random() * 1000) + 100;
     let data: TimeData[] = [];
@@ -95,6 +93,9 @@ export default function AnalyticsCard() {
     const handleAddFutureData = () => {
         setFutureData(generateFutureData(data, timeUnit));
     };
+
+    //log data
+    console.log(data);
 
   return (
     <Card className="m-4 shadow-xl rounded-lg"> {/* Added margins and shadow for better styling */}

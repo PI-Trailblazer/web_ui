@@ -4,13 +4,16 @@ import { OfferDetailsProps } from "@/lib/types";
 import { OfferService } from '@/services/Client/OfferService';
 import OfferCard from '@/components/OfferCard/OfferCard';
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useToast } from '@/components/ui/use-toast';
 
 
 interface OffersListProps {
 }
 
 const OffersList: React.FC<OffersListProps> = () => {
+
+    const { toast } = useToast();
 
     const queryClient = useQueryClient();
 
@@ -46,10 +49,15 @@ const OffersList: React.FC<OffersListProps> = () => {
     const handleDeleteOffer = async (id: number) => {
         console.log('Deletar oferta com id:', id);
         deleteMutation.mutate(id);
+        toast({
+            variant: 'destructive',
+            title: 'Offer deleted',
+            description: 'Your offer has been deleted successfully',
+        });
     }
     
     return (
-        <div className="flex flex-1 justify-center items-center h-screen-2/6">
+        <div className="flex flex-1 border mt-4 border-dashed border-primary rounded-lg justify-center items-center h-screen-2/6">
             {isLoading && (
                 <div className="flex flex-col py-10 gap-4">
                     <OfferCardSkeleton />
@@ -59,7 +67,7 @@ const OffersList: React.FC<OffersListProps> = () => {
             )}
             {!isLoading && (!offers || offers.length === 0) && <NoOffers />}
             {isSuccess && offers && offers.length > 0 && (
-                <div className="flex flex-col py-10 w-1/2 gap-4">
+                <div className="grid 2xl:grid-cols-2 grid-cols-1 p-4 gap-4">
                     {offers.map((offer : Partial<OfferDetailsProps>, index: any) => (
                         <OfferCard key={index} 
                             name={offer.name}

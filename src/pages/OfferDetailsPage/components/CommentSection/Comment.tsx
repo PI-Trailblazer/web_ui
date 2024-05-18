@@ -14,26 +14,27 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "@/components/ui/tooltip"
+import { useToast } from '@/components/ui/use-toast';
+import { useState } from 'react';
+import DeleteComment from './DeleteComment';
+  
 
 const Comment = ({ review, userId, offerId }: { review: Review, userId: string, offerId: number }) => {
+
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    
+    const { toast } = useToast();
 
     const queryClient = useQueryClient();
     
     const { sub } = useUserStore();
-
-    console.log(sub);
-
-    const deleteComment = async (reviewId: number) => {
-        return (await OfferService.deleteReview(reviewId)).data;
-    }
-
-    const deleteCommentMutation = useMutation({
-        mutationFn: deleteComment,
-        onSuccess: (data: any) => {
-            queryClient.invalidateQueries(['reviews', offerId]);
-
-        },
-    });
 
     const fetchUser = async (userId: string) => {
         return (await UserService.getUserByUserId(userId)).data;
@@ -61,11 +62,20 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
                     </div>
                     </div>
                     <div className="text-xl pl-2 font-semibold text-secondary">
-                        <span>
-                            {Array.from({ length: Math.ceil(review.score/20) }).map((_, index) => (
-                                <span key={index} className="text-yellow-400 drop-shadow-[0px.0px_1.10px_rgba(0,0,0,1)]                                ">★</span>
-                            ))}
-                        </span>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <span>
+                                        {Array.from({ length: Math.ceil(review.score/20) }).map((_, index) => (
+                                            <span key={index} className="text-yellow-400 drop-shadow-[0px.0px_1.10px_rgba(0,0,0,1)]                                ">★</span>
+                                        ))}
+                                    </span>
+                                </TooltipTrigger>
+                                <TooltipContent side='bottom'>
+                                    Score based on the review: {review.score}%
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     </div>
                 </div>
                 <DropdownMenu>
@@ -83,7 +93,7 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
                                 <DropdownMenuItem>
                                     <Pencil className="mr-2" size={16} /> Edit
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onSelect={() => deleteCommentMutation.mutate(review.id)}>
+                                <DropdownMenuItem onSelect={() => setIsDeleteOpen(true)}>
                                     <Trash2 className="mr-2" size={16} /> Delete
                                 </DropdownMenuItem>
                             </>
@@ -92,6 +102,14 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
                 </DropdownMenu>
             </div>
             <p className="mt-2">{review.comment}</p>
+            {isDeleteOpen && (
+                <DeleteComment isOpen={isDeleteOpen} setIsOpen={setIsDeleteOpen} reviewId={review.id} offerId={offerId} />
+            )}
+            {isEditOpen && (
+                <div>
+                    Div
+                </div>
+            )}
         </div>
     );
 };

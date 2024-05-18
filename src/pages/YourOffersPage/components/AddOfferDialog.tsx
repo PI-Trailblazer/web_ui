@@ -17,13 +17,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormValues, addOfferSchema } from './schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { OfferService } from '@/services/Client/OfferService';
+import { useToast } from '@/components/ui/use-toast';
 
 interface AddOfferDialogProps {
+    closeModal: () => void;
 }
 
-export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({
+export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({ closeModal
 }) => {
     const queryClient = useQueryClient();
+    const { toast } = useToast();
 
 
     const form = useForm<FormValues>({
@@ -61,7 +64,12 @@ export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({
         mutationFn: addOffer,
         onSuccess: (data: any) => {
             form.reset();
-            console.log(data);
+            closeModal();
+            toast({
+                variant: 'success',
+                title: 'Offer added',
+                description: 'Your offer has been added successfully',
+            });
             queryClient.invalidateQueries('offersByUser'); // Não  sei se é necessário
         },
         onError: (error: any) => {
@@ -172,7 +180,7 @@ export const AddOfferDialog: React.FC<AddOfferDialogProps> = ({
                 />
                 </div>
                 <div className="flex justify-center space-x-10">
-                    <Button type="submit" disabled={addOfferMutation.isLoading}>
+                    <Button type="submit" disabled={addOfferMutation.isPending}>
                         {addOfferMutation.isPending ? <Loader2 /> : 'Add Offer'}
                     </Button>
                     <DialogClose asChild>

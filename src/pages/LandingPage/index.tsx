@@ -11,14 +11,19 @@ import Autoplay from 'embla-carousel-autoplay'
 import { useEffect, useRef, useState } from 'react'
 import OfferCard from '@/components/OfferCard/OfferCard'
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton'
-import { OfferDetailsProps } from '@/lib/types'
 import background_image from '@/assets/City_of_Aveiro_twitter_b.jpg'
 import { RecommenderService } from '@/services/Client/RecommenderService'
 import { useQuery } from '@tanstack/react-query'
 import { OfferService } from '@/services/Client/OfferService'
+import { useUserStore } from '@/stores/useUserStore'
+import {ChevronDown} from 'lucide-react'
+
 export default function LandingPage() {
     const scrollToRef = useRef<HTMLDivElement | null>(null)
     const [isCardLoading, setisCardLoading] = useState<boolean>(true)
+
+    //token 
+    const token = useUserStore((state) => state.token)
 
     const [isSticky, setIsSticky] = useState(false)
 
@@ -70,7 +75,7 @@ export default function LandingPage() {
     const scrollToElement = () => {
         if (scrollToRef.current) {
             // A altura do seu header ou nav, se houver algum fixado
-            const headerOffset = -100 // Ajuste este valor conforme necessário
+            const headerOffset = -70 // Ajuste este valor conforme necessário
             // A posição do elemento a partir do topo do documento
             const elementPosition = scrollToRef.current.offsetTop
             // O ajuste do translate, se houver algum
@@ -115,12 +120,21 @@ export default function LandingPage() {
                                 <div className="p-1 h-full w-full flex items-center justify-center">
                                     <Card className="h-full border-transparent">
                                         <CardContent className="flex items-center h-full justify-center p-6 m-6">
-                                            <div className="z-10 flex w-10/12 justify-center">
+                                            <div className="z-10 flex justify-center">
                                                 {isCardLoading ? (
                                                     <OfferCardSkeleton />
                                                 ) : (
                                                     offerData && offerData.length > 0
-                                                        ? <OfferCard {...offerData[index % offerData.length]}/>
+                                                        ? (
+                                                            <div className='w-2/3 space-y-3'>
+                                                                <h2 className="text-4xl font-bold">
+                                                                    <span className='bg-card rounded-lg p-1 px-3'>
+                                                                        Most Famous Offers
+                                                                    </span>
+                                                                </h2>
+                                                                <OfferCard {...offerData[index % offerData.length]}/>
+                                                            </div>
+                                                        )
                                                         : <div></div>
                                                 )}
                                             </div>
@@ -135,37 +149,18 @@ export default function LandingPage() {
                     <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2" />
                 </Carousel>
             </div>
-            <div className="absolute w-full bottom-0 mb-16 text-center">
-                <Button
-                    variant={'link'}
-                    onClick={scrollToElement}
-                    className="text-white rounded-full"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        className="w-8 h-8"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={5}
-                            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                        />
-                    </svg>
-                </Button>
-            </div>
             <div
-                className={`w-full text-center pt-5 bottom-0 absolute transition-transform pb-6 duration-300 ${
+                className={`w-full text-center pt-5 bottom-0 absolute cursor-pointer transition-transform pb-6 duration-300 ${
                     isSticky ? 'translate-y-20' : 'translate-y-0'
                 }`}
                 ref={scrollToRef}
+                onClick={scrollToElement}
+
             >
                 <p className="text-2xl font-semibold">
-                    <span className={isSticky ? 'bg-transparent' : 'text-white'}>
-                        More to explore
+                    <span className={isSticky ? 'bg-transparent' : 'bg-card rounded-lg p-1 px-3'}>
+                        {token ? 'Offers for you' : 'More to explore'}
+                        {!isSticky && <ChevronDown className="inline-block ml-2" />}
                     </span>
                 </p>
             </div>
