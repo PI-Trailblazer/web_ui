@@ -26,6 +26,10 @@ const OfferService = {
         return await client.delete(`/review/${id}`);
     },
 
+    async editReview(id: number, data: any) {
+        return await client.put(`/review/${id}`, data);
+    },
+
     async addOffer(data: any) {
         return await client.post('/', data);
     },
@@ -54,6 +58,8 @@ const OfferService = {
     async addImage(data: any, offer_id: number) {
         return await client.post(`/image/?offer_id=` + offer_id, data);
     },
+
+
 
 };
 

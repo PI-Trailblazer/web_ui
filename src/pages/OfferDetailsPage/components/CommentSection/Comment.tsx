@@ -20,20 +20,28 @@ import {
     TooltipProvider,
     TooltipTrigger,
   } from "@/components/ui/tooltip"
-import { useToast } from '@/components/ui/use-toast';
 import { useState } from 'react';
 import DeleteComment from './DeleteComment';
+import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CommentFormValues, commentSchema } from './schema';
+import { useForm } from 'react-hook-form';
+import EditComment from './EditComment';
   
 
 const Comment = ({ review, userId, offerId }: { review: Review, userId: string, offerId: number }) => {
 
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isEditComment, setIsEditComment] = useState(false);
     
-    const { toast } = useToast();
+    const { register, watch } = useForm<CommentFormValues>({
+        resolver: zodResolver(commentSchema),
+        defaultValues: {
+            comment: review.comment,
+        },
+    });
 
-    const queryClient = useQueryClient();
-    
     const { sub } = useUserStore();
 
     const fetchUser = async (userId: string) => {
@@ -47,6 +55,11 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
 
     if (isLoading) return <div>Loading user...</div>;
     if (isError || !user) return <div>Error loading user details.</div>;
+
+    function handlePostComment(event: React.FormEvent<HTMLFormElement>): void {
+        event.preventDefault();
+        setIsEditDialogOpen(true);
+    }
 
     return (
         <div className="border rounded-lg p-4">
@@ -90,7 +103,7 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
                         )}
                         {sub === userId && (
                             <>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onSelect={() => setIsEditComment(true)}>
                                     <Pencil className="mr-2" size={16} /> Edit
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onSelect={() => setIsDeleteOpen(true)}>
@@ -101,14 +114,35 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <p className="mt-2">{review.comment}</p>
+            {isEditComment ? (
+                <div className="relative w-full">
+                    <form className="w-full" onSubmit={handlePostComment}>
+                        <Input
+                            className="w-full rounded h-12 shadow-lg border-t-transparent border-x-transparent  p-2"
+                            placeholder="Add a review..."
+                            {...register('comment')}
+                            defaultValue={review.comment} // Adicione esta linha para preencher o campo de entrada com o comentário atual
+                        />
+                    </form>
+                    <div className={`absolute bottom-0 right-0 pr-2 text-sm ${watch('comment') && watch('comment').length > 1320 ? 'text-red-500' : ''}`}>
+                        {watch('comment') ? watch('comment').length : 0}/1320
+                    </div>
+                </div>
+            ) : (
+                <p className="mt-2">{review.comment}</p>
+            )}
             {isDeleteOpen && (
                 <DeleteComment isOpen={isDeleteOpen} setIsOpen={setIsDeleteOpen} reviewId={review.id} offerId={offerId} />
             )}
-            {isEditOpen && (
-                <div>
-                    Div
-                </div>
+            { isEditDialogOpen && (
+                        <EditComment
+                            isOpen={isEditDialogOpen}
+                            setIsOpen={setIsEditDialogOpen}
+                            setIsCommentEdit={setIsEditComment}
+                            reviewId={review.id}
+                            offerId={offerId}
+                            comment={watch('comment')} // Passa o comentário para o componente EditComment
+                        />
             )}
         </div>
     );
