@@ -34,6 +34,10 @@ const OfferService = {
         return await client.post('/', data);
     },
 
+    async editOffer(id: number, data: any) {
+        return await client.put(`/${id}`, data);
+    },
+
     async getOffersByUser() {
         return await client.get('/user/');
     },

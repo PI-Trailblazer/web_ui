@@ -7,7 +7,6 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { useToast } from '@/components/ui/use-toast';
 
 
 interface DeleteOfferProps {
@@ -18,8 +17,6 @@ interface DeleteOfferProps {
 }
 
 export default function DeleteOffer( { isOpen, setIsOpen, onDelete, isPending }: DeleteOfferProps ) {
-
-    const toast = useToast();
 
     const handleDeleteOffer = () => {
         console.log('Deletar oferta');
