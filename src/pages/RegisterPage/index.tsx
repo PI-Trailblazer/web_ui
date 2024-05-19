@@ -40,7 +40,7 @@ export default function RegisterPage() {
             email: data.email,
             roles: inRoles,
             phone: data.phone ?? null,
-            tags: [""],
+            tags: tags,
         };
 
         console.log(payload);
@@ -55,7 +55,8 @@ export default function RegisterPage() {
         mutationFn: register,
         onSuccess: data => {
             console.log('Success');
-            useUserStore.getState().login(data.access_token);
+            console.log(data);
+            useUserStore.getState().login(data.access_token, data.tags);
             setIsLoading(false);
             navigate('/');
         },

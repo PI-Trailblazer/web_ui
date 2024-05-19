@@ -14,13 +14,9 @@ const accountChangeSchema = z.object({
   email: z.string().email(),
   currentPassword: z.string()
     .min(6, { message: 'Password must be at least 6 characters' }),
-  newPassword: z.string()
-    .min(6, { message: 'Password must be at least 6 characters' }),
-  verifyNewPassword: z.string(),
-})
-.refine((data) => data.newPassword === data.verifyNewPassword, {
-  message: 'New passwords must match',
-  path: ['verifyNewPassword'],
+  tags: z.array(z.string())
+    .optional(),
+  image: z.string().optional(),
 });
 
 type AccountChangeFormValues = z.infer<typeof accountChangeSchema>;

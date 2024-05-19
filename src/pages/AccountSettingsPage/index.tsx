@@ -18,10 +18,10 @@ export default function AccountSettingsPage() {
             </div>
         </div>
         <Separator />
-        <div>
-        </div>
-        <div className='w-full p-1 pr-4 lg:max-w-xl ml-24'>
-            <AccountForm />
+        <div className='flex justify-center pt-16 p-1'>
+            <div className='w-full max-w-3xl'>
+                <AccountForm />
+            </div>
         </div>
       </LayoutBody>
     </Layout>
