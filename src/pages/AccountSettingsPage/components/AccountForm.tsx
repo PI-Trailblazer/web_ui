@@ -42,6 +42,8 @@ export function AccountForm() {
 
   const user = auth.currentUser;
 
+  console.log('User:', user);
+
   const userStore = useUserStore();
   const [selectedTags, setSelectedTags] = useState<string[]>(userStore.tags || []);
 
@@ -59,7 +61,7 @@ export function AccountForm() {
       currentPassword: '',
       image: '',
       tags: [],
-    }
+    },
   });
 
   function handleTagChange(checked: CheckedState, value: string) {
@@ -111,7 +113,7 @@ export function AccountForm() {
               <FormItem className="row-span-2">
                   <FormLabel>Profile Picture</FormLabel>
                   {imagePreviewUrl ? <img src={imagePreviewUrl} className="w-32 h-32 rounded-full" alt="Profile preview" />
-                    : <img src={user?.photoURL || 'https://via.placeholder.com/150'} className="w-32 h-32 rounded-full" alt="Profile preview" /> }
+                    : <img src={userStore.image || 'https://via.placeholder.com/150'} className="w-32 h-32 rounded-full" alt="Profile preview" /> }
                   <FormControl>
                   <Input type='file' {...field} onChange={(event) => {
                       field.onChange(event); // Mantenha o controle do formulário atualizado

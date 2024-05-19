@@ -23,6 +23,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserStore } from "@/stores/useUserStore";
 import { EditOfferForm } from "./components/EditOfferForm";
 import { Dialog, DialogContent} from '@/components/ui/dialog';
+import { SimilarOffersList } from "./components/SimilarOffersList";
 
 const addImageSchema = z.object({
     file: z.any(),
@@ -332,14 +333,10 @@ export default function OfferDetailsPage() {
                             </div>
                         </div>
                     </div>
-                    {/* <div className="similar-offers p-4 border rounded-lg space-y-4">
+                    <div className="similar-offers bg-card p-4 border rounded-lg space-y-4">
                         <h2 className="text-2xl font-semibold">Similar Offers</h2>
-                        <div className="grid grid-cols-1 gap-4">
-                            {similarOffers.map((similarOffer, index) => (
-                            <SimilarOffersCard key={index} offer={similarOffer} />
-                            ))}
-                        </div>
-                    </div> */}
+                        <SimilarOffersList offerTags={offer.tags}/>
+                    </div>
                 </div>
             </div>
         </div>

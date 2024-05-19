@@ -43,7 +43,6 @@ export default function RegisterPage() {
             tags: tags,
         };
 
-        console.log(payload);
         const response = await UserService.register({
             ...payload,
         });
@@ -55,7 +54,6 @@ export default function RegisterPage() {
         mutationFn: register,
         onSuccess: data => {
             console.log('Success');
-            console.log(data);
             useUserStore.getState().login(data.access_token, data.tags);
             setIsLoading(false);
             navigate('/');

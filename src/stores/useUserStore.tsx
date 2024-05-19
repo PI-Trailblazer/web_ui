@@ -8,6 +8,8 @@ interface UserState {
     tags: string[];
     scopes: string[];
     sub: string;
+    email: string;
+    phone: string;
 }
 
 
@@ -23,10 +25,11 @@ export const useUserStore = create<UserState & UserActions>((set, get) => ({
     tags: [],
     scopes: [],
     sub: '',
+    email: '',
+    phone: '',
 
     login: (token : string, tags: string[]) => {
         const payload = token ? parseJWT(token) : {};
-
         set(() => ({
             token: token,
             tags: tags,
