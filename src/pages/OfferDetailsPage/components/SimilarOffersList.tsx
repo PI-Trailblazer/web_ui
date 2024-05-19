@@ -10,15 +10,19 @@ interface SimilarOffersListProps {
 
 export function SimilarOffersList({offerTags}: SimilarOffersListProps) {
 
-    const fetchSimilarOffersIds = async (offerTags: string[]) => {
+    const fetchSimilarOffersIds = async ({ queryKey }: { queryKey: [string, string[]] }) => {
+        
+        const tags = queryKey[1];
 
         const getInfo = {
-            user_tags: offerTags,
-            size: 3
-        }
+            size: 3,
+            offer_tags: tags // Certifique-se de que 'tags' é um array de strings
+        };
+    
 
-        return (await RecommenderService.getUserRecommendations(getInfo)).data
+        console.log(getInfo)
 
+        return (await RecommenderService.getOfferRecommendations(getInfo)).data;
     }
 
     const { data: similarOffersIds, isLoading: isLoadingSimilarOffersIds} = useQuery({
@@ -41,6 +45,10 @@ export function SimilarOffersList({offerTags}: SimilarOffersListProps) {
         return <div>Loading...</div>
     }
 
+    //se nao tiver ofertas similares
+    if(!similarOffers || similarOffers.length === 0){
+        return <div>No similar offers found</div>
+    }
 
     return (
         <div className="grid grid-cols-1 gap-4">
