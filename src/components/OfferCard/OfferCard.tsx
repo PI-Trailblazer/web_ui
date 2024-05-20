@@ -10,6 +10,7 @@ import { OfferService } from '@/services/Client/OfferService';
 import { Trash2, Pencil } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton'
 import DeleteOffer from './DeleteOffer';
+import config from '@/config';
 
 type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean; seeMoreDisabled?: boolean};
   
@@ -42,7 +43,7 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
     if (max_review_score !== undefined && n_reviews !== undefined && n_reviews !== 0 && max_review_score !== 0) {
       rating = Math.round(((max_review_score / n_reviews) * 5) / 100);
     }
-  
+
     return (
       <Card className={`shadow-xl rounded-lg overflow-hidden relative md:flex md:flex-row ${seeMoreDisabled ? 'hover:opacity-60 hover:shadow-2xl cursor-pointer' : ''}`}>
       {showDelete && onDelete && (
@@ -115,7 +116,7 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
         ) : ( 
           imageData && imageData.length > 0 ? (
             <img
-              src={imageData[0].url}
+              src={config.STATIC_URL + imageData[0].image}
               alt={name}
               className="object-cover aspect-square w-full h-48 md:h-full"
             />

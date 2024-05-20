@@ -18,7 +18,11 @@ const UserService = {
     
     async logout() {
         return await client.post('/logout');
-    }
+    },
+
+    async updateUser(data: any) {
+        return await client.put('/me', data);
+    },  
 };
 
 export { UserService };

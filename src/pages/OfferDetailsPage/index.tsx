@@ -25,6 +25,8 @@ import { EditOfferForm } from "./components/EditOfferForm";
 import { Dialog, DialogContent} from '@/components/ui/dialog';
 import { SimilarOffersList } from "./components/SimilarOffersList";
 
+import config from "@/config";
+
 const addImageSchema = z.object({
     file: z.any(),
     // .refine(files => {return Array.from(files).every(file => file instanceof File)}, { message: "Expected a file" })
@@ -57,10 +59,15 @@ export default function OfferDetailsPage() {
         resolver: zodResolver(addImageSchema),
     });
 
-    const addImage = async (data: z.infer<typeof addImageSchema>) => {
-        console.log(data);
+    const fileRef = form.register('file')
 
-        const response = await OfferService.addImage(data, id);
+    const addImage = async (data: z.infer<typeof addImageSchema>) => {
+        
+        const formData = new FormData();
+        formData.append('file', data.file[0] as File);
+        console.log('Data:', data);
+        console.log('Form Data:', formData);
+        const response = await OfferService.addImage(formData, id);
         return response.data;
     }
 
@@ -178,7 +185,7 @@ export default function OfferDetailsPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <Input type="file" accept="image/*" {...field} />
+                                                            <Input type="file" accept="image/*" {...fileRef} />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -206,7 +213,15 @@ export default function OfferDetailsPage() {
                     <div className="relative">
                         <Carousel setApi={setMainCarouselApi} className="w-full">
                             <CarouselContent>
-                                { imagesData && (
+                                { (imagesData && imagesData.length > 0) ? (
+                                    Array.from({ length: imagesData.length }).map((_, index) => (
+                                        <CarouselItem key={index} className="w-full">
+                                            <Card className="h-[29rem] overflow-hidden">
+                                                <img className="object-fits h-full w-full" src={config.STATIC_URL+imagesData[index].image} alt="offer" />
+                                            </Card>
+                                        </CarouselItem>
+                                    ))
+                                ) : (
                                     Array.from({ length: 5 }).map((_, index) => (
                                         <CarouselItem key={index} className="w-full">
                                             <Card className="h-full">
@@ -216,15 +231,7 @@ export default function OfferDetailsPage() {
                                             </Card>
                                         </CarouselItem>
                                     ))
-                                )}
-                                { imagesData && imagesData.length > 0 && (
-                                    Array.from({ length: imagesData.length }).map((_, index) => (
-                                        <CarouselItem key={index} className="w-full">
-                                            <Card className="h-full overflow-hidden">
-                                                <img className="h-full" src={imagesData[index].image} alt="offer" />
-                                            </Card>
-                                        </CarouselItem>
-                                    ))
+
                                 )}
                             </CarouselContent>
                         </Carousel>
@@ -243,16 +250,15 @@ export default function OfferDetailsPage() {
                         }}
                         > {/* Ajuste a altura aqui */}
                             <CarouselContent>
-                                { imagesData && imagesData.length > 0 && (
+                                { (imagesData && imagesData.length > 0) ? (
                                     Array.from({ length: imagesData.length }).map((_, index) => (
                                         <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/4 cursor-pointer" onClick={() => onThumbnailClick(index)}>
-                                            <Card className="h-full overflow-hidden">
-                                                <img className="h-full" src={imagesData[index].image} alt="offer" />
+                                            <Card className="h-28 overflow-hidden">
+                                                <img className="object-fits h-full w-full" src={config.STATIC_URL + imagesData[index].image} alt="offer" />
                                             </Card>
                                         </CarouselItem>
                                     ))
-                                )}
-                                { imagesData && (
+                                ) : (
                                  Array.from({ length: 5 }).map((_, index) => (
                                     <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/4 cursor-pointer" onClick={() => onThumbnailClick(index)}>
                                         <Card className="h-full">
@@ -262,7 +268,8 @@ export default function OfferDetailsPage() {
                                         </Card>
                                     </CarouselItem>
                                 ))  
-                                )}
+                                )
+                            }
                             </CarouselContent>
                             <CarouselPrevious className="absolute left-3 z-10" /> {/* Posicionamento absoluto do botão anterior */}
                             <CarouselNext className="absolute right-3 z-10" /> {/* Posicionamento absoluto do botão seguinte */}

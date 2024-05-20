@@ -60,7 +60,7 @@ const OfferService = {
     },
 
     async addImage(data: any, offer_id: number) {
-        return await client.post(`/image/?offer_id=` + offer_id, data);
+        return await client.post(`/image/` + offer_id, data);
     },
 
 
