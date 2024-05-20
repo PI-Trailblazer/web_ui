@@ -277,8 +277,15 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     <div className='p-8'>
                         <div className="border border-accent p-8 rounded-lg shadow-lg bg-background max-w-full">
                             <div className='flex-col justify-center items-center space-y-8'>
-                                <div className='flex justify-center items-center'>  
+                                <div className='flex flex-col justify-center items-center'>  
                                     <h2 className="text-xl font-semibold">Select the most appealing offers</h2>
+                                    <p className="text-sm text-center text-gray-500">
+                                        Select 1 or 2 offers that you would like to see more about. 
+                                        <br />
+                                        <span className="underline">
+                                            This will help us to provide you with the tags that best suit your interests.
+                                        </span>
+                                    </p>
                                 </div>
                                 <div className='flex-col space-y-4'>
                                     {currentPage === 1 && (

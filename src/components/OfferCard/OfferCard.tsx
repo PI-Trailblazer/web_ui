@@ -105,9 +105,14 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
           <div className="flex items-center gap-4">
             <span className="text-lg font-semibold">{`+/- $${price}`}</span>
             {/* TODO */}
-            <Link to={id !== undefined ? `/offer/${encodeId(id)}` : '#'} className={seeMoreDisabled ? 'pointer-events-none' : ''}>
-              <Button>See More</Button> 
-            </Link>
+            {!seeMoreDisabled ? (
+              <Link to={id !== undefined ? `/offer/${encodeId(id)}` : '#'} className={seeMoreDisabled ? 'pointer-events-none' : ''}>
+                <Button>See More</Button> 
+              </Link>
+            ): (
+              null  
+            )
+          }
           </div>
         </CardFooter>
       </CardContent>
