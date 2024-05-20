@@ -33,7 +33,6 @@ export default function LandingPage() {
 
     const fetchOffers = async (mostRelevantData: number[]) => {
         let ids = mostRelevantData.queryKey[1].data
-        console.log(ids)
         return (await OfferService.getOffersByID({ids: ids})).data
     }
 
@@ -46,6 +45,30 @@ export default function LandingPage() {
         queryKey: ['offer', mostRelevantData],
         queryFn: fetchOffers,
     })
+
+    const fetchForYouIds = async () => {
+        return (await RecommenderService.getOfferRecommendations({size: 5})).data
+    }
+
+    //for you endpoint (get Ids)
+    const { data: forYouDataIds, isLoading: isLoadingForYouDataIds } = useQuery({
+        queryKey: ['for_you'],
+        queryFn: fetchForYouIds,
+        enabled: !!token
+    })
+
+    const fetchForYou = async (forYouDataIds: number[]) => {
+        let ids = forYouDataIds.queryKey[1].data
+        return (await OfferService.getOffersByID({ids: ids})).data
+    }
+
+    //for you endpoint (get offers)
+    const { data: forYouData, isLoading: isLoadingForYouData } = useQuery({
+        queryKey: ['for_you_offers', forYouDataIds],
+        queryFn: fetchForYou,
+    })
+
+    console.log('forYouData', forYouData)
 
     const handleScroll = () => {
         const offset = window.scrollY
@@ -63,11 +86,10 @@ export default function LandingPage() {
         }
     }, [])
 
-    // Simular carregamento de dados com um efeito e um timeout
     useEffect(() => {
         const timer = setTimeout(() => {
             setisCardLoading(false)
-        }, 3000) // Simula o tempo de carregamento dos dados
+        }, 1000) // Simula o tempo de carregamento dos dados
 
         return () => clearTimeout(timer)
     }, [])
@@ -165,19 +187,28 @@ export default function LandingPage() {
                 </p>
             </div>
             <div className="w-1/2 mt-20 flex items-center flex-col gap-4">
-                {isLoadingOfferData 
+                {isLoadingOfferData || isLoadingForYouDataIds || isLoadingForYouData  
                     ? Array(3)
-                          .fill(0)
-                          .map((_, index) => <OfferCardSkeleton key={index} />)
-                    : (offerData 
-                    ? offerData.map((offer, index) => (
-                        <div className='w-full'>
-                          <OfferCard key={index} {...offer} />
-                        </div>
-                      ))
-                    : <div>No data available</div>
-                  )}
-            </div>
+                        .fill(0)
+                        .map((_, index) => (
+                            <OfferCardSkeleton key={index} />
+                    ))
+                        
+                    : (token && forYouData
+                        ? forYouData.map((offer, index) => (
+                            <div className='w-full'>
+                            <OfferCard key={index} {...offer} />
+                            </div>
+                        ))
+                        : offerData && offerData.length > 0
+                            ? offerData.map((offer, index) => (
+                                <div className='w-full'>
+                                <OfferCard key={index} {...offer} />
+                                </div>
+                            ))
+                            : <div>No data available</div>
+                    )}
+                </div>
         </div>
     )
 }
