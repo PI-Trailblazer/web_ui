@@ -41,6 +41,8 @@ export function SimilarOffersList({offerTags}: SimilarOffersListProps) {
         queryFn: fetchSimilarOffers,
     })
 
+    console.log(similarOffers)
+
     if(isLoadingSimilarOffersIds || isLoadingSimilarOffers){
         return <div>Loading...</div>
     }

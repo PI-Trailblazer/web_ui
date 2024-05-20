@@ -16,8 +16,11 @@ import { AccountChangeFormValues, accountChangeSchema } from './schema'
 import { useEffect, useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label'
+import { useQuery } from '@tanstack/react-query';
 
 import { useUserStore } from '@/stores/useUserStore'
+import { UserService } from '@/services/Client/UserService'
+import { UserResponse } from '@/lib/types'
 
 //Firebase
 import { firebase_app, auth } from '@/services/Firebase';
@@ -40,23 +43,31 @@ export function AccountForm() {
     'Drinks',
   ];
 
-  const user = auth.currentUser;
-
-  console.log('User:', user);
 
   const userStore = useUserStore();
+
+  async function fetchUser() {
+    const response = await UserService.getUserByUserId(userStore.sub);
+    console.log(response.data);
+    return response.data;
+  }
+  
+  const {data: userInfo, isLoading, error} = useQuery<UserResponse>({
+    queryKey: ['user', userStore.sub],
+    queryFn: fetchUser,
+  })
+  
   const [selectedTags, setSelectedTags] = useState<string[]>(userStore.tags || []);
 
   useEffect(() => {
-    console.log('Tags:', userStore.tags);
     setSelectedTags(userStore.tags);
   }, [userStore.tags]);
 
   const form = useForm<AccountChangeFormValues>({
     resolver: zodResolver(accountChangeSchema),
     defaultValues: {
-      name: userStore.name,
-      phone: '',
+      name: '',
+      phone: '', 
       email: '',
       currentPassword: '',
       image: '',
@@ -64,8 +75,21 @@ export function AccountForm() {
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      name: `${userInfo?.f_name} ${userInfo?.l_name}`,
+      phone: userInfo?.phone_number,
+      email: userInfo?.email,
+      currentPassword: '',
+      image: '',
+      tags: userInfo?.tags,
+    });
+  }
+  , [userInfo]);
+
+
+
   function handleTagChange(checked: CheckedState, value: string) {
-    console.log(`Tag ${value} foi ${checked ? 'selecionada' : 'deselecionada'}`);
     if (checked) {
       setSelectedTags(prevTags => [...prevTags, value]);
     } else {
@@ -77,17 +101,22 @@ export function AccountForm() {
 
     data.tags = selectedTags;
 
-    //divide o nome em f_name e l_name
     const name = data.name.split(' ');
     data.f_name = name[0];
     data.l_name = name[1];
     delete data.name;
 
     toast({
+      variant: 'success',
       title: 'Account updated!',
       description: 'Your account information has been successfully updated.'
     });
+
     console.log(data);
+  }
+
+  if (isLoading && !userInfo) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -107,8 +136,6 @@ export function AccountForm() {
               <FormMessage />
             </FormItem>
           )} />
-          {/* Form Field da imagem */} 
-          {/* Exiba a imagem de pré-visualização */}
           <FormField control={form.control} name='image' render={({ field }) => (
               <FormItem className="row-span-2">
                   <FormLabel>Profile Picture</FormLabel>
