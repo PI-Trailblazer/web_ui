@@ -26,9 +26,6 @@ export default function DeleteOffer( { isOpen, setIsOpen, onDelete, isPending }:
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-                <Button variant="destructive">Delete</Button>
-            </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Delete Offer</DialogTitle>
