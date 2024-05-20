@@ -25,7 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
+import config from '@/config';
 const NavBar: React.FC = () => {
   const { theme } = useTheme();
   const [menuOpen, setMenuOpen] = React.useState(false); // Estado para controle do menu mobile
@@ -60,7 +60,7 @@ const NavBar: React.FC = () => {
       console.log(error);
     });
   }
-
+  console.log('image', image);
   return (
     <nav className="navbar fixed top-0 left-0 right-0 z-50  bg-gradient-to-t from-transparent to-background">
       <div className="flex items-center justify-between mx-auto px-4 sm:px-6 lg:px-8">
@@ -86,7 +86,7 @@ const NavBar: React.FC = () => {
                 <DropdownMenuTrigger className='flex'>
                   <DropdownMenuLabel className='text-lg'>{name}</DropdownMenuLabel>
                     <Avatar className="mr-2">
-                      {image ? <AvatarImage src={image} alt="Avatar" /> : <AvatarImage src="https://randomuser.me/api/portraits/men/3.jpg" alt="Avatar" />}
+                      <AvatarImage src={image} alt="Avatar" />
                       <AvatarFallback>{name}</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>

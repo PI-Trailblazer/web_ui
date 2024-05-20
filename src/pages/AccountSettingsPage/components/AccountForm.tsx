@@ -16,7 +16,7 @@ import { AccountChangeFormValues, accountChangeSchema } from './schema'
 import { useEffect, useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label'
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { useUserStore } from '@/stores/useUserStore'
 import { UserService } from '@/services/Client/UserService'
@@ -67,18 +67,19 @@ export function AccountForm() {
     resolver: zodResolver(accountChangeSchema),
     defaultValues: {
       name: '',
-      phone: '', 
+      phone_number: '', 
       email: '',
       currentPassword: '',
-      image: '',
       tags: [],
     },
   });
 
+  const fileRef = form.register('image');
+
   useEffect(() => {
     form.reset({
       name: `${userInfo?.f_name} ${userInfo?.l_name}`,
-      phone: userInfo?.phone_number,
+      phone_number: userInfo?.phone_number,
       email: userInfo?.email,
       currentPassword: '',
       image: '',
@@ -97,22 +98,48 @@ export function AccountForm() {
     }
   }
   
+  const handleUpdateUser = async (data: any) => {
+    const response = await UserService.updateUser(data);
+    return response.data;
+  }
+
+  const updateMutation = useMutation({
+    mutationFn: handleUpdateUser,
+    onSuccess: () => {
+      toast({
+        variant: 'success',
+        title: 'Account updated!',
+        description: 'Your account information has been successfully updated.'
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: 'error',
+        title: 'Error updating account',
+        description: error.message
+      });
+    }
+  });
+
+
   function onSubmit(data: any) {
 
+    console.log(data);
     data.tags = selectedTags;
-
     const name = data.name.split(' ');
     data.f_name = name[0];
     data.l_name = name[1];
     delete data.name;
-
-    toast({
-      variant: 'success',
-      title: 'Account updated!',
-      description: 'Your account information has been successfully updated.'
-    });
-
-    console.log(data);
+    delete data.currentPassword;
+    const formData = new FormData();
+    const { image, ...rest } = data;
+    const user = Object.fromEntries(Object.entries(rest).filter(([k, _]) => k !== 'image'));
+    formData.append('user', JSON.stringify(user));
+    if (image) {
+      formData.append('image', image[0] as File);
+    }
+    console.log(formData);
+    updateMutation.mutate(formData);
   }
 
   if (isLoading && !userInfo) {
@@ -142,7 +169,7 @@ export function AccountForm() {
                   {imagePreviewUrl ? <img src={imagePreviewUrl} className="w-32 h-32 rounded-full" alt="Profile preview" />
                     : <img src={userStore.image || 'https://via.placeholder.com/150'} className="w-32 h-32 rounded-full" alt="Profile preview" /> }
                   <FormControl>
-                  <Input type='file' {...field} onChange={(event) => {
+                  <Input type='file' {...fileRef} onChange={(event) => {
                       field.onChange(event); // Mantenha o controle do formulário atualizado
 
                       if (event.target.files && event.target.files.length > 0) {
@@ -238,3 +265,4 @@ export function AccountForm() {
     </Form>
   );
 }
+
