@@ -9,9 +9,15 @@ interface OfferCardProps {
   offer: OfferDetailsProps;
 }
 
-const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
+export function SimilarOffersCard({offer}: OfferCardProps) {
+
+  let rating = 0;
+  if (offer.max_review_score !== undefined && offer.n_reviews !== undefined && offer.n_reviews !== 0 && offer.max_review_score !== 0) {
+    rating = Math.round(((offer.max_review_score / offer.n_reviews) * 5) / 100);
+  }
+
   return (
-    <div className="border rounded-lg shadow-lg overflow-hidden">
+    <div className="border rounded-lg bg-card shadow-lg overflow-hidden">
       <img src={'https://via.placeholder.com/400'} alt={offer.name} className="w-full aspect-video object-cover" />
       <div className="p-4">
         <h3 className="text-xl font-bold">{offer.name}</h3>
@@ -30,4 +36,3 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer }) => {
   );
 };
 
-export default OfferCard;

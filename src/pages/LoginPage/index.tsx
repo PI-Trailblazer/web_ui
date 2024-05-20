@@ -63,7 +63,7 @@ export default function RegisterPage() {
         onSuccess: data => {
             console.log('Success');
             console.log(data);
-            useUserStore.getState().login(data.access_token);
+            useUserStore.getState().login(data.access_token, data.tags);
             setIsLoading(false);
             navigate('/');    
         },

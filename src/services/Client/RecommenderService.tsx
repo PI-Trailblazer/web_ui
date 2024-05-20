@@ -11,6 +11,10 @@ const RecommenderService = {
 
     async getUserRecommendations(params: any) {
         return await client.get('/user_recommendation', { params });
+    },
+
+    async getOfferRecommendations(params: any) {
+        return await client.get('/offer_recommendation', { params });
     }
 };
 

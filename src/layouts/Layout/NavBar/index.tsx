@@ -32,11 +32,12 @@ const NavBar: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const { token, scopes, logout, name} = useUserStore(state => ({
+  const { token, scopes, logout, name, image} = useUserStore(state => ({
     token: state.token,
     scopes: state.scopes,
     logout: state.logout,
-    name: state.name
+    name: state.name,
+    image: state.image
   }));
 
   useEffect(() => {
@@ -85,8 +86,8 @@ const NavBar: React.FC = () => {
                 <DropdownMenuTrigger className='flex'>
                   <DropdownMenuLabel className='text-lg'>{name}</DropdownMenuLabel>
                     <Avatar className="mr-2">
-                      <AvatarImage src="https://randomuser.me/api/portraits/men/3.jpg" alt="Avatar" />
-                      <AvatarFallback>JD</AvatarFallback>
+                      {image ? <AvatarImage src={image} alt="Avatar" /> : <AvatarImage src="https://randomuser.me/api/portraits/men/3.jpg" alt="Avatar" />}
+                      <AvatarFallback>{name}</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent sideOffset={4} className='mt-2' align='end'>

@@ -1,5 +1,5 @@
 import { CleanLayout } from './layouts/Layout';
-import { lazy, Suspense, ReactNode } from 'react';
+import { lazy, Suspense, ReactNode, useEffect, useState } from 'react';
 import { useUserStore } from './stores/useUserStore';
 import { Navigate } from 'react-router-dom';
 import { AccountLayout } from './layouts/AccountLayout';
@@ -14,15 +14,42 @@ function ProtectedRoute({
     loggedIn?: boolean;
     redirect?: string;
 }) {
+    const [isLoading, setIsLoading] = useState(true);
     const { token } = useUserStore((state: any) => state);
-    console.log('token', token);
-    if (!!token === loggedIn) return children;
-    else return <Navigate to={redirect} />;
+
+    // Quando o componente é montado, verifica se existe um token e, em caso afirmativo, atualiza o estado de "loading"
+    useEffect(() => {
+        if (token) {
+            setIsLoading(false);
+        }
+    }, [token]);
+
+    if (isLoading) {
+        return null; 
+    }
+
+    if (!!token === loggedIn) {
+        return children;
+    } else {
+        return <Navigate to={redirect} />;
+    }
 }
 
 function ProviderRoute({ children }: { children: ReactNode }) {
     const { token, scopes } = useUserStore((state: any) => ({ token: state.token, scopes: state.scopes }));
     const isProvider = scopes.includes('provider');
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (token) {
+            setIsLoading(false);
+        }
+    }, [token]);
+
+    if (isLoading) {
+        return null;
+    }
+
     if (token && isProvider) return children;
     else if (token && !isProvider) return <div>You do not have permission to view this page.</div>;
     else return <Navigate to='/login' />;
@@ -140,33 +167,33 @@ const routes = [
             {
                 path: '',
                 element: (
-                    <ProviderRoute>
-                        <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <ProtectedRoute>
                             <AccountSettingsPage />
-                        </Suspense>
-                    </ProviderRoute>
+                        </ProtectedRoute>
+                    </Suspense>
                 ),
                 exact: true,
             },
             {
                 path: 'your-offers',
                 element: (
-                    <ProtectedRoute>
-                        <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <ProviderRoute>
                             <YourOfferPage />
-                        </Suspense>
-                    </ProtectedRoute>
+                        </ProviderRoute>
+                    </Suspense>
                 ),
                 exact: true,
             },
             {
                 path: 'dashboard',
                 element: (
-                    <ProtectedRoute>
-                        <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <ProviderRoute>
                             <DashboardPage />
-                        </Suspense>
-                    </ProtectedRoute>
+                        </ProviderRoute>
+                    </Suspense>
                 ),
                 exact: true,
             },

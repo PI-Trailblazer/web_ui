@@ -25,7 +25,7 @@ import offerCardsData from './FakeCardsData';
 
 interface RegistrationFormProps {
     userType: 'Tourist' | 'Provider';
-    handleRegister: (data: FormValues) => void;
+    handleRegister: (data: FormValues, tags: string[]) => void; // Atualizado para aceitar tags
     isLoading: boolean;
 }
 
@@ -70,6 +70,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         // append the tags to the tags state
         let oldTags = tags;
         setTags([...oldTags, ...selectedTags]);
+
     }
 
     const handlePageChange = (page: SetStateAction<number>) => {
@@ -97,13 +98,17 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     };
 
     const handleFormSubmit = () => {
+        if (tags.length === 0) {
+            setFormError('Please select at least one offer');
+            return;
+        }
         form.handleSubmit((data) => handleRegister(data, tags))();
     }
 
     return (
     <>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleRegister)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
                 <FormField
                     control={form.control}
                     name="firstName"

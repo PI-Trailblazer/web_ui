@@ -40,10 +40,9 @@ export default function RegisterPage() {
             email: data.email,
             roles: inRoles,
             phone: data.phone ?? null,
-            tags: [""],
+            tags: tags,
         };
 
-        console.log(payload);
         const response = await UserService.register({
             ...payload,
         });
@@ -55,7 +54,7 @@ export default function RegisterPage() {
         mutationFn: register,
         onSuccess: data => {
             console.log('Success');
-            useUserStore.getState().login(data.access_token);
+            useUserStore.getState().login(data.access_token, data.tags);
             setIsLoading(false);
             navigate('/');
         },
