@@ -1,5 +1,6 @@
 import config from "@/config";
 import { createClient } from './client';
+import qs from 'qs';
 
 const client = createClient(config.API_RECOMMENDER_URL);
 
@@ -14,7 +15,8 @@ const RecommenderService = {
     },
 
     async getOfferRecommendations(params: any) {
-        return await client.get('/offer_recommendation', { params });
+        const query = qs.stringify(params, { arrayFormat: 'repeat' });
+        return await client.get('/offer_recommendation?' + query);
     }
 };
 
