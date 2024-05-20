@@ -1,20 +1,17 @@
 // components/OfferCard.jsx
 
-import React from 'react';
 import { OfferDetailsProps } from "@/lib/types";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
+import { encodeId } from '@/lib/utils';
+import { Link } from "react-router-dom";
+
 
 interface OfferCardProps {
   offer: OfferDetailsProps;
 }
 
 export function SimilarOffersCard({offer}: OfferCardProps) {
-
-  let rating = 0;
-  if (offer.max_review_score !== undefined && offer.n_reviews !== undefined && offer.n_reviews !== 0 && offer.max_review_score !== 0) {
-    rating = Math.round(((offer.max_review_score / offer.n_reviews) * 5) / 100);
-  }
 
   return (
     <div className="border rounded-lg bg-card shadow-lg overflow-hidden">
@@ -30,7 +27,9 @@ export function SimilarOffersCard({offer}: OfferCardProps) {
           </div>
           <span className="text-lg font-semibold">{`$${offer.price}`}</span>
         </div>
-        <Button className="w-full mt-2">See More</Button>
+        <Link key={offer.id} to={offer.id !== undefined ? `/offer/${encodeId(offer.id)}` : '#'}>
+          <Button className="w-full mt-2">See More</Button>
+        </Link>
       </div>
     </div>
   );

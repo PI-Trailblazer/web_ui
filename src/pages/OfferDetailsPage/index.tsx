@@ -96,7 +96,7 @@ export default function OfferDetailsPage() {
     }
 
     const { data: imagesData } = useQuery({
-        queryKey: ['images'],
+        queryKey: ['images', id],
         queryFn: handleGetImages,
     });
     

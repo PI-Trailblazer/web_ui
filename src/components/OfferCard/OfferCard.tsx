@@ -11,6 +11,7 @@ import { Trash2, Pencil } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton'
 import DeleteOffer from './DeleteOffer';
 import config from '@/config';
+import NoImageAvailable from '@/assets/NoImageAvailable.jpg';
 
 type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDelete?: () => void; isPending?: boolean; seeMoreDisabled?: boolean};
   
@@ -122,7 +123,7 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
             />
           ) : (
             <img
-              src={'https://random.imagecdn.app/v1/image?width=500&height=500&category=buildings'}
+              src={NoImageAvailable}
               alt={name}
               className="object-cover aspect-square w-full h-48 md:h-full"
             />
