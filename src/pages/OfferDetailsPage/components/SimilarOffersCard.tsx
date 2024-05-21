@@ -5,6 +5,11 @@ import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import { encodeId } from '@/lib/utils';
 import { Link } from "react-router-dom";
+import { OfferService } from '@/services/Client/OfferService';
+import { useQuery } from '@tanstack/react-query';
+import config from '@/config';
+import NoImageAvailable from '@/assets/NoImageAvailable.jpg';
+
 
 
 interface OfferCardProps {
@@ -13,9 +18,34 @@ interface OfferCardProps {
 
 export function SimilarOffersCard({offer}: OfferCardProps) {
 
+  const fetchImages = async (id: number) => {
+    return (await OfferService.getImages(id)).data;
+  };
+
+  const { data: imageData, isLoading } = useQuery({
+    queryKey: ['images', offer.id],
+    queryFn: () => fetchImages(offer.id),
+  });
+
   return (
     <div className="border rounded-lg bg-card shadow-lg overflow-hidden">
-      <img src={'https://via.placeholder.com/400'} alt={offer.name} className="w-full aspect-video object-cover" />
+      {isLoading ? (
+          <div className="w-full aspect-video object-cover" />
+      ) : (
+        imageData && imageData.length > 0 ? (
+          <img
+            src={config.STATIC_URL + imageData[0].image}
+            alt={offer.name}
+            className="w-full aspect-video object-cover"
+          />
+        ) : (
+          <img
+            src={NoImageAvailable}
+            alt={offer.name}
+            className="w-full aspect-video object-cover"
+          />
+        )
+      )}
       <div className="p-4">
         <h3 className="text-xl font-bold">{offer.name}</h3>
         <p className="text-sm my-2">{offer.description}</p>

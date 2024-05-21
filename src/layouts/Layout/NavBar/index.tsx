@@ -91,20 +91,22 @@ const NavBar: React.FC = () => {
                     </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent sideOffset={4} className='mt-2' align='end'>
-                  <Link to="/account/your-offers">
-                    <DropdownMenuItem>
-                        My Offers
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link to="/account/dashboard">
-                    <DropdownMenuItem>
-                      Dashboard
-                    </DropdownMenuItem> 
+                  <Link to="/account">
+                        <DropdownMenuItem>Account Management</DropdownMenuItem>
                   </Link>
                   {scopes.includes('provider') && (
-                    <Link to="/account">
-                        <DropdownMenuItem>Account Management</DropdownMenuItem>
+                    <div>
+                    <Link to="/account/your-offers">
+                      <DropdownMenuItem>
+                          My Offers
+                      </DropdownMenuItem>
                     </Link>
+                    <Link to="/account/dashboard">
+                      <DropdownMenuItem>
+                        Dashboard
+                      </DropdownMenuItem> 
+                    </Link>
+                    </div>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
