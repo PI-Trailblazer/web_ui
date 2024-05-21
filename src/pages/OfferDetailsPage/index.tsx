@@ -282,8 +282,8 @@ export default function OfferDetailsPage() {
                     </div>
                     <div className="border p-4 bg-card rounded-lg shadow-xl">
                         {/* Reviews */}
-                        <CommentsSection offerId={offer.id} />
                         <CommentInput offerId={offer.id} />
+                        <CommentsSection offerId={offer.id} />
                     </div>
                 </div>
                 {/* Parte Direita - Preço, Opções de Quantidade e Botão de Compra */}
@@ -342,7 +342,7 @@ export default function OfferDetailsPage() {
                     </div>
                     <div className="similar-offers bg-card p-4 border rounded-lg space-y-4">
                         <h2 className="text-2xl font-semibold">Similar Offers</h2>
-                        <SimilarOffersList offerTags={offer.tags}/>
+                        <SimilarOffersList offerTags={offer.tags} offerId={offer.id} />
                     </div>
                 </div>
             </div>

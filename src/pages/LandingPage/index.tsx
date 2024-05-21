@@ -28,7 +28,7 @@ export default function LandingPage() {
     const [isSticky, setIsSticky] = useState(false)
 
     const fetchMostRelevant = async () => {
-        return (await RecommenderService.getMostRelevant({size: 5})).data
+        return (await RecommenderService.getMostRelevant(5)).data
     }
 
     const fetchOffers = async (mostRelevantData: number[]) => {
@@ -47,7 +47,7 @@ export default function LandingPage() {
     })
 
     const fetchForYouIds = async () => {
-        return (await RecommenderService.getOfferRecommendations({size: 5})).data
+        return (await RecommenderService.getUserRecommendations(5)).data
     }
 
     //for you endpoint (get Ids)

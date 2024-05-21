@@ -10,7 +10,6 @@ const OfferService = {
     },
 
     async getOffer(id: number) {
-        console.log(id);
         return await client.get(`/${id}`);
     },
 
@@ -51,7 +50,6 @@ const OfferService = {
     },
 
     async getOffersByID(params: any) {
-        console.log(params);
         let url = '/list-by-ids/?';
         for (let id of params.ids) {
             url += `ids=${id}&`
