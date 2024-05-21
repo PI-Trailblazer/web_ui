@@ -2,10 +2,10 @@ import React, { PureComponent, useState } from 'react';
 import { PieChart, Pie, Sector, Cell } from 'recharts';
 
 const data = [
-    { name: 'USA', value: 400, color: '#1c64f2' }, // Blue color
-    { name: 'Canada', value: 300, color: '#10b981' }, // Green color
-    { name: 'UK', value: 300, color: '#f59e0b' }, // Yellow color
-    { name: 'Australia', value: 200, color: '#7e22ce' } // Purple color
+    { name: 'Portugal', value: 100, color: '#1c64f2' }, // Blue color
+    { name: 'Brasil', value: 44, color: '#10b981' }, // Green color
+    { name: 'UK', value: 12, color: '#f59e0b' }, // Yellow color
+    { name: 'Spain', value: 22, color: '#7e22ce' } // Purple color
   ];
   
 const renderActiveShape = (props: { cx: any; cy: any; midAngle: any; innerRadius: any; outerRadius: any; startAngle: any; endAngle: any; fill: any; payload: any; percent: any; value: any; }) => {

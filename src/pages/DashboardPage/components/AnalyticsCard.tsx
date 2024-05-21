@@ -9,16 +9,15 @@ interface TimeData {
     time: string;
     offers: number;
     sales: number;
-    visits: number;
     [key: string]: string | number;
 }
 
 const generateTimeData = (timeUnit: string): TimeData[] => {
-    const randomValue = () => Math.floor(Math.random() * 1000) + 100;
+    const randomValue = () => Math.floor(Math.random() * 400) + 100;
     let data: TimeData[] = [];
     switch (timeUnit) {
         case 'months':
-            const months = ['Jan 23', 'Feb 23', 'Mar 23', 'Apr 23', 'May 23', 'Jun 23', 'Jul 23', 'Aug 23', 'Sep 23', 'Oct 23', 'Nov 23', 'Dec 23'];
+            const months = ['June 23', 'July 23', 'Aug 23', 'Sep 23', 'Oct 23', 'Nov 23', 'Dec 23', 'Jan 24', 'Feb 24', 'Mar 24', 'Apr 24', 'May 24'];
             months.forEach(month => {
                 data.push({ time: month, offers: randomValue(), sales: randomValue(), visits: randomValue() });
             });
@@ -40,13 +39,12 @@ const generateFutureData = (data: TimeData[], timeUnit: string): TimeData[] => {
 
     switch (timeUnit) {
         case 'months':
-            const futureMonths = ['Jan 24', 'Feb 24', 'Mar 24'];
+            const futureMonths = ['Jun 24', 'Jul 24', 'Aug 24'];
             futureMonths.forEach((month, i) => {
                 futureData.push({
                     time: month,
                     offers: Math.floor(trend(lastDataPoint.offers)),
                     sales: Math.floor(trend(lastDataPoint.sales)),
-                    visits: Math.floor(trend(lastDataPoint.visits)),
                 });
             });
             break;
@@ -56,7 +54,6 @@ const generateFutureData = (data: TimeData[], timeUnit: string): TimeData[] => {
                     time: `Day ${data.length + i}`,
                     offers: Math.floor(trend(lastDataPoint.offers)),
                     sales: Math.floor(trend(lastDataPoint.sales)),
-                    visits: Math.floor(trend(lastDataPoint.visits)),
                 });
             }
             break;
@@ -66,7 +63,6 @@ const generateFutureData = (data: TimeData[], timeUnit: string): TimeData[] => {
                     time: `${data.length + i}:00`,
                     offers: Math.floor(trend(lastDataPoint.offers)),
                     sales: Math.floor(trend(lastDataPoint.sales)),
-                    visits: Math.floor(trend(lastDataPoint.visits)),
                 });
             }
             break;
@@ -134,7 +130,6 @@ export default function AnalyticsCard() {
                 <SelectContent>
                     <SelectItem value="offers">Offers</SelectItem>
                     <SelectItem value="sales">Sales</SelectItem>
-                    <SelectItem value="visits">Visits</SelectItem>
                 </SelectContent>
             </Select>
         </div>

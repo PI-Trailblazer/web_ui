@@ -48,7 +48,6 @@ export function AccountForm() {
 
   async function fetchUser() {
     const response = await UserService.getUserByUserId(userStore.sub);
-    console.log(response.data);
     return response.data;
   }
   
@@ -114,7 +113,7 @@ export function AccountForm() {
     },
     onError: (error) => {
       toast({
-        variant: 'error',
+        variant: 'destructive',
         title: 'Error updating account',
         description: error.message
       });
@@ -138,7 +137,13 @@ export function AccountForm() {
     if (image) {
       formData.append('image', image[0] as File);
     }
-    console.log(formData);
+
+
+    data.roles = userInfo?.roles;
+    data.verified = userInfo?.verified;
+
+    console.log(data);
+    
     updateMutation.mutate(formData);
   }
 
@@ -196,7 +201,7 @@ export function AccountForm() {
               <FormMessage />
             </FormItem>
           )} />
-          <FormField control={form.control} name='phone' render={({ field }) => (
+          <FormField control={form.control} name='phone_number' render={({ field }) => (
             <FormItem>
               <FormLabel>Phone Number</FormLabel>
               <FormControl>

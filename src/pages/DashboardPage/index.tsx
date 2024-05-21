@@ -23,9 +23,9 @@ import AnalyticsCard from './components/AnalyticsCard'
 
 
 export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState('sales');
-  const [title, setTitle] = useState('Recent Sales');
-  const [description, setDescription] = useState('You made 265 sales this month.');
+  const [activeTab, setActiveTab] = useState('nationalities');
+  const [title, setTitle] = useState('Nationalities');
+  const [description, setDescription] = useState('Percentage of users by nationality.');
 
   const handleSelectChange = (value: SetStateAction<string>) => {
     setActiveTab(value);
@@ -66,7 +66,11 @@ export default function DashboardPage() {
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Total Revenue
+                    Number of new Offers 
+                    <br />
+                    <p className='text-xs text-muted-foreground'>
+                      Since last month
+                    </p>
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -82,16 +86,15 @@ export default function DashboardPage() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>$45,231.89</div>
+                  <div className='text-2xl font-bold'>+7</div>
                   <p className='text-xs text-muted-foreground'>
-                    +20.1% from last month
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Subscriptions
+                    Profit
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -109,15 +112,17 @@ export default function DashboardPage() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>+2350</div>
+                  <div className='text-2xl font-bold'>$2350</div>
                   <p className='text-xs text-muted-foreground'>
-                    +180.1% from last month
+                    +20.3% from last month
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>Sales</CardTitle>
+                  <CardTitle className='text-sm font-medium'>
+                    Sales
+                  </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -133,7 +138,7 @@ export default function DashboardPage() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>+12,234</div>
+                  <div className='text-2xl font-bold'>+203</div>
                   <p className='text-xs text-muted-foreground'>
                     +19% from last month
                   </p>
@@ -142,7 +147,7 @@ export default function DashboardPage() {
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Active Now
+                    Most Famous Tags
                   </CardTitle>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -158,9 +163,9 @@ export default function DashboardPage() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>+573</div>
+                  <div className='text-2xl font-bold'>Sports & Culture</div>
                   <p className='text-xs text-muted-foreground'>
-                    +201 since last hour
+                    Last month: Sports & Food
                   </p>
                 </CardContent>
               </Card>
@@ -184,7 +189,7 @@ export default function DashboardPage() {
                     </CardDescription>
                     </div>
                     <div>
-                    <Select defaultValue="sales" onValueChange={handleSelectChange}>
+                    <Select defaultValue="nationalities" onValueChange={handleSelectChange}>
                       <SelectTrigger aria-label="Select a category" className="w-32">
                         <SelectValue placeholder="Category"></SelectValue>
                       </SelectTrigger>
@@ -197,7 +202,8 @@ export default function DashboardPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {activeTab === 'sales' ? <RecentSales /> : <Nationalities />}
+                  {activeTab === 'sales' && <RecentSales /> }
+                  {activeTab === 'nationalities' && <Nationalities />}
                 </CardContent>
               </Card>
             </div>

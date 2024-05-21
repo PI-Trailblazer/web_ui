@@ -7,7 +7,8 @@ const offerTypes = [
 // Gerar dados fictícios para cada tipo de oferta
 const data = offerTypes.map(type => ({
   type,
-  offers: Math.floor(Math.random() * 500) + 50, // valores fictícios entre 50 e 550
+  // valores fictícios entre 20 e 100
+  offers: Math.floor(Math.random() * 80) + 20
 }));
 
 export function Overview() {
