@@ -24,6 +24,7 @@ import { useUserStore } from "@/stores/useUserStore";
 import { EditOfferForm } from "./components/EditOfferForm";
 import { Dialog, DialogContent} from '@/components/ui/dialog';
 import { SimilarOffersList } from "./components/SimilarOffersList";
+import { useToast } from "@/components/ui/use-toast";
 
 import config from "@/config";
 
@@ -43,6 +44,7 @@ export default function OfferDetailsPage() {
     const [editDetails, setEditDetails] = useState(false);
     const [averageScore, setAverageScore] = useState<number>(0);
     const queryClient = useQueryClient();
+    const { toast } = useToast();
 
     const { sub } = useUserStore();
     
@@ -76,9 +78,19 @@ export default function OfferDetailsPage() {
         onSuccess: (data: any) => {
             form.reset();
             console.log('Image added successfully:', data);
+            toast({
+                variant: 'success',
+                title: 'Image added',
+                description: 'Your image has been added successfully',
+            });
             queryClient.invalidateQueries({ queryKey: ['images'] });
         },
         onError: (error) => {
+            toast({
+                variant: 'destructive',
+                title: 'Image not added',
+                description: 'Error adding image',
+            });
             console.error('Error adding image:', error);
         }
     });

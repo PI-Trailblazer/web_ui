@@ -67,7 +67,7 @@ const OffersList: React.FC<OffersListProps> = () => {
             )}
             {!isLoading && (!offers || offers.length === 0) && <NoOffers />}
             {isSuccess && offers && offers.length > 0 && (
-                <div className="grid 2xl:grid-cols-2 grid-cols-1 p-4 gap-4">
+                <div className={`grid p-4 gap-4 grid-cols-1 ${offers.length > 1 ? '2xl:grid-cols-2' : 'lg:w-3/4'}`}>
                     {offers.map((offer : Partial<OfferDetailsProps>, index: any) => (
                         <OfferCard key={index} 
                             name={offer.name}
