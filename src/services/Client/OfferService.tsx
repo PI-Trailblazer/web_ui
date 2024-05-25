@@ -5,8 +5,8 @@ const client = createClient(config.API_OFFER_URL);
 
 const OfferService = {
 
-    async getOffers(params: any) {
-        return await client.get('/', { params });
+    async getOffers(pageParams = 1) {
+        return await client.get(`/?page=${pageParams}`);
     },
 
     async getOffer(id: number) {
