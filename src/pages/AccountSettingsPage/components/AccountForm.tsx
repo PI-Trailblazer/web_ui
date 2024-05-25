@@ -24,7 +24,7 @@ import { UserResponse } from '@/lib/types'
 
 //Firebase
 import { firebase_app, auth } from '@/services/Firebase';
-import 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { CheckedState } from '@radix-ui/react-checkbox'
 
 export function AccountForm() {
@@ -110,6 +110,7 @@ export function AccountForm() {
         title: 'Account updated!',
         description: 'Your account information has been successfully updated.'
       });
+      window.location.reload();
     },
     onError: (error) => {
       toast({
@@ -121,7 +122,7 @@ export function AccountForm() {
   });
 
 
-  function onSubmit(data: any) {
+  async function onSubmit(data: any) {
 
     console.log(data);
     data.tags = selectedTags;
@@ -129,7 +130,6 @@ export function AccountForm() {
     data.f_name = name[0];
     data.l_name = name[1];
     delete data.name;
-    delete data.currentPassword;
     const formData = new FormData();
     const { image, ...rest } = data;
     const user = Object.fromEntries(Object.entries(rest).filter(([k, _]) => k !== 'image'));
@@ -138,11 +138,25 @@ export function AccountForm() {
       formData.append('image', image[0] as File);
     }
 
+    try{
+      if (!userInfo) {
+        return;
+      }
+      const userCredential = await signInWithEmailAndPassword(auth, userInfo?.email, data.currentPassword);
+      const user = userCredential.user;
+    } catch (error) {
+      const { code } = error as {code?: string};
+      console.log(code);
+      if (code === 'auth/invalid-credential') {
+        form.setError('currentPassword', { message: 'Invalid password' });
+      }
+      return;
+    }
 
+    delete data.currentPassword;
     data.roles = userInfo?.roles;
     data.verified = userInfo?.verified;
 
-    console.log(data);
     
     updateMutation.mutate(formData);
   }
@@ -193,7 +207,7 @@ export function AccountForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type='email' placeholder='Your email' {...field} />
+                <Input disabled type='email' placeholder='Your email' {...field} />
               </FormControl>
               <FormDescription>
                 We will send account related emails to this address. You can change it at any time.
