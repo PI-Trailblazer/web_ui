@@ -51,7 +51,7 @@ function ProviderRoute({ children }: { children: ReactNode }) {
     }
 
     if (token && isProvider) return children;
-    else if (token && !isProvider) return <div>You do not have permission to view this page.</div>;
+    else if (token && !isProvider) return <Navigate to='/login' />; 
     else return <Navigate to='/login' />;
 }
 

@@ -55,6 +55,9 @@ const NavBar: React.FC = () => {
     UserService.logout().then(() => {
       logout();
       navigate('/');
+      if (window.location.pathname === '/') {
+        window.location.reload();
+      }
     })
     .catch((error) => {
       console.log(error);
