@@ -11,6 +11,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CommentFormValues, commentSchema } from './schema';
 import { useForm } from 'react-hook-form';
 import { useUserStore } from '@/stores/useUserStore';
+import { useToast } from '@/components/ui/use-toast';
+
+
+//import toast
 
 interface CommentInputProps {
     offerId: number;
@@ -18,10 +22,14 @@ interface CommentInputProps {
 
 const CommentInput: React.FC<CommentInputProps> = ({ offerId }) => {
 
+
     const { token } = useUserStore();
     const [showLoginError, setShowLoginError] = useState(false);
 
     const queryClient = useQueryClient();
+
+    //toast
+    const { toast } = useToast();
 
     const { register, handleSubmit, reset, watch } = useForm<CommentFormValues>({
         resolver: zodResolver(commentSchema),
@@ -51,6 +59,14 @@ const CommentInput: React.FC<CommentInputProps> = ({ offerId }) => {
             queryClient.invalidateQueries(['reviews', offerId]);
         },
         enabled: !!token,
+
+        onError: () => {
+            toast({
+                variant: 'destructive',
+                title: 'Review not added',
+                description: 'Can only review once per offer.'
+            });
+        }
     });
 
     const handlePostComment = handleSubmit(async (data: any) => {
