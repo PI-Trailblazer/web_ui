@@ -82,6 +82,11 @@ export default function RegisterPage() {
             token = await user.getIdToken();
         } catch (error) {
             setIsLoading(false);
+            const { code } = error as {code?: string};
+            console.log(code);
+            if (code === 'auth/invalid-credential') {
+                form.setError('email', { message: 'Invalid email or password' });
+            }
             return;
         }
 
@@ -114,7 +119,7 @@ export default function RegisterPage() {
                                     <FormControl>
                                         <Input placeholder="Email" {...field} />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className='pl-2'></FormMessage>
                                 </FormItem>
                             )}
                         />
