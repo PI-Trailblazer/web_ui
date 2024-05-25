@@ -21,6 +21,8 @@ import { UserService } from '@/services/Client/UserService';
 export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [userType, setUserType] = useState('Tourist');
+    const [emailError, setEmailError] = useState('');
+
 
     const navigate = useNavigate();
 
@@ -59,7 +61,6 @@ export default function RegisterPage() {
             navigate('/');
         },
         onError: error => {
-            console.log(error);
             setIsLoading(false);
         },
     });
@@ -77,7 +78,11 @@ export default function RegisterPage() {
             const user = userCredential.user;
             token = await user.getIdToken();
         } catch (error) {
+            const { code } = error as { code?: string };
             setIsLoading(false);
+            if (code === 'auth/email-already-in-use') {
+                setEmailError('The email address is already in use by another account.');
+            }
             return;
         }
 
@@ -89,6 +94,9 @@ export default function RegisterPage() {
         useUserStore.setState({ token });
 
         registerMutation.mutate({ data: data, tags:tags });
+
+        setEmailError('');
+
     };
 
     return (
@@ -115,6 +123,7 @@ export default function RegisterPage() {
                         userType="Tourist"
                         handleRegister={handleRegister}
                         isLoading={isLoading}
+                        emailError={emailError}
                     />
                 </TabsContent>
                 <TabsContent value="Provider">
@@ -122,6 +131,7 @@ export default function RegisterPage() {
                         userType="Provider"
                         handleRegister={handleRegister}
                         isLoading={isLoading}
+                        emailError={emailError}
                     />
                 </TabsContent>
             </Tabs>

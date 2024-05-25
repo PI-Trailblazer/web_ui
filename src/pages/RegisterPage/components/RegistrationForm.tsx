@@ -27,12 +27,14 @@ interface RegistrationFormProps {
     userType: 'Tourist' | 'Provider';
     handleRegister: (data: FormValues, tags: string[]) => void; // Atualizado para aceitar tags
     isLoading: boolean;
+    emailError: string;
 }
 
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     userType,
     handleRegister,
     isLoading,
+    emailError,
 }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showVerifyPassword, setShowVerifyPassword] = useState(false);
@@ -144,7 +146,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                             <FormControl>
                                 <Input placeholder="Email" {...field} />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage>{emailError}</FormMessage>
                         </FormItem>
                     )}
                 />
