@@ -55,6 +55,7 @@ export default function OfferListPage() {
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, isSuccess, isError, isLoading } = useInfiniteQuery({
         queryKey: ['offers'],
         queryFn: getOffers,
+        initialPageParam: 1,
         getNextPageParam: (lastPage) => lastPage.nextPage,
     });
 
