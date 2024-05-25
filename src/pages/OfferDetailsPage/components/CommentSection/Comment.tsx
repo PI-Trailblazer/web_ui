@@ -53,6 +53,8 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
         queryFn: () => fetchUser(userId),
     });
 
+    console.log('user', user);
+
     if (isLoading) return <div>Loading user...</div>;
     if (isError || !user) return <div>Error loading user details.</div>;
 

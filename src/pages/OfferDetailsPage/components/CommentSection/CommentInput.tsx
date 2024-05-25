@@ -23,7 +23,7 @@ interface CommentInputProps {
 const CommentInput: React.FC<CommentInputProps> = ({ offerId }) => {
 
 
-    const { token } = useUserStore();
+    const { token, image } = useUserStore();
     const [showLoginError, setShowLoginError] = useState(false);
 
     const queryClient = useQueryClient();
@@ -78,11 +78,13 @@ const CommentInput: React.FC<CommentInputProps> = ({ offerId }) => {
         await addCommentMutation.mutateAsync(data);
     });
 
+    if (!token) return null;
+
     return (
         <div className="my-6">
             <div className="flex items-center justify-between">
             <Avatar className="mr-2">
-                <AvatarImage src="https://randomuser.me/api/portraits/men/3.jpg" alt="Avatar" />
+                <AvatarImage src={image} alt="Avatar" />
                 <AvatarFallback>JD</AvatarFallback>
             </Avatar>
             <div className="relative w-full">
