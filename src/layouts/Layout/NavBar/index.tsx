@@ -63,7 +63,6 @@ const NavBar: React.FC = () => {
       console.log(error);
     });
   }
-  console.log('image', image);
   return (
     <nav className="navbar fixed top-0 left-0 right-0 z-50  bg-gradient-to-t from-transparent to-background">
       <div className="flex items-center justify-between mx-auto px-4 sm:px-6 lg:px-8">

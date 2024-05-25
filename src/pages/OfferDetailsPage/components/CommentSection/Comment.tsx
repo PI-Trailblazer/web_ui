@@ -67,7 +67,7 @@ const Comment = ({ review, userId, offerId }: { review: Review, userId: string, 
                 <div className="flex items-center">
                     <div className="font-semibold flex items-center text-primary">
                     <Avatar>
-                        <AvatarImage src="https://randomuser.me/api/portraits/men/3.jpg" alt="@shadcn" />
+                        <AvatarImage src={user.image} alt="@shadcn" />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="pl-4">
