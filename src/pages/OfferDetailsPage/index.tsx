@@ -25,6 +25,13 @@ import { EditOfferForm } from "./components/EditOfferForm";
 import { Dialog, DialogContent} from '@/components/ui/dialog';
 import { SimilarOffersList } from "./components/SimilarOffersList";
 import { useToast } from "@/components/ui/use-toast";
+import { BuyOfferDialog } from "./components/BuyOfferDialog";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "@/components/ui/tooltip"
 
 import config from "@/config";
 
@@ -43,10 +50,16 @@ export default function OfferDetailsPage() {
     const [editImages, setEditImages] = useState(false);
     const [editDetails, setEditDetails] = useState(false);
     const [averageScore, setAverageScore] = useState<number>(0);
+    const [isBuyOfferOpen, setIsBuyOfferOpen] = useState(false);
+    const [quantitySelected, setQuantitySelected] = useState<number>(1);
     const queryClient = useQueryClient();
     const { toast } = useToast();
 
-    const { sub } = useUserStore();
+    const { sub, token } = useUserStore();
+
+    const handleBuyOffer = () => {
+        setIsBuyOfferOpen(!isBuyOfferOpen);
+    }
     
     const getOffer = async (id: number) => {
         return (await OfferService.getOffer(id)).data;
@@ -111,6 +124,8 @@ export default function OfferDetailsPage() {
         queryKey: ['images', id],
         queryFn: handleGetImages,
     });
+
+    console.log('Images:', imagesData);
     
     useEffect(() => {
          setAverageScore(offer && offer.n_reviews !== 0 ? ((offer.max_review_score / offer.n_reviews) * 5) / 100 : 0);
@@ -229,7 +244,7 @@ export default function OfferDetailsPage() {
                                     Array.from({ length: imagesData.length }).map((_, index) => (
                                         <CarouselItem key={index} className="w-full">
                                             <Card className="h-[29rem] overflow-hidden">
-                                                <img className="object-fits h-full w-full" src={config.STATIC_URL+imagesData[index].image} alt="offer" />
+                                                <img className="object-fits h-full w-full" src={imagesData[index].image} alt="offer" />
                                             </Card>
                                         </CarouselItem>
                                     ))
@@ -266,7 +281,7 @@ export default function OfferDetailsPage() {
                                     Array.from({ length: imagesData.length }).map((_, index) => (
                                         <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/4 cursor-pointer" onClick={() => onThumbnailClick(index)}>
                                             <Card className="h-28 overflow-hidden">
-                                                <img className="object-fits h-full w-full" src={config.STATIC_URL + imagesData[index].image} alt="offer" />
+                                                <img className="object-fits h-full w-full" src={imagesData[index].image} alt="offer" />
                                             </Card>
                                         </CarouselItem>
                                     ))
@@ -334,7 +349,7 @@ export default function OfferDetailsPage() {
                                 <span className="text-2xl font-semibold text-primary">{`$${offer.price}`}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <Select>
+                                <Select onValueChange={(value) => setQuantitySelected(parseInt(value))}>
                                 <SelectTrigger className="border rounded w-2/3 p-2 text-gray-700">
                                     <SelectValue placeholder="Select Quantity" />
                                 </SelectTrigger>
@@ -346,9 +361,24 @@ export default function OfferDetailsPage() {
                                     ))}
                                 </SelectContent>
                                 </Select>
-                                <Button className="rounded px-6 py-2 transition duration-300 ease-in-out">
-                                PURCHASE
-                                </Button>
+                                {token ? (
+                                    <Button className="rounded px-6 py-2 transition duration-300 ease-in-out" onClick={handleBuyOffer}>
+                                    PURCHASE
+                                    </Button>
+                                    ): (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger>
+                                                    <Button className="rounded px-6 py-2 transition duration-300 ease-in-out" disabled>
+                                                        PURCHASE
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p className="text-sm">You need to be logged in to buy this offer</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    )}
                             </div>
                         </div>
                     </div>
@@ -358,6 +388,7 @@ export default function OfferDetailsPage() {
                     </div>
                 </div>
             </div>
+            <BuyOfferDialog toggleOpenBuyOfferDialog={handleBuyOffer} isOpenBuyOfferDialog={isBuyOfferOpen} offerId={offer.id} quantitySelected={quantitySelected} />
         </div>
     );
 }
