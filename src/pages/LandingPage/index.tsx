@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/carousel'
 import { Card, CardContent } from '@/components/ui/card'
 import Autoplay from 'embla-carousel-autoplay'
-import { Key, Key, Key, useEffect, useRef, useState } from 'react'
+import { Key, useEffect, useRef, useState } from 'react'
 import OfferCard from '@/components/OfferCard/OfferCard'
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton'
 import background_image from '@/assets/City_of_Aveiro_twitter_b.jpg'
@@ -18,8 +18,6 @@ import { OfferService } from '@/services/Client/OfferService'
 import { useUserStore } from '@/stores/useUserStore'
 import {ChevronDown} from 'lucide-react'
 import config from '@/config';
-import { OfferDetailsProps } from '@/lib/types'
-import { JSX } from 'react/jsx-runtime'
 import { OfferDetailsProps } from '@/lib/types'
 import { JSX } from 'react/jsx-runtime'
 
