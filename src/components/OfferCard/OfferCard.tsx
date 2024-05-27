@@ -122,7 +122,7 @@ type OfferCardProps = Partial<OfferDetailsProps> & { showDelete?: boolean; onDel
         ) : ( 
           imageData && imageData.length > 0 ? (
             <img
-              src={config.STATIC_URL + imageData[0].image}
+              src={imageData[0].image}
               alt={name}
               className="object-cover aspect-square w-full h-48 md:h-full"
             />

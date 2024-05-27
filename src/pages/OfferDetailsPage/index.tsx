@@ -26,6 +26,12 @@ import { Dialog, DialogContent} from '@/components/ui/dialog';
 import { SimilarOffersList } from "./components/SimilarOffersList";
 import { useToast } from "@/components/ui/use-toast";
 import { BuyOfferDialog } from "./components/BuyOfferDialog";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "@/components/ui/tooltip"
 
 import config from "@/config";
 
@@ -49,7 +55,7 @@ export default function OfferDetailsPage() {
     const queryClient = useQueryClient();
     const { toast } = useToast();
 
-    const { sub } = useUserStore();
+    const { sub, token } = useUserStore();
 
     const handleBuyOffer = () => {
         setIsBuyOfferOpen(!isBuyOfferOpen);
@@ -238,7 +244,7 @@ export default function OfferDetailsPage() {
                                     Array.from({ length: imagesData.length }).map((_, index) => (
                                         <CarouselItem key={index} className="w-full">
                                             <Card className="h-[29rem] overflow-hidden">
-                                                <img className="object-fits h-full w-full" src={config.STATIC_URL+imagesData[index].image} alt="offer" />
+                                                <img className="object-fits h-full w-full" src={imagesData[index].image} alt="offer" />
                                             </Card>
                                         </CarouselItem>
                                     ))
@@ -275,7 +281,7 @@ export default function OfferDetailsPage() {
                                     Array.from({ length: imagesData.length }).map((_, index) => (
                                         <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/4 cursor-pointer" onClick={() => onThumbnailClick(index)}>
                                             <Card className="h-28 overflow-hidden">
-                                                <img className="object-fits h-full w-full" src={config.STATIC_URL + imagesData[index].image} alt="offer" />
+                                                <img className="object-fits h-full w-full" src={imagesData[index].image} alt="offer" />
                                             </Card>
                                         </CarouselItem>
                                     ))
@@ -355,9 +361,24 @@ export default function OfferDetailsPage() {
                                     ))}
                                 </SelectContent>
                                 </Select>
-                                <Button className="rounded px-6 py-2 transition duration-300 ease-in-out" onClick={handleBuyOffer}>
-                                PURCHASE
-                                </Button>
+                                {token ? (
+                                    <Button className="rounded px-6 py-2 transition duration-300 ease-in-out" onClick={handleBuyOffer}>
+                                    PURCHASE
+                                    </Button>
+                                    ): (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger>
+                                                    <Button className="rounded px-6 py-2 transition duration-300 ease-in-out" disabled>
+                                                        PURCHASE
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p className="text-sm">You need to be logged in to buy this offer</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    )}
                             </div>
                         </div>
                     </div>

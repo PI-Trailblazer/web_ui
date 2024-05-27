@@ -137,7 +137,7 @@ export default function LandingPage() {
 
     const imageMap = results.reduce((map, result) => {
         if (result.isSuccess && result.data[1]) {
-            map[result.data[1].offerid] = config.STATIC_URL + result.data[1].image;
+            map[result.data[1].offerid] = result.data[1].image;
         }
         return map;
     }, {});
