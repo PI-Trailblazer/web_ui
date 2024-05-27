@@ -25,6 +25,7 @@ import { EditOfferForm } from "./components/EditOfferForm";
 import { Dialog, DialogContent} from '@/components/ui/dialog';
 import { SimilarOffersList } from "./components/SimilarOffersList";
 import { useToast } from "@/components/ui/use-toast";
+import { BuyOfferDialog } from "./components/BuyOfferDialog";
 
 import config from "@/config";
 
@@ -43,10 +44,16 @@ export default function OfferDetailsPage() {
     const [editImages, setEditImages] = useState(false);
     const [editDetails, setEditDetails] = useState(false);
     const [averageScore, setAverageScore] = useState<number>(0);
+    const [isBuyOfferOpen, setIsBuyOfferOpen] = useState(false);
+    const [quantitySelected, setQuantitySelected] = useState<number>(1);
     const queryClient = useQueryClient();
     const { toast } = useToast();
 
     const { sub } = useUserStore();
+
+    const handleBuyOffer = () => {
+        setIsBuyOfferOpen(!isBuyOfferOpen);
+    }
     
     const getOffer = async (id: number) => {
         return (await OfferService.getOffer(id)).data;
@@ -111,6 +118,8 @@ export default function OfferDetailsPage() {
         queryKey: ['images', id],
         queryFn: handleGetImages,
     });
+
+    console.log('Images:', imagesData);
     
     useEffect(() => {
          setAverageScore(offer && offer.n_reviews !== 0 ? ((offer.max_review_score / offer.n_reviews) * 5) / 100 : 0);
@@ -334,7 +343,7 @@ export default function OfferDetailsPage() {
                                 <span className="text-2xl font-semibold text-primary">{`$${offer.price}`}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <Select>
+                                <Select onValueChange={(value) => setQuantitySelected(parseInt(value))}>
                                 <SelectTrigger className="border rounded w-2/3 p-2 text-gray-700">
                                     <SelectValue placeholder="Select Quantity" />
                                 </SelectTrigger>
@@ -346,7 +355,7 @@ export default function OfferDetailsPage() {
                                     ))}
                                 </SelectContent>
                                 </Select>
-                                <Button className="rounded px-6 py-2 transition duration-300 ease-in-out">
+                                <Button className="rounded px-6 py-2 transition duration-300 ease-in-out" onClick={handleBuyOffer}>
                                 PURCHASE
                                 </Button>
                             </div>
@@ -358,6 +367,7 @@ export default function OfferDetailsPage() {
                     </div>
                 </div>
             </div>
+            <BuyOfferDialog toggleOpenBuyOfferDialog={handleBuyOffer} isOpenBuyOfferDialog={isBuyOfferOpen} offerId={offer.id} quantitySelected={quantitySelected} />
         </div>
     );
 }

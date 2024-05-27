@@ -8,19 +8,26 @@ import {
 } from '@/components/ui/carousel'
 import { Card, CardContent } from '@/components/ui/card'
 import Autoplay from 'embla-carousel-autoplay'
-import { useEffect, useRef, useState } from 'react'
+import { Key, Key, Key, useEffect, useRef, useState } from 'react'
 import OfferCard from '@/components/OfferCard/OfferCard'
 import OfferCardSkeleton from '@/components/OfferCard/OfferCardSkeleton'
 import background_image from '@/assets/City_of_Aveiro_twitter_b.jpg'
 import { RecommenderService } from '@/services/Client/RecommenderService'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueries } from '@tanstack/react-query'
 import { OfferService } from '@/services/Client/OfferService'
 import { useUserStore } from '@/stores/useUserStore'
 import {ChevronDown} from 'lucide-react'
+import config from '@/config';
+import { OfferDetailsProps } from '@/lib/types'
+import { JSX } from 'react/jsx-runtime'
+import { OfferDetailsProps } from '@/lib/types'
+import { JSX } from 'react/jsx-runtime'
+
 
 export default function LandingPage() {
     const scrollToRef = useRef<HTMLDivElement | null>(null)
     const [isCardLoading, setisCardLoading] = useState<boolean>(true)
+    const  [mostRelevantOffersIds, setMostRelevantOffersIds] = useState<number[]>([])
 
     //token 
     const token = useUserStore((state) => state.token)
@@ -36,10 +43,28 @@ export default function LandingPage() {
         return (await OfferService.getOffersByID({ids: ids})).data
     }
 
-    const { data: mostRelevantData, isLoading: isLoadingRelevantLoading } = useQuery({
+    const { data: mostRelevantData, isLoading: isLoadingRelevantLoading, isSuccess } = useQuery({
         queryKey: ['most_relevant'],
         queryFn: fetchMostRelevant,
     })
+
+    useEffect(() => {
+        if (mostRelevantData) {
+            setMostRelevantOffersIds(mostRelevantData.data)
+        }
+    }, [mostRelevantData])
+
+    const fetchImages = async (id: number) => {
+        return (await OfferService.getImages(id)).data
+    }
+
+    const results = useQueries({
+        queries: mostRelevantOffersIds.map((id) => ({
+            queryKey: ['images', id],
+            queryFn: () => fetchImages(id),
+            staleTime: Infinity,
+        })),
+    }) 
 
     const { data: offerData, isLoading: isLoadingOfferData } = useQuery({
         queryKey: ['offer', mostRelevantData],
@@ -67,8 +92,6 @@ export default function LandingPage() {
         queryKey: ['for_you_offers', forYouDataIds],
         queryFn: fetchForYou,
     })
-
-    console.log('forYouData', forYouData)
 
     const handleScroll = () => {
         const offset = window.scrollY
@@ -112,6 +135,14 @@ export default function LandingPage() {
         }
     }
 
+    const imageMap = results.reduce((map, result) => {
+        if (result.isSuccess && result.data[1]) {
+            map[result.data[1].offerid] = config.STATIC_URL + result.data[1].image;
+        }
+        return map;
+    }, {});
+    
+    console.log('imageMap', imageMap);
     
     return (
 		<div className='flex flex-col items-center h-screen -mt-16'>
@@ -127,13 +158,15 @@ export default function LandingPage() {
 				}}
 				> {/* Ajuste a altura aqui */}
                     <CarouselContent className="h-screen">
-                        {Array.from({ length: 5 }).map((_, index) => (
+                        {offerData?.map((offer: { id: string | number }, index: Key | null | undefined) => (
                             <CarouselItem key={index} className="relative h-full">
                                 {/* Adicionando a imagem de fundo para cada slide usando Tailwind CSS */}
                                 <div
                                     className="absolute inset-0 blur-sm bg-cover bg-center z-0"
                                     style={{
-                                        backgroundImage: `url(${background_image})`,
+                                        backgroundImage: `url(${
+                                            imageMap[offer.id] || background_image // substitua por uma URL de imagem padrão
+                                        })`,
                                     }}
                                 >
                                     {/* Você também pode adicionar uma cor de overlay aqui se precisar */}
@@ -195,13 +228,13 @@ export default function LandingPage() {
                     ))
                         
                     : (token && forYouData
-                        ? forYouData.map((offer, index) => (
+                        ? forYouData.map((offer: JSX.IntrinsicAttributes & Partial<OfferDetailsProps> & { showDelete?: boolean | undefined; onDelete?: (() => void) | undefined; isPending?: boolean | undefined; seeMoreDisabled?: boolean | undefined }, index: Key | null | undefined) => (
                             <div className='w-full'>
                             <OfferCard key={index} {...offer} />
                             </div>
                         ))
                         : offerData && offerData.length > 0
-                            ? offerData.map((offer, index) => (
+                            ? offerData.map((offer: JSX.IntrinsicAttributes & Partial<OfferDetailsProps> & { showDelete?: boolean | undefined; onDelete?: (() => void) | undefined; isPending?: boolean | undefined; seeMoreDisabled?: boolean | undefined }, index: Key | null | undefined) => (
                                 <div className='w-full'>
                                 <OfferCard key={index} {...offer} />
                                 </div>
