@@ -1,30 +1,23 @@
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
-import { Separator } from "@/components/ui/separator"  
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {Form, FormControl, FormField, FormItem, FormMessage} from '@/components/ui/form';
-import { z } from 'zod';
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useUserStore } from "@/stores/useUserStore";
-import { COUNTRIES } from "@/data/countries"
-import { PaymentService } from "@/services/Client/PaymentService"
-import { OfferService } from "@/services/Client/OfferService"
-import { useToast } from "@/components/ui/use-toast"
-import axios from "axios"
-import { addOfferSchema, addOfferFormValues } from "./AddOfferSchema"
-import { OfferDetailsProps} from "@/lib/types";
-import { useEffect, useState } from "react"
+import { PaymentService } from "@/services/Client/PaymentService";
+import { OfferService } from "@/services/Client/OfferService";
+import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
+import { addOfferSchema, addOfferFormValues } from "./AddOfferSchema";
+import { OfferDetailsProps } from "@/lib/types";
+import { useEffect, useState } from "react";
+import { SelectGroup } from "@radix-ui/react-select";
 
 
 interface AddOfferDialogProps {
@@ -34,32 +27,50 @@ interface AddOfferDialogProps {
     quantitySelected: number;
 }
 
+interface Country {
+    label: string;
+    value: string;
+}
+
 export const BuyOfferDialog: React.FC<AddOfferDialogProps> = ({ toggleOpenBuyOfferDialog, isOpenBuyOfferDialog, offerId, quantitySelected }) => {
 
     const [averageScore, setAverageScore] = useState<number>(0);
     const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [countries, setCountries] = useState<Country[]>([]);
+    const [selectedCountry, setSelectedCountry] = useState<string>('');
+    
+    //user store
+    const user = useUserStore();
 
     const { toast } = useToast();
 
-    //"https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
-    
-    const { data: countries } = useQuery({
+    const fetchCountries = async () => {
+        return (await axios.get("https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code")).data;
+    };
+
+    const { data: countriesFetched, isSuccess } = useQuery({
         queryKey: ['countries'],
-        queryFn: () => axios.get("https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code").then(res => res.data)
+        queryFn: fetchCountries,
     });
-    
+
+    useEffect(() => {
+        if (isSuccess && countriesFetched) {
+            setCountries(countriesFetched.countries);
+            setSelectedCountry(countriesFetched.userSelectValue?.value || '');
+        }
+    }, [isSuccess, countriesFetched]);
+
     const buyOfferForm = useForm<addOfferFormValues>({
         resolver: zodResolver(addOfferSchema),
     });
 
-    //get offer by id
     const fetchOffer = async (offerId: number) => {
-        return (await OfferService.getOffer(offerId)).data
-    }
+        return (await OfferService.getOffer(offerId)).data;
+    };
 
     const { data: offer, isLoading, isError } = useQuery<OfferDetailsProps>({
         queryKey: ['offer', offerId],
-        queryFn: () => fetchOffer(offerId)
+        queryFn: () => fetchOffer(offerId),
     });
 
     useEffect(() => {
@@ -67,16 +78,54 @@ export const BuyOfferDialog: React.FC<AddOfferDialogProps> = ({ toggleOpenBuyOff
             setAverageScore(offer.n_reviews !== 0 ? ((offer.max_review_score / offer.n_reviews) * 5) / 100 : 0);
             setTotalPrice(offer.price ? offer.price * quantitySelected : 0);
         }
-    }, [offer]);
-    
+    }, [offer, quantitySelected]);
+
     if (isLoading) return <div>Loading...</div>;
     if (isError || !offer) return <div>Error or no data available.</div>;
 
-    // {userCountryCode: 'PT', countries: Array(250), userSelectValue: {…}}
+    //post request to buy offer
+
+    const buyOffer = async (data: addOfferFormValues) => {
+        const apiData = {
+            ...data,
+            offer_id: offerId,
+            quantity: quantitySelected,
+            status: "pending",
+            amount: totalPrice,
+            userid: user.sub
+        }
+
+        console.log(apiData);
+
+        const response = await PaymentService.addPayment(apiData);
+
+        return response.data;
+    }
+
+    const buyOfferMutation = useMutation({
+        mutationFn: buyOffer,
+        onSuccess: (data: any) => {
+            buyOfferForm.reset();
+            toggleOpenBuyOfferDialog();
+            toast({
+                variant: 'success',
+                title: 'Offer bought',
+                description: 'Your offer has been bought successfully',
+            });
+        },
+        onError: (error: any) => {
+            console.log(error);
+            toast({
+                variant: 'destructive',
+                title: 'Error buying offer',
+                description: 'An error occurred while buying the offer',
+            });
+        },
+    });
 
     const handleBuyOffer = async (data: addOfferFormValues) => {
-        console.log(data);
-    }
+        buyOfferMutation.mutateAsync(data);
+    };
 
     return (
         <Dialog open={isOpenBuyOfferDialog} onOpenChange={toggleOpenBuyOfferDialog}>
@@ -84,7 +133,6 @@ export const BuyOfferDialog: React.FC<AddOfferDialogProps> = ({ toggleOpenBuyOff
                 <div>
                     <div className="space-y-3 rounded-lg p-4">
                         <div className="space-y-2">
-                            {/* Offer Details */}
                             <h2 className="text-2xl font-semibold">Offer Details</h2>
                             <div className="space-y-1">
                                 <div className="flex items-center">
@@ -118,15 +166,38 @@ export const BuyOfferDialog: React.FC<AddOfferDialogProps> = ({ toggleOpenBuyOff
                         </div>
                     </div>
                     <Separator />
-                    <div className="flex flex-row justify-between items-center p-4">
+                    <div className="p-4">
                         <Form {...buyOfferForm}>
-                            <form onSubmit={buyOfferForm.handleSubmit(handleBuyOffer)} className="space-y-6">
-                                <div className="flex items-center">
-                                    <p className="font-semibold">Total:</p>
-                                    <p className="ml-2">
-                                        {totalPrice} €
-                                    </p>
-                                    
+                            <form onSubmit={buyOfferForm.handleSubmit(handleBuyOffer)}>
+                                <div className="flex justify-between">
+                                    <div className="flex space-y-3 flex-col ">
+                                        <p className="font-semibold text-sm">Total Price:</p>
+                                        <p className="ml-2">
+                                            {totalPrice} €
+                                        </p>
+                                    </div>
+                                    <FormField control={buyOfferForm.control} name="nationality" render={({ field }) => (
+                                        <FormItem className="w-1/2">
+                                            <FormLabel className="font-semibold">Nationality</FormLabel>
+                                            <FormControl>
+                                                <Select value={field.value} onValueChange={(value) => { field.onChange(value); setSelectedCountry(value); }}>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select country">{selectedCountry ? countries.find(c => c.value === selectedCountry)?.label : "Select country"}</SelectValue>
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            {countries.map((country: any, index: number) => (
+                                                                <SelectItem key={index} value={country.value}>{country.label}</SelectItem>
+                                                            ))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormControl>
+                                        </FormItem>
+                                    )} />
+                                </div>
+                                <div className="flex justify-center mt-4 w-full">
+                                    <Button type="submit">Buy Offer</Button>
                                 </div>
                             </form>
                         </Form>
@@ -134,5 +205,5 @@ export const BuyOfferDialog: React.FC<AddOfferDialogProps> = ({ toggleOpenBuyOff
                 </div>
             </DialogContent>
         </Dialog>
-    )
+    );
 };

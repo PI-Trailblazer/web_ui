@@ -79,6 +79,7 @@ export const EditOfferForm: React.FC<AddOfferDialogProps> = ({ toggleEditDetails
         },
     })
 
+
     const handleEditOffer = async (data: FormValues) => {
         editOfferMutation.mutate(data);
     }
