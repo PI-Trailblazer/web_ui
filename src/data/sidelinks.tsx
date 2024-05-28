@@ -5,6 +5,7 @@ import {
   IconMessages,
   IconRouteAltLeft,
   IconSettings,
+  IconBrandCashapp
 } from '@tabler/icons-react'
 
 export interface NavLink {
@@ -36,6 +37,12 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '/account/dashboard',
     icon: <IconLayoutDashboard size={18} />,
+  },
+  {
+    title: 'Buy History',
+    label: '',
+    href: '/account/buy-history',
+    icon: <IconBrandCashapp size={18} />,
   },
   {
     title: 'Comments',

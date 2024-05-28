@@ -51,3 +51,14 @@ export interface UserResponse {
     verified: boolean;
     image: string;
 }
+
+export interface Payment{
+    userid: string;
+    offer_id: number;
+    quantity: number;
+    amount: number;
+    status: string;
+    nationality: string;
+    id: number;
+    timestamp: string;
+}
