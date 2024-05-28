@@ -65,6 +65,7 @@ const OfferDetailsPage = lazy(() => import("./pages/OfferDetailsPage"));
 const YourOfferPage = lazy(() => import("./pages/YourOffersPage"));
 const AccountSettingsPage = lazy(() => import("./pages/AccountSettingsPage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const BuyHistoryPage = lazy(() => import("./pages/BuyHistoryPage"));
 const NotFoundError = lazy(() => import("./pages/ErrorPages/NotFoundError"));
 const GeneralError = lazy(() => import("./pages/ErrorPages/GeneralError"));
 const MaintenanceError = lazy(() => import("./pages/ErrorPages/MaintenanceError"));
@@ -197,6 +198,21 @@ const routes = [
                 ),
                 exact: true,
             },
+            {
+                path: 'buy-history',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <ProtectedRoute>
+                            <BuyHistoryPage />
+                        </ProtectedRoute>
+                    </Suspense>
+                ),
+                exact: true,
+            },
+            {
+                path: '*',
+                element: <Navigate to='/404' />,
+            }
         ],
     }
 ];

@@ -96,6 +96,9 @@ const NavBar: React.FC = () => {
                   <Link to="/account">
                         <DropdownMenuItem>Account Management</DropdownMenuItem>
                   </Link>
+                  <Link to="/account/buy-history">
+                        <DropdownMenuItem>Transition History</DropdownMenuItem>
+                  </Link>
                   {scopes.includes('provider') && (
                     <div>
                     <Link to="/account/your-offers">

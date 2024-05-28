@@ -86,6 +86,12 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+
+      boxShadow: {
+        green: '0 0 10px #10B981, 0 0 15px #10B981, 0 0 20px #10B981, 0 0 25px #10B981, 0 0 35px #10B981',
+        red: '0 0 10px #EF4444, 0 0 15px #EF4444, 0 0 20px #EF4444, 0 0 25px #EF4444, 0 0 35px #EF4444',
+        yellow: '0 0 10px #F59E0B, 0 0 15px #F59E0B, 0 0 20px #F59E0B, 0 0 25px #F59E0B, 0 0 35px #F59E0B',
+      },
     },
   },
   plugins: [
