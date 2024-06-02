@@ -46,6 +46,8 @@ export default function LandingPage() {
         queryFn: fetchMostRelevant,
     })
 
+    console.log('mostRelevantData', mostRelevantData)
+
     useEffect(() => {
         if (mostRelevantData) {
             setMostRelevantOffersIds(mostRelevantData.data)

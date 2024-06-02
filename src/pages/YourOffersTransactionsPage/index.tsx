@@ -17,6 +17,9 @@ import { Separator } from '@/components/ui/separator'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 
@@ -28,8 +31,10 @@ import { OfferDetailsProps, Payment } from '@/lib/types'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { encodeId } from '@/lib/utils'
+import OfferTransactions from './components/OfferTransactions';
 
 interface CombinedOffer extends OfferDetailsProps, Payment {
+  payments: Payment[]
   image: string;
 }
 
@@ -47,39 +52,39 @@ const tagsText = new Map<string, string>([
   ['games', 'Games'],
 ])
 
-export default function BuyHistoryPage() {
+export default function YourOffersTransactionsPage() {
   const [sort, setSort] = useState('ascending')
   const [searchTerm, setSearchTerm] = useState('')
   const [tags, setTags] = useState("alltags")
   const [offersIDs, setOffersIDs] = useState<number[]>([])
   const [combinedOffers, setCombinedOffers] = useState<CombinedOffer[]>([]);
 
-  // Get all the accounts
-  const getPayments = async () => {
-    const response = await PaymentService.getTransactionsByUser();
-    return response.data;
+
+  //get all user's offers
+  const getAllOffersForUser = async () => {
+    return (await OfferService.getOffersByUser()).data;
   }
 
-  const { data: payHistory, isLoading, isSuccess } = useQuery<Payment[], Error>({
-    queryKey: ['transitions'],
-    queryFn: getPayments
-  });
+    const { data: allOffers, isLoading: offersLoading, isSuccess: offersSuccess } = useQuery<OfferDetailsProps[]>({
+        queryKey: ['allOffers'],
+        queryFn: getAllOffersForUser,
+    });
 
-  useEffect(() => {
-    if (isSuccess) {
-      const ids = payHistory?.map((payment) => payment.offer_id);
-      setOffersIDs(ids);
-    }
-  }, [isSuccess, payHistory])
+    useEffect(() => {
+        if (offersSuccess) {
+            const ids = allOffers?.map((offer) => offer.id);
+            setOffersIDs(ids);
+        }
+    }, [offersSuccess, allOffers])
 
-  const getOfferById = async (id: number) => {
-    return (await OfferService.getOffer(id)).data;
+  const getPaymentsByOfferId = async (offerId: number) => {
+    return (await PaymentService.getTransactionsByOffer(offerId)).data;
   }
 
   const results = useQueries({
     queries: offersIDs.map((id) => ({
-      queryKey: ['offer', id],
-      queryFn: () => getOfferById(id),
+      queryKey: ['payment', id],
+      queryFn: () => getPaymentsByOfferId(id),
       staleTime: Infinity,
     })),
   })
@@ -101,15 +106,17 @@ export default function BuyHistoryPage() {
     if (combinedOffers.length > 0 && combinedOffers.every(value => value !== undefined)) {
       return;
     }
-    if (results.every(result => result.isSuccess) && imagesResults.every(result => result.isSuccess) && payHistory) {
+    if (results.every(result => result.isSuccess) && imagesResults.every(result => result.isSuccess) && allOffers) {
       const offers = results.map((result, index) => ({
-        ...result.data,
-        ...payHistory[index],
-        image: imagesResults[index].data[0]?.image || '',
-      })) as CombinedOffer[];
+        payments: result.data,
+        ...allOffers[index],
+        image: imagesResults[index].data[0]?.image || '', // Assuming the first image is the desired one
+      })) as unknown as CombinedOffer[];
       setCombinedOffers(offers);
     }
-  }, [results, imagesResults, isSuccess, payHistory]);
+  }, [results, imagesResults, offersSuccess, allOffers]);
+
+  console.log('combinedOffers', combinedOffers);
 
   const filteredOffers = combinedOffers
     .sort((a, b) =>
@@ -120,20 +127,16 @@ export default function BuyHistoryPage() {
     .filter((offer) => offer.name.toLowerCase().includes(searchTerm.toLowerCase()))
     .filter((offer) => tags === 'alltags' || offer.tags.includes(tagsText.get(tags)!));
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Layout fadedBelow fixedHeight>
       {/* ===== Content ===== */}
       <LayoutBody className='flex flex-col' fixedHeight>
         <div>
           <h1 className='text-2xl font-bold tracking-tight'>
-            Transaction's History
+            My Offer's Transactions
           </h1>
           <p className='text-muted-foreground'>
-            Here&apos;s a list of all the transactions you&apos;ve made.
+            View all transactions made on your offers.
           </p>
         </div>
         <div className='my-4 flex items-end justify-between sm:my-0 sm:items-center'>
@@ -184,7 +187,7 @@ export default function BuyHistoryPage() {
         </div>
         <Separator className='shadow' />
         <div className='no-scrollbar grid gap-4 overflow-y-scroll pb-16 pt-4 md:grid-cols-2 lg:grid-cols-3'>
-          {isSuccess && filteredOffers?.map((offer) => (
+          {offersSuccess && filteredOffers?.map((offer) => (
             <Dialog key={offer.id}>
               <DialogTrigger>
                 <div
@@ -199,42 +202,33 @@ export default function BuyHistoryPage() {
                     <div className="absolute bottom-4 right-4 text-white text-right">
                       <h2 className="text-lg font-bold">{offer.name}</h2>
                       <p className="text-sm">
-                        {new Date(offer.timestamp).toLocaleDateString()} - {new Date(offer.timestamp).toLocaleTimeString()}
+                        {offer.street}, {offer.city}, {offer.postal_code}
                       </p>
                       <p className="text-sm">
-                        {offer.quantity} items reserved for approximately €{offer.amount}
+                        Price: €{offer.price} - Discount: {offer.discount}%
                       </p>
                       <p className="text-sm">
-                        Status: {offer.status}
+                        {offer.tags.join(', ')}
                       </p>
                     </div>
                   </div>
                 </div>
               </DialogTrigger>
               <DialogContent>
-                <div className="p-4">
-                  <h2 className="text-xl font-bold mb-4">{offer.name}</h2>
-                  <p className="mb-2"><strong>Description:</strong> {offer.description}</p>
-                  <p className="mb-2"><strong>Location:</strong> {offer.street}, {offer.city}, {offer.postal_code}</p>
-                  <p className="mb-2"><strong>Price:</strong> €{offer.price}</p>
-                  <p className="mb-2"><strong>Discount:</strong> {offer.discount}%</p>
-                  <p className="mb-2"><strong>Tags:</strong> {offer.tags.join(', ')}</p>
-                  <p className="mb-2"><strong>Reviews:</strong> {offer.n_reviews}</p>
-                  <p className="mb-2"><strong>Max Review Score:</strong> {offer.max_review_score}</p>
-                  <p className="mb-2"><strong>Nationality:</strong> {offer.nationality}</p>
-                  <p className="mb-2"><strong>Amount:</strong> €{offer.amount}</p>
-                  <p className="mb-2"><strong>Quantity:</strong> {offer.quantity}</p>
-                  <p className="mb-2"><strong>Status:</strong> {offer.status}</p>
-                  <p className="mb-2"><strong>Purchased on:</strong> {new Date(offer.timestamp).toLocaleString()}</p>
-                  <Link to={`/offer/${encodeId(offer.offer_id)}`} className="mt-4 flex flex-row justify-center">
-                    <Button className='w-full'>See Offer</Button>
-                  </Link>
+                <DialogHeader>
+                  <DialogTitle>{offer.name}</DialogTitle>
+                  <DialogDescription>
+                    All transactions made on this offer.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className='space-y-2 overflow-y-auto h-96 pr-2'>
+                  <OfferTransactions payments={offer.payments} />
                 </div>
               </DialogContent>
             </Dialog>
           ))}
         </div>
-        {isSuccess && filteredOffers.length === 0 && (
+        {offersSuccess && filteredOffers.length === 0 && (
             <div className='text-center justify-center flex text-muted-foreground'>
               <p className='text-2xl'>No transactions found.</p>
             </div>

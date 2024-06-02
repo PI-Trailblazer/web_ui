@@ -1,12 +1,14 @@
 import {
   IconChecklist,
-  IconExclamationCircle,
   IconLayoutDashboard,
-  IconMessages,
-  IconRouteAltLeft,
   IconSettings,
-  IconBrandCashapp
 } from '@tabler/icons-react'
+
+import {
+  CandlestickChart,
+  HandCoins,
+  PiggyBank,
+} from 'lucide-react';
 
 export interface NavLink {
   title: string
@@ -39,28 +41,22 @@ export const sidelinks: SideLink[] = [
     icon: <IconLayoutDashboard size={18} />,
   },
   {
-    title: 'Buy History',
+    title: 'Payments & Transactions',
     label: '',
-    href: '/account/buy-history',
-    icon: <IconBrandCashapp size={18} />,
-  },
-  {
-    title: 'Comments',
-    label: '10',
     href: '',
-    icon: <IconRouteAltLeft size={18} />,
+    icon: <HandCoins size={18} />,
     sub: [
       {
-        title: 'My Comments',
-        label: '9',
-        href: '/404',
-        icon: <IconExclamationCircle size={18} />,
+        title: 'Transactions History',
+        label: '',
+        href: '/account/buy-history',
+        icon: <PiggyBank size={18} />,
       },
       {
-        title: 'Comments on my offers',
+        title: 'My Offers Transactions',
         label: '',
-        href: '/404',
-        icon: <IconMessages  size={18} />,
+        href: '/account/offers-transactions',
+        icon: <CandlestickChart  size={18} />,
       },
     ],
   },

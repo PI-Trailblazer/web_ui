@@ -28,6 +28,8 @@ const ProfitCard: React.FC = () => {
     queryFn: getProfitThisMonth,
   });
 
+  console.log('profit', profit);
+
   //get profit compared to last month
   const getProfitComparison = async () => {
     if(scopes.includes('dmo')) {

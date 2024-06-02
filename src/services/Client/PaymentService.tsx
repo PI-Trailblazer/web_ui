@@ -18,6 +18,10 @@ const PaymentService = {
 
     async getTransactionsByUser() {
         return await client.get('/user/');
+    },
+
+    async getTransactionsByOffer(offerId: number) {
+        return await client.get(`/offer/${offerId}`);
     }
 };
 

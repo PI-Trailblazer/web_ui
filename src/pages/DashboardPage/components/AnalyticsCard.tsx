@@ -26,7 +26,7 @@ const validCombinations = {
 export default function AnalyticsCard() {
     const { scopes } = useUserStore();
     const [timeUnit, setTimeUnit] = useState('month');
-    const [metric, setMetric] = useState('total_offers');
+    const [metric, setMetric] = useState('num_payments');
     const [data, setData] = useState<TimeData[]>([]);
     const [futureData, setFutureData] = useState<TimeData[]>([]);
 
@@ -71,6 +71,8 @@ export default function AnalyticsCard() {
     }, [analysisData, metric, isSuccess]);
 
     const maxValue = Math.max(...data.map((item) => item[metric] as number));
+    const predictedMaxValue = Math.max(...futureData.map((item) => item[metric] as number));
+    const predictedMaxValueInt = Math.floor(predictedMaxValue);
 
     const handleTimeUnitChange = (newTimeUnit: string) => {
         setTimeUnit(newTimeUnit);
@@ -96,6 +98,19 @@ export default function AnalyticsCard() {
     if (isLoading) {
         return <div>Loading...</div>;
     }
+
+    // Filter metric options based on user scope
+    const metricOptions = scopes.includes('dmo')
+    ? [
+        { value: 'total_offers', label: 'Total Offers' },
+        { value: 'new_offers', label: 'Sales' },
+        { value: 'num_payments', label: 'Visits' },
+        { value: 'profit', label: 'Profit' }
+    ]
+    : [
+        { value: 'num_payments', label: 'Visits' },
+        { value: 'profit', label: 'Profit' }
+    ];
 
     return (
         <Card className="m-4 shadow-xl rounded-lg">
@@ -138,10 +153,9 @@ export default function AnalyticsCard() {
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="total_offers">Total Offers</SelectItem>
-                                <SelectItem value="new_offers">Sales</SelectItem>
-                                <SelectItem value="num_payments">Visits</SelectItem>
-                                <SelectItem value="profit">Profit</SelectItem>
+                                {metricOptions.map(option => (
+                                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -158,6 +172,9 @@ export default function AnalyticsCard() {
                         )}
                         <Legend height={36} />
                         <ReferenceLine y={maxValue} label={{ value: `Max: ${maxValue}`, position: 'insideTop', offset: 10 }} stroke="red" strokeDasharray="3 3" />
+                        {futureData.length > 0 && predictedMaxValue > maxValue && (
+                            <ReferenceLine y={predictedMaxValue} label={{ value: `Predicted Max: ${predictedMaxValueInt}`, position: 'insideTop', offset: 10 }} stroke="orange" strokeDasharray="3 3" />
+                        )}
                     </LineChart>
                 </ResponsiveContainer>
             </CardContent>

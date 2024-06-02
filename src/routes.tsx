@@ -4,7 +4,6 @@ import { useUserStore } from './stores/useUserStore';
 import { Navigate } from 'react-router-dom';
 import { AccountLayout } from './layouts/AccountLayout';
 
-
 function ProtectedRoute({
     children,
     loggedIn = true,
@@ -63,6 +62,7 @@ const LoginPage = lazy(() => import("./pages/LoginPage"));
 const OfferListPage = lazy(() => import("./pages/OfferListPage"));
 const OfferDetailsPage = lazy(() => import("./pages/OfferDetailsPage"));
 const YourOfferPage = lazy(() => import("./pages/YourOffersPage"));
+const YourOffersTransactionsPage = lazy(() => import("./pages/YourOffersTransactionsPage"));
 const AccountSettingsPage = lazy(() => import("./pages/AccountSettingsPage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const BuyHistoryPage = lazy(() => import("./pages/BuyHistoryPage"));
@@ -210,9 +210,15 @@ const routes = [
                 exact: true,
             },
             {
-                path: '*',
-                element: <Navigate to='/404' />,
-            }
+                path: 'offers-transactions',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <ProviderRoute>
+                            <YourOffersTransactionsPage />
+                        </ProviderRoute>
+                    </Suspense>
+                ),
+            },
         ],
     }
 ];

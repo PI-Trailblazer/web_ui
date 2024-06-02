@@ -58,7 +58,7 @@ const NewOffersCard: React.FC = () => {
             </CardHeader>
             <CardContent>
             <div className='text-2xl font-bold'>
-                +{newOffer[0].total}
+                {scopes.includes('dmo') ? '+' + newOffer[0].total : '+' + newOffer}
             </div>
             </CardContent>
         </Card>
