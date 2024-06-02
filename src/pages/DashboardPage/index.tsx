@@ -20,18 +20,42 @@ import {
 } from "@/components/ui/select"
 import { SetStateAction, useState } from 'react'
 import AnalyticsCard from './components/AnalyticsCard'
-
+import NewOffersCard from './components/DashboardCards/NewOffersCard'
+import ProfitCard from './components/DashboardCards/ProfitCard'
+import FamousTagsCard from './components/DashboardCards/FamousTagsCard'
+import SalesCard from './components/DashboardCards/SalesCard'
+import { dmoMonitorService, providerMonitorService } from '@/services/Client/MonitorService';
+import { useUserStore } from '@/stores/useUserStore';
+import { useQuery, useQueries } from '@tanstack/react-query';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('nationalities');
   const [title, setTitle] = useState('Nationalities');
   const [description, setDescription] = useState('Percentage of users by nationality.');
+  const { scopes } = useUserStore();
+
+  const getPayments = async () => {
+    if (scopes.includes('dmo')) {
+      return (await dmoMonitorService.getPayments()).data;
+    } else {
+      return (await providerMonitorService.getPayments()).data;
+    }
+  }
+
+  const { data: payments, isLoading, isSuccess } = useQuery<any>({
+    queryKey: ['payments'],
+    queryFn: getPayments,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const handleSelectChange = (value: SetStateAction<string>) => {
     setActiveTab(value);
     if (value === 'sales') {
       setTitle('Recent Sales');
-      setDescription('You made 265 sales this month.');
+      setDescription('Total number of sales: ' + payments.length);
     } else {
       setTitle('Nationalities');
       setDescription('Percentage of users by nationality.');
@@ -46,9 +70,6 @@ export default function DashboardPage() {
           <h1 className='text-2xl font-bold tracking-tight md:text-3xl'>
             Dashboard
           </h1>
-          <div className='flex items-center space-x-2'>
-            <Button>Download</Button>
-          </div>
         </div>
         <Tabs
           orientation='vertical'
@@ -63,112 +84,10 @@ export default function DashboardPage() {
           </div>
           <TabsContent value='overview' className='space-y-4'>
             <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Number of new Offers 
-                    <br />
-                    <p className='text-xs text-muted-foreground'>
-                      Since last month
-                    </p>
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+7</div>
-                  <p className='text-xs text-muted-foreground'>
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Profit
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />
-                    <circle cx='9' cy='7' r='4' />
-                    <path d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>$2350</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +20.3% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Sales
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <rect width='20' height='14' x='2' y='5' rx='2' />
-                    <path d='M2 10h20' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+203</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +19% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Most Famous Tags
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>Sports & Culture</div>
-                  <p className='text-xs text-muted-foreground'>
-                    Last month: Sports & Food
-                  </p>
-                </CardContent>
-              </Card>
+              <NewOffersCard />
+              <ProfitCard />
+              <SalesCard />
+              <FamousTagsCard />
             </div>
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
               <Card className='col-span-1 lg:col-span-4'>
@@ -183,21 +102,21 @@ export default function DashboardPage() {
                 <CardHeader>
                   <div className='flex justify-between w-full'>
                     <div>
-                    <CardTitle>{title}</CardTitle>
-                    <CardDescription>
-                      {description}
-                    </CardDescription>
+                      <CardTitle>{title}</CardTitle>
+                      <CardDescription>
+                        {description}
+                      </CardDescription>
                     </div>
                     <div>
-                    <Select defaultValue="nationalities" onValueChange={handleSelectChange}>
-                      <SelectTrigger aria-label="Select a category" className="w-32">
-                        <SelectValue placeholder="Category"></SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sales">Sales</SelectItem>
-                        <SelectItem value="nationalities">Nationalities</SelectItem>
-                      </SelectContent>
-                    </Select>
+                      <Select defaultValue="nationalities" onValueChange={handleSelectChange}>
+                        <SelectTrigger aria-label="Select a category" className="w-32">
+                          <SelectValue placeholder="Category"></SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sales">Sales</SelectItem>
+                          <SelectItem value="nationalities">Nationalities</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </CardHeader>

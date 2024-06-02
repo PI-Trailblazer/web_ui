@@ -21,6 +21,7 @@ const config = {
     API_OFFER_URL: `${BASE_URL}/api/offer`,
     API_RECOMMENDER_URL: `${BASE_URL}/api/recommender`,
     API_PAYMENT_URL: `${BASE_URL}/api/payment`,
+    API_MONITOR_URL: `${BASE_URL}/api/monitor`,
     STATIC_URL: `${BASE_URL}/static`,
     POST_IMAGE_URL: `${BASE_URL}/`,
 };
