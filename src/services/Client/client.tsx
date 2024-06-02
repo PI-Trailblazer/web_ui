@@ -33,6 +33,9 @@ export async function refreshToken() {
     })
     .catch(() => {
       useUserStore.getState().logout();
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     });
 }
 
@@ -73,6 +76,7 @@ export const createClient = (baseUrl: string) => {
                         config.retry = true;
                         return axios.request(config);
                     } else {
+                        window.location.href = '/login';
                         return Promise.reject("Session expired");
                     }    
                 } else {
@@ -83,6 +87,8 @@ export const createClient = (baseUrl: string) => {
                         });
                     });
                 }
+            } else if (response?.status === 401) {
+                window.location.href = '/login'; // Redireciona para a página de login
             }
             return Promise.reject(error);
         },
