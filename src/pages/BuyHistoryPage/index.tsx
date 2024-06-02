@@ -194,9 +194,6 @@ export default function BuyHistoryPage() {
                       alt={offer.name}
                       className="absolute inset-0 w-full rounded-lg brightness-50 border h-full object-cover"
                     />
-                    <div>
-                      <span className={`h-3 w-3 rounded-full translate-x-[540px] -translate-y-16 absolute animate-glow ${offer.status === 'completed' ? 'bg-green-500 shadow-green' : 'bg-yellow-500 shadow-yellow'}`} />
-                    </div>
                     <div className="absolute bottom-4 right-4 text-white text-right">
                       <h2 className="text-lg font-bold">{offer.name}</h2>
                       <p className="text-sm">

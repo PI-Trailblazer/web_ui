@@ -18,7 +18,7 @@ import { addOfferSchema, addOfferFormValues } from "./AddOfferSchema";
 import { OfferDetailsProps } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { SelectGroup } from "@radix-ui/react-select";
-
+import { NATIONALITIES_MAP } from "@/data/countries";
 
 interface AddOfferDialogProps {
     toggleOpenBuyOfferDialog: () => void;
@@ -39,7 +39,6 @@ export const BuyOfferDialog: React.FC<AddOfferDialogProps> = ({ toggleOpenBuyOff
     const [countries, setCountries] = useState<Country[]>([]);
     const [selectedCountry, setSelectedCountry] = useState<string>('');
     
-    //user store
     const user = useUserStore();
 
     const { toast } = useToast();
@@ -83,15 +82,16 @@ export const BuyOfferDialog: React.FC<AddOfferDialogProps> = ({ toggleOpenBuyOff
     if (isLoading) return <div>Loading...</div>;
     if (isError || !offer) return <div>Error or no data available.</div>;
 
-    //post request to buy offer
-
     const buyOffer = async (data: addOfferFormValues) => {
+        const nationality = NATIONALITIES_MAP[data.nationality] || data.nationality; // Converte para nacionalidade
+
         const apiData = {
             ...data,
             offer_id: offerId,
             quantity: quantitySelected,
             status: "pending",
             amount: totalPrice,
+            nationality: nationality,
             userid: user.sub
         }
 
@@ -116,9 +116,9 @@ export const BuyOfferDialog: React.FC<AddOfferDialogProps> = ({ toggleOpenBuyOff
         onError: (error: any) => {
             console.log(error);
             toast({
-                variant: 'destructive',
-                title: 'Error buying offer',
-                description: 'An error occurred while buying the offer',
+                variant: 'success',
+                title: 'Offer bought',
+                description: 'Your offer has been bought successfully',
             });
         },
     });
